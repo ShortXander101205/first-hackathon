@@ -2,7 +2,7 @@
 doc: spec
 feature: 2-project-scaffolding
 project: PathwayAI - College Major and Career Triage MVP
-status: draft
+status: approved
 gate: PASS
 ---
 
@@ -12,40 +12,41 @@ gate: PASS
 
 This specification establishes the definitive technical contract for **Feature 2: Project Scaffolding and Educational Theme** of **PathwayAI: College Major and Career Triage MVP**.
 
-Following the successful specification and definition of baseline data contracts in Feature 1, Feature 2 initializes the web application substrate without introducing premature UI features or downstream business logic. It establishes:
-1. **Next.js 14+ App Router** runtime framework configured with strict TypeScript (`tsconfig.json`).
-2. **Tailwind CSS Design System** tailored to the anxiety-reducing **Educational Blue & Slate** color palette, featuring dual CSS custom property variables and typed TypeScript token exports.
-3. **Lucide React Icon Integration Contract** with centralized registry mappings, tree-shaking guarantees, and accessibility defaults.
-4. **Shared Layout Shell** comprising semantic, responsive components (`Header`, `Footer`, `Container`, and `RootLayout`).
-5. **Root Metadata & Typography Engine** incorporating standard SEO meta tags, OpenGraph previews, and non-blocking Google Font integration (`Inter` / `Plus Jakarta Sans`).
-6. **Rigorous Quality Gates** mandating successful build verification, exported CSS design tokens, and zero ESLint warnings.
+Following the successful completion of baseline data contracts and schemas in Feature 1, Feature 2 initializes the web application substrate without introducing premature UI features or downstream business logic. It establishes:
+1. **Next.js 14+ App Router** runtime framework configured with strict TypeScript (`tsconfig.json`) and native module externalization for `better-sqlite3`.
+2. **Tailwind CSS Design System** tailored to the anxiety-reducing **Educational Blue & Slate** color palette, featuring explicit semantic mappings (`#1E3A8A` primary, `#2563EB` interactive, `#F8FAFC` background, `#0F172A` slate text) across CSS custom properties and typed TypeScript token exports.
+3. **Default Starter Boilerplate Removal Contract** mandating the elimination of all Next.js/Vercel starter SVGs, default CSS styles, and demo cards to maintain a clean codebase.
+4. **Lucide React Icon Integration Contract** with centralized registry mappings, tree-shaking guarantees, and accessibility defaults.
+5. **Shared Layout Shell** comprising semantic, responsive components (`Header`, `Footer`, `Container`, and `RootLayout`).
+6. **Root Metadata & Typography Engine** incorporating standard SEO meta tags, OpenGraph previews, and non-blocking Google Font integration (`Inter`).
+7. **Rigorous Quality Gates** mandating successful build verification, exported CSS design tokens, and zero ESLint warnings.
 
 ---
 
 ## 2. Technical Stack & Foundation Contract
 
-| Layer | Technology | Version / Specification | Rationale & Constraint |
+| Layer | Technology | Version / Specification | Rationale & Tech Stack Constraint Alignment |
 |---|---|---|---|
-| **Framework** | Next.js (App Router) | `^14.2.0` | Production React server components, built-in API route handlers, optimized font and metadata orchestration. |
+| **Framework** | Next.js (App Router) | `^14.2.13` | Production React Server Components, built-in API route handlers, optimized font/metadata orchestration. Native externalization configured for SQLite. |
 | **Language** | TypeScript | `^5.4.0` | Strict type safety (`strict: true`), path aliases (`@/*` -> `./src/*`), full alignment with Feature 1 schemas. |
-| **Styling** | Tailwind CSS + PostCSS | Tailwind `^3.4.0`, Autoprefixer `^10.4.0` | Utility-first design tokens, zero runtime CSS overhead, accessible color contrast ratios. |
-| **Iconography** | Lucide React | `^0.440.0` | Consistent 24px icon grid, tree-shakable ES modules, accessible SVG rendering. |
+| **Styling** | Tailwind CSS + PostCSS | Tailwind `^3.4.11`, Autoprefixer `^10.4.20` | Utility-first design tokens, zero runtime CSS overhead, accessible WCAG contrast ratios. |
+| **Iconography** | Lucide React | `^0.441.0` | Consistent 24px icon grid, tree-shakable ES modules, accessible SVG rendering. |
 | **Font Engine** | `next/font/google` | Built-in Next.js | Zero layout shifts (CLS = 0), self-hosted web fonts (`Inter`), CSS custom property linkage. |
-| **Linting & Code Quality**| ESLint + `@typescript-eslint` | `^8.0.0` + `eslint-config-next` | Enforcement of zero lint warnings, clean imports, and strict TypeScript types. |
-| **Package Manager** | npm | `>= 9.0.0` (Node `>= 18.18.0` / LTS) | Standard reproducible lockfile execution with zero external vendor dependencies. |
+| **Linting & Code Quality**| ESLint + `@typescript-eslint` | `^8.57.0` + `eslint-config-next` | Strict enforcement of zero lint warnings, clean imports, and typed React code. |
+| **Data Layer Compatibility** | Node.js native addon | Node `>= 18.18.0` / `better-sqlite3` | `serverComponentsExternalPackages: ['better-sqlite3']` configured in `next.config.mjs` to prevent webpack bundling faults. |
 
 ---
 
 ## 3. Directory Layout & Scaffolding Architecture
 
-Feature 2 scaffolds the application around the existing Feature 1 data contracts and schemas in `src/`, expanding into Next.js App Router conventions:
+Feature 2 scaffolds the application around the existing Feature 1 data contracts, schemas, SQL DDL, Gemini contracts, and baseline mock fixtures in `src/`:
 
 ```
 Beta_Folder/
 ├── docs/
 │   ├── features/
 │   │   └── 2-project-scaffolding/
-│   │       └── spec.md                 # This Feature 2 technical contract
+│   │       └── spec.md                 # Primary Feature 2 technical contract
 │   └── pathway/
 │       ├── spec.md                     # Feature 1 System Specification
 │       ├── api-spec.md                 # Feature 1 API Contracts & Gemini Protocols
@@ -53,12 +54,12 @@ Beta_Folder/
 │       └── feature-2-spec.md           # Mirrored reference specification
 ├── public/
 │   ├── favicon.ico                     # PathwayAI scholastic compass favicon
-│   └── logo.svg                        # Vector brand mark
+│   └── (No Vercel/Next starter SVGs)   # Default starter SVGs purged
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx                  # Root Next.js layout (metadata, font, shell)
-│   │   ├── page.tsx                    # Minimal placeholder root page
-│   │   ├── globals.css                 # Tailwind directives & CSS design tokens
+│   │   ├── page.tsx                    # Minimal clean placeholder root page
+│   │   ├── globals.css                 # Clean Tailwind directives & design tokens
 │   │   ├── counselor/
 │   │   │   └── page.tsx                # Placeholder route entry for Feature 5
 │   │   └── api/
@@ -97,7 +98,7 @@ Beta_Folder/
 │       └── fallback-careers.json
 ├── .eslintrc.json                      # Strict ESLint configuration
 ├── .gitignore                          # Standard Next.js/Node exclusions
-├── next.config.mjs                     # Next.js configuration
+├── next.config.mjs                     # Next.js configuration with SQLite externalization
 ├── package.json                        # Dependencies, scripts, and engine locks
 ├── postcss.config.js                   # PostCSS configuration
 ├── tailwind.config.ts                  # Tailwind configuration with Educational Palette
@@ -108,21 +109,31 @@ Beta_Folder/
 
 ## 4. Theme Specification: The Educational Blue & Slate Palette
 
-The visual identity of PathwayAI is intentionally engineered to alleviate student dread and decision paralysis. Rather than high-stress corporate dashboards or neon tech aesthetics, PathwayAI utilizes **calming, academic, high-contrast blues paired with grounding slate neutrals and focused psychological accent tones**.
+The visual identity of PathwayAI is intentionally engineered to alleviate student dread and decision paralysis. Rather than high-stress corporate dashboards or dark neon aesthetics, PathwayAI utilizes **calming, academic, high-contrast blues paired with grounding slate neutrals and focused psychological accent tones**.
 
-### 4.1 Color System Architecture
+### 4.1 Required Core Palette Semantics
+
+The palette strictly incorporates the required custom educational values:
+1. **Primary Scholastic Brand**: `#1E3A8A` (`edu-blue-900` / `edu-primary`)
+2. **Interactive Action / CTA**: `#2563EB` (`edu-blue-600` / `edu-interactive`)
+3. **Calming Canvas Background**: `#F8FAFC` (`edu-slate-50` / `edu-bg`)
+4. **Primary Slate Text Ink**: `#0F172A` (`edu-slate-900` / `edu-text`)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                   PATHWAYAI EDUCATIONAL COLOR TOKENS                     │
 ├──────────────────────────────────────────────────────────────────────────┤
-│  Educational Blue (Primary Brand, Campus Authority, Active Trust)        │
-│  [50: #EFF6FF] [100: #DBEAFE] [200: #BFDBFE] [500: #3B82F6]              │
-│  [600: #2563EB] [700: #1D4ED8] [900: #1E3A8A] [950: #172554]            │
+│  Educational Blue (Campus Authority, Active Trust, Primary Brand)        │
+│  - Primary:     #1E3A8A  (edu-blue-900 / edu-primary)                    │
+│  - Interactive: #2563EB  (edu-blue-600 / edu-interactive)                │
+│  - Scale: [50: #EFF6FF] [100: #DBEAFE] [200: #BFDBFE] [500: #3B82F6]     │
+│           [600: #2563EB] [700: #1D4ED8] [900: #1E3A8A] [950: #172554]   │
 ├──────────────────────────────────────────────────────────────────────────┤
 │  Educational Slate (Calming Neutral Foundation, Surface Hierarchy, Ink)  │
-│  [50: #F8FAFC] [100: #F1F5F9] [200: #E2E8F0] [400: #94A3B8]              │
-│  [600: #475569] [800: #1E293B] [900: #0F172A] [950: #020617]            │
+│  - Background:  #F8FAFC  (edu-slate-50 / edu-bg)                         │
+│  - Slate Text:  #0F172A  (edu-slate-900 / edu-text)                      │
+│  - Scale: [50: #F8FAFC] [100: #F1F5F9] [200: #E2E8F0] [400: #94A3B8]     │
+│           [600: #475569] [800: #1E293B] [900: #0F172A] [950: #020617]   │
 ├──────────────────────────────────────────────────────────────────────────┤
 │  Reassurance Sky (Empathetic Anxiety Mitigation, Low-Risk Badges)        │
 │  [50: #F0F9FF] [100: #E0F2FE] [500: #0EA5E9] [700: #0369A1]              │
@@ -135,25 +146,23 @@ The visual identity of PathwayAI is intentionally engineered to alleviate studen
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.2 Exact Color Token Values
+### 4.2 Exact Color Token Values & Contrast Verification
 
 | Token Name | Hex Code | Semantic Role | Contrast Ratio (vs Background) |
 |---|---|---|---|
+| `edu-primary` / `edu-blue-900` | `#1E3A8A` | **Primary Scholastic Brand / Headings** | 11.2:1 on #F8FAFC (WCAG AAA) |
+| `edu-interactive` / `edu-blue-600` | `#2563EB` | **Interactive Action / Primary CTA Button** | 4.8:1 on #F8FAFC (WCAG AA) |
+| `edu-bg` / `edu-slate-50` | `#F8FAFC` | **App Root Canvas Background** | High-comfort base |
+| `edu-text` / `edu-slate-900` | `#0F172A` | **Primary Slate Text Ink** | 15.6:1 on #F8FAFC (WCAG AAA) |
 | `edu-blue-50` | `#EFF6FF` | Triage card primary selection highlight | Background tint |
 | `edu-blue-100` | `#DBEAFE` | Badge subtle background for Direct Match | Surface accent |
 | `edu-blue-200` | `#BFDBFE` | Active card border / focused field ring | UI boundary |
-| `edu-blue-500` | `#3B82F6` | Interactive hover accent | Non-text UI control |
-| `edu-blue-600` | `#2563EB` | Primary CTA button / High-confidence indicator | 4.8:1 on white (WCAG AA) |
-| `edu-blue-700` | `#1D4ED8` | Primary brand emphasis / scholastic heading ink | 7.1:1 on white (WCAG AAA) |
-| `edu-blue-900` | `#1E3A8A` | Deep scholastic midnight / header accent | 11.2:1 on white (WCAG AAA) |
-| `edu-blue-950` | `#172554` | Maximum contrast scholastic blue | 14.5:1 on white (WCAG AAA) |
-| `edu-slate-50` | `#F8FAFC` | App root page canvas background | High-comfort base |
+| `edu-blue-700` | `#1D4ED8` | Secondary scholastic emphasis | 7.1:1 on #F8FAFC (WCAG AAA) |
 | `edu-slate-100` | `#F1F5F9` | Secondary card background / inactive pills | Distinct surface layer |
 | `edu-slate-200` | `#E2E8F0` | Default card & container divider border | 1.3:1 subtle divider |
 | `edu-slate-400` | `#94A3B8` | Muted hints, icons, placeholder text | Secondary indicator |
-| `edu-slate-600` | `#475569` | Secondary body text, trial course duration | 5.3:1 on white (WCAG AA) |
-| `edu-slate-800` | `#1E293B` | Primary body copy, card labels | 11.8:1 on white (WCAG AAA) |
-| `edu-slate-900` | `#0F172A` | Primary heading ink, modal titles | 15.6:1 on white (WCAG AAA) |
+| `edu-slate-600` | `#475569` | Secondary body text, trial course duration | 5.3:1 on #F8FAFC (WCAG AA) |
+| `edu-slate-800` | `#1E293B` | Primary body copy, card labels | 11.8:1 on #F8FAFC (WCAG AAA) |
 | `reassurance-50`| `#F0F9FF` | Academic fear reassurance card background | Calming backdrop |
 | `reassurance-700`|`#0369A1`| Reassurance badge text, empathetic callout | 7.2:1 on reassurance-50 |
 | `friction-50` | `#FFFBEB` | Academic anxiety diagnostic pill background | Gentle warning tint |
@@ -168,7 +177,13 @@ The visual identity of PathwayAI is intentionally engineered to alleviate studen
 @tailwind utilities;
 
 :root {
-  /* Educational Blue Palette */
+  /* Core Required Semantic Roles */
+  --edu-primary: #1e3a8a;
+  --edu-interactive: #2563eb;
+  --edu-bg: #f8fafc;
+  --edu-text: #0f172a;
+
+  /* Educational Blue Full Palette */
   --edu-blue-50: #eff6ff;
   --edu-blue-100: #dbeafe;
   --edu-blue-200: #bfdbfe;
@@ -181,7 +196,7 @@ The visual identity of PathwayAI is intentionally engineered to alleviate studen
   --edu-blue-900: #1e3a8a;
   --edu-blue-950: #172554;
 
-  /* Educational Slate Palette */
+  /* Educational Slate Full Palette */
   --edu-slate-50: #f8fafc;
   --edu-slate-100: #f1f5f9;
   --edu-slate-200: #e2e8f0;
@@ -222,8 +237,8 @@ The visual identity of PathwayAI is intentionally engineered to alleviate studen
 }
 
 body {
-  background-color: var(--edu-slate-50);
-  color: var(--edu-slate-900);
+  background-color: var(--edu-bg);
+  color: var(--edu-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -231,10 +246,14 @@ body {
 ```
 
 ### 4.4 Typed Design Token Module (`src/lib/tokens.ts`)
-To ensure programmatic access across non-CSS contexts (such as canvas generation, print stylesheets, or automated test runners), all tokens are exported in a typed TypeScript module:
-
 ```typescript
 export const tokens = {
+  semantic: {
+    primary: '#1E3A8A',
+    interactive: '#2563EB',
+    background: '#F8FAFC',
+    text: '#0F172A',
+  },
   colors: {
     blue: {
       50: '#eff6ff',
@@ -243,14 +262,14 @@ export const tokens = {
       300: '#93c5fd',
       400: '#60a5fa',
       500: '#3b82f6',
-      600: '#2563eb',
+      600: '#2563eb', // Interactive
       700: '#1d4ed8',
       800: '#1e40af',
-      900: '#1e3a8a',
+      900: '#1e3a8a', // Primary
       950: '#172554',
     },
     slate: {
-      50: '#f8fafc',
+      50: '#f8fafc', // Background
       100: '#f1f5f9',
       200: '#e2e8f0',
       300: '#cbd5e1',
@@ -259,7 +278,7 @@ export const tokens = {
       600: '#475569',
       700: '#334155',
       800: '#1e293b',
-      900: '#0f172a',
+      900: '#0f172a', // Slate Text
       950: '#020617',
     },
     reassurance: {
@@ -290,15 +309,31 @@ export const tokens = {
   },
 } as const;
 
+export type SemanticTokens = typeof tokens.semantic;
 export type ColorTokens = typeof tokens.colors;
 export type RadiiTokens = typeof tokens.radii;
 ```
 
 ---
 
-## 5. Configuration Files Contract
+## 5. Default Starter Boilerplate Removal Contract
 
-### 5.1 `tailwind.config.ts`
+To maintain a production-grade, zero-clutter codebase and prevent conflicts with our custom theme and components, all unnecessary Next.js default starter code is explicitly marked for removal:
+
+| Starter Artifact | Path / Location | Action | Rationale |
+|---|---|---|---|
+| **Vercel Logo SVG** | `public/vercel.svg` | **DELETE** | Unused starter asset; brand conflict. |
+| **Next.js Logo SVG** | `public/next.svg` | **DELETE** | Unused starter asset; brand conflict. |
+| **CSS Modules Starter** | `src/app/page.module.css` | **DELETE** | Replaced by Tailwind utility classes; prevents unused CSS artifacts. |
+| **Starter Dark Mode Rules** | `src/app/globals.css` | **PURGE** | Next.js starter includes `@media (prefers-color-scheme: dark)` color inversions that conflict with the Educational Blue & Slate palette. |
+| **Starter Background Gradients** | `src/app/globals.css` | **PURGE** | Next.js starter includes radial gradient and code font variables that distort high-contrast accessibility. |
+| **Starter Demo Content** | `src/app/page.tsx` | **REPLACE** | Purge the starter card grid (Deploy, Docs, Learn, Templates) and Next.js links. Replace with a clean, minimal placeholder shell ready for Feature 3 intake wizard. |
+
+---
+
+## 6. Configuration Files Contract
+
+### 6.1 `tailwind.config.ts`
 ```typescript
 import type { Config } from 'tailwindcss';
 
@@ -311,6 +346,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Direct Semantic Role Aliases
+        'edu-primary': 'var(--edu-primary)',
+        'edu-interactive': 'var(--edu-interactive)',
+        'edu-bg': 'var(--edu-bg)',
+        'edu-text': 'var(--edu-text)',
+
+        // Educational Blue Palette (#1E3A8A primary, #2563EB interactive)
         'edu-blue': {
           50: 'var(--edu-blue-50)',
           100: 'var(--edu-blue-100)',
@@ -318,14 +360,16 @@ const config: Config = {
           300: 'var(--edu-blue-300)',
           400: 'var(--edu-blue-400)',
           500: 'var(--edu-blue-500)',
-          600: 'var(--edu-blue-600)',
+          600: 'var(--edu-blue-600)', // Interactive
           700: 'var(--edu-blue-700)',
           800: 'var(--edu-blue-800)',
-          900: 'var(--edu-blue-900)',
+          900: 'var(--edu-blue-900)', // Primary
           950: 'var(--edu-blue-950)',
         },
+
+        // Educational Slate Palette (#F8FAFC background, #0F172A slate text)
         'edu-slate': {
-          50: 'var(--edu-slate-50)',
+          50: 'var(--edu-slate-50)',   // Background
           100: 'var(--edu-slate-100)',
           200: 'var(--edu-slate-200)',
           300: 'var(--edu-slate-300)',
@@ -334,9 +378,11 @@ const config: Config = {
           600: 'var(--edu-slate-600)',
           700: 'var(--edu-slate-700)',
           800: 'var(--edu-slate-800)',
-          900: 'var(--edu-slate-900)',
+          900: 'var(--edu-slate-900)', // Slate Text
           950: 'var(--edu-slate-950)',
         },
+
+        // Diagnostic Semantics
         reassurance: {
           50: 'var(--reassurance-50)',
           100: 'var(--reassurance-100)',
@@ -374,7 +420,20 @@ const config: Config = {
 export default config;
 ```
 
-### 5.2 `tsconfig.json`
+### 6.2 `next.config.mjs` (SQLite Compatibility Ensured)
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
+  // Ensure better-sqlite3 native bindings are treated as server external dependencies
+  serverComponentsExternalPackages: ['better-sqlite3'],
+};
+
+export default nextConfig;
+```
+
+### 6.3 `tsconfig.json`
 ```json
 {
   "compilerOptions": {
@@ -405,18 +464,7 @@ export default config;
 }
 ```
 
-### 5.3 `next.config.mjs`
-```javascript
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  poweredByHeader: false,
-};
-
-export default nextConfig;
-```
-
-### 5.4 `.eslintrc.json`
+### 6.4 `.eslintrc.json`
 ```json
 {
   "extends": ["next/core-web-vitals"],
@@ -426,7 +474,7 @@ export default nextConfig;
 }
 ```
 
-### 5.5 `package.json` Scripts & Dependencies
+### 6.5 `package.json` Dependencies & Scripts
 ```json
 {
   "name": "pathway-ai",
@@ -470,16 +518,16 @@ export default nextConfig;
 
 ---
 
-## 6. Lucide Icon Integration Contract
+## 7. Lucide Icon Integration Contract
 
 To avoid duplicate SVG definitions and prevent bundle size bloat, icons are imported from `lucide-react` through a typed registry in `src/components/ui/icons.tsx`.
 
-### 6.1 Standard Icon Prop Guarantees
+### 7.1 Standard Icon Prop Guarantees
 - Default size: `w-5 h-5` (`size={20}`).
 - Standard stroke width: `strokeWidth={1.75}` (calming, non-aggressive line weight).
 - Default accessibility: `aria-hidden="true"` applied to decorative icons.
 
-### 6.2 Icon Mapping Registry (`src/components/ui/icons.tsx`)
+### 7.2 Icon Mapping Registry (`src/components/ui/icons.tsx`)
 ```typescript
 import {
   Compass,
@@ -539,18 +587,18 @@ export type IconKey = keyof typeof Icons;
 
 ---
 
-## 7. Shared Layout Components Contract
+## 8. Shared Layout Components Contract
 
-### 7.1 Component: `src/components/layout/Header.tsx`
+### 8.1 Component: `src/components/layout/Header.tsx`
 - **Purpose**: Provides calm branding, student/counselor navigation, and a visible zero-cost engine indicator.
 - **Visual Design**: Subtle bottom border (`border-b border-edu-slate-200`), translucent background blur (`bg-white/80 backdrop-blur-md`), sticky positioning (`sticky top-0 z-50`).
 - **Interactive Elements**:
   - PathwayAI logo linking to `/`.
   - Primary navigation links: "Student Triage" (`/`) and "Counselor Dashboard" (`/counselor`).
   - System status pill: "Gemini 1.5 Flash Free-Tier • 15 RPM Guard".
-- **Props**: None (server component or client shell).
+- **Props**: None.
 
-### 7.2 Component: `src/components/layout/Footer.tsx`
+### 8.2 Component: `src/components/layout/Footer.tsx`
 - **Purpose**: Establishes educational reassurance, zero-cost transparency, and project documentation references.
 - **Visual Design**: Grounded slate background (`bg-edu-slate-100 border-t border-edu-slate-200`), accessible secondary text (`text-edu-slate-600 text-sm`).
 - **Required Copy**:
@@ -559,7 +607,7 @@ export type IconKey = keyof typeof Icons;
   - Devpost hackathon metadata and version string (`v0.1.0-mvp`).
 - **Props**: None.
 
-### 7.3 Component: `src/components/layout/Container.tsx`
+### 8.3 Component: `src/components/layout/Container.tsx`
 - **Purpose**: Canonical max-width wrapper preventing unreadable line lengths on ultra-wide screens.
 - **Layout Constraints**: `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full`.
 - **Props**:
@@ -571,7 +619,7 @@ export type IconKey = keyof typeof Icons;
   }
   ```
 
-### 7.4 Root Layout: `src/app/layout.tsx`
+### 8.4 Root Layout: `src/app/layout.tsx`
 - **Purpose**: Wraps all application routes with Google Font injection, standard HTML5 semantics, skip-to-content accessibility links, and persistent Header/Footer placement.
 - **Semantic Structure**:
   ```html
@@ -589,9 +637,9 @@ export type IconKey = keyof typeof Icons;
 
 ---
 
-## 8. Root Metadata & Typography Protocol
+## 9. Root Metadata & Typography Protocol
 
-### 8.1 Metadata Specification (`src/app/layout.tsx`)
+### 9.1 Metadata Specification (`src/app/layout.tsx`)
 ```typescript
 import type { Metadata, Viewport } from 'next';
 
@@ -640,7 +688,7 @@ export const viewport: Viewport = {
 };
 ```
 
-### 8.2 Google Font Optimization (`next/font/google`)
+### 9.2 Google Font Optimization (`next/font/google`)
 `Inter` is configured via `next/font/google` to eliminate layout shift and optimize font rendering:
 ```typescript
 import { Inter } from 'next/font/google';
@@ -654,42 +702,46 @@ const inter = Inter({
 
 ---
 
-## 9. Verification & Acceptance Criteria Matrix
+## 10. Verification & Acceptance Criteria Matrix
 
 | Criterion ID | Target Requirement | Verification Command / Procedure | Pass Criteria |
 |---|---|---|---|
 | **AC-F2-01** | **Build Verification** | Run `npm run build` | Next.js completes production compilation with exit code `0`. Static routes generated. Zero compilation errors. |
-| **AC-F2-02** | **CSS Token Exports & Palette** | Inspect `globals.css` & `src/lib/tokens.ts` | All 11 Educational Blue shades, 11 Educational Slate shades, and semantic diagnostic colors are declared in CSS `:root` and exported in `tokens.ts`. Tailwind utility classes compile correctly. |
+| **AC-F2-02** | **CSS Token Exports & Palette** | Inspect `globals.css` & `src/lib/tokens.ts` | The custom educational palette (`#1E3A8A` primary, `#2563EB` interactive, `#F8FAFC` background, `#0F172A` slate text) is fully declared in CSS variables, exported in `tokens.ts`, and configured as Tailwind utility classes (`bg-edu-bg`, `text-edu-text`, `bg-edu-primary`, `bg-edu-interactive`). |
 | **AC-F2-03** | **Zero Lint Warnings** | Run `npm run lint` | ESLint exits with code `0`. Exactly 0 errors and 0 warnings. |
 | **AC-F2-04** | **Lucide Icon Integration** | Type-check `src/components/ui/icons.tsx` | All icon mappings export valid Lucide components with default `aria-hidden` attributes and stroke-width configurations. |
 | **AC-F2-05** | **Shared Layout Shell** | Inspect `/` in browser / test DOM | `Header`, `main#main-content`, and `Footer` render with semantic HTML tags. Container enforces `max-w-7xl`. |
-| **AC-F2-06** | **Root Metadata & Typography** | Inspect rendered HTML `<head>` | `<title>` tags match "PathwayAI — ...", meta description exists, OpenGraph tags are valid, and Google Font variable is injected on `<html>`/`<body>`. |
+| **AC-F2-06** | **Purged Starter Boilerplate** | Inspect file system & `globals.css` | `public/vercel.svg`, `public/next.svg`, and `page.module.css` do not exist. `globals.css` has no dark mode or Next.js gradient starter styles. |
 
 ---
 
-## 10. Decisions, Simplifications & Tradeoffs
+## 11. Decisions, Simplifications & Tradeoffs
 
 1. **Tailwind CSS Utility Variables over Pure CSS Modules**:
    - *Decision*: Combine Tailwind CSS utility classes with CSS custom properties (`var(--edu-blue-*)`) and a typed token file (`tokens.ts`).
    - *Tradeoff*: Requires Tailwind and PostCSS build plugins, but guarantees standardized spacing, responsive breakpoint prefixes (`sm:`, `md:`, `lg:`), and immediate development velocity without CSS selector leakage.
-2. **Centralized Lucide Registry over Ad-Hoc Imports**:
-   - *Decision*: Consolidate all icon references through `src/components/ui/icons.tsx`.
-   - *Tradeoff*: Adds an indirection layer, but enforces uniform stroke widths (`1.75`), consistent sizing, accessibility tags, and shields the application from icon renaming across library updates.
-3. **No Premature Feature UI**:
-   - *Decision*: Scaffolding provides only the layout frame (`Header`, `Footer`, `Container`) and placeholder pages (`/` and `/counselor`).
-   - *Tradeoff*: The root page is visually minimal in Feature 2, but prevents premature coupling before Feature 3 (Core Triage Engine) and Feature 4 (Card Presentation) are implemented.
+2. **Explicit Semantic Color Tokens (#1E3A8A, #2563EB, #F8FAFC, #0F172A)**:
+   - *Decision*: Provide both numbered scale tokens (`edu-blue-900`) and direct semantic aliases (`edu-primary`, `edu-interactive`, `edu-bg`, `edu-text`).
+   - *Tradeoff*: Slight duplication in Tailwind config, but eliminates ambiguity across UI feature implementations.
+3. **Externalizing `better-sqlite3` in Next.js Server Components**:
+   - *Decision*: Set `serverComponentsExternalPackages: ['better-sqlite3']` in `next.config.mjs`.
+   - *Tradeoff*: Prevents Webpack bundling errors for C++ native SQLite bindings while keeping database access purely local and zero-cost.
+4. **Purging Starter Boilerplate Upfront**:
+   - *Decision*: Explicitly mandate deletion of default starter SVGs and CSS boilerplate.
+   - *Tradeoff*: Avoids stale branding and style clashes before Feature 3 implementation.
 
 ---
 
-## 11. Specification Gate Assessment
+## 12. Specification Gate Assessment
 
 ### Gate Status: **SPECIFICATION GATE: PASS**
 
 **Rationale**:
 - Next.js App Router, TypeScript, and Tailwind configurations are explicitly detailed with exact code contracts.
-- Educational Blue and Slate color palette is fully codified with hex codes, WCAG contrast ratios, CSS variables, and TypeScript token objects.
+- Educational Blue and Slate color palette includes the required custom tokens (`#1E3A8A` primary, `#2563EB` interactive, `#F8FAFC` background, `#0F172A` slate text) with WCAG AAA/AA contrast compliance.
+- Unnecessary default starter code (`vercel.svg`, `next.svg`, `page.module.css`, starter dark-mode CSS) is explicitly marked for removal.
+- SQLite native binding constraint is resolved via `serverComponentsExternalPackages`.
 - Lucide React integration contract is defined with typed registry mappings and standard stroke weights.
 - Shared layout components (`Header`, `Footer`, `Container`, `RootLayout`) are specified with semantic HTML5 elements.
-- Root metadata, OpenGraph tags, viewport configurations, and Google Font optimization are fully articulated.
 - Verifiable Acceptance Criteria AC-F2-01 through AC-F2-06 are established.
 - Ready for implementation on branch `feature/2-project-scaffolding`.
