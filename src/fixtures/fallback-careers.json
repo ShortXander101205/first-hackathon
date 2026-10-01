@@ -1,0 +1,140 @@
+{
+  "summary": {
+    "student_archetype": "The Strategic Digital Systems Builder",
+    "triage_narrative": "A natural analytical builder driven by technology and high economic security, but hesitant regarding high-pressure verbal defense or theoretical math. These pathways emphasize asynchronous infrastructure problem solving, durable employer demand, and structured technical mastery."
+  },
+  "careers": [
+    {
+      "id": "fallback_career_1",
+      "role_title": "Cloud Infrastructure & DevOps Engineer",
+      "match_tier": "Primary Direct Match",
+      "fit_score": 95,
+      "fit_rationale": "Directly converges logical systems engineering with cloud technology while minimizing public speaking.",
+      "majors": [
+        "Computer Information Systems",
+        "Cloud Computing Architecture",
+        "Network Systems Engineering"
+      ],
+      "daily_tasks": [
+        "Provision and automate virtual server infrastructure using Infrastructure-as-Code scripts",
+        "Configure automated application deployment pipelines and zero-downtime health monitors",
+        "Troubleshoot database connectivity bottlenecks across containerized microservices"
+      ],
+      "course_challenges": "Distributed Operating Systems & Network Protocols",
+      "reassurance": "Technical engineering coursework is evaluated through functioning code labs and lab reports rather than verbal presentations or speeches.",
+      "trial_courses": [
+        {
+          "title": "AWS Cloud Practitioner Essentials",
+          "provider": "AWS Skill Builder (Free)",
+          "description": "Learn the fundamental concepts of cloud servers, storage, and networking without fees.",
+          "estimated_hours": 6
+        },
+        {
+          "title": "Linux Command Line Basics",
+          "provider": "freeCodeCamp (YouTube)",
+          "description": "Hands-on terminal commands for beginners in 120 minutes.",
+          "estimated_hours": 2
+        }
+      ]
+    },
+    {
+      "id": "fallback_career_2",
+      "role_title": "Information Security Analyst",
+      "match_tier": "High-Growth Pathway",
+      "fit_score": 91,
+      "fit_rationale": "Exceptional job security with 32% projected ten-year growth and high starting compensation.",
+      "majors": [
+        "Cybersecurity",
+        "Information Assurance",
+        "Computer Science"
+      ],
+      "daily_tasks": [
+        "Analyze security incident logs to detect unauthorized network penetration attempts",
+        "Run automated vulnerability scanning scripts against corporate web applications",
+        "Document remediation steps in clear, written technical security tickets"
+      ],
+      "course_challenges": "Cryptography and Network Security Algorithms",
+      "reassurance": "You don't need to invent cryptography formulas; practical security analysts focus on applying established encryption libraries and auditing system configurations.",
+      "trial_courses": [
+        {
+          "title": "Google Cybersecurity Professional Certificate - Foundations",
+          "provider": "Coursera (Free Audit)",
+          "description": "Foundational cybersecurity practices taught by Google analysts.",
+          "estimated_hours": 8
+        },
+        {
+          "title": "OverTheWire: Bandit (Security Wargame)",
+          "provider": "OverTheWire.org",
+          "description": "Interactive cybersecurity puzzle game played directly in your terminal.",
+          "estimated_hours": 4
+        }
+      ]
+    },
+    {
+      "id": "fallback_career_3",
+      "role_title": "Data Pipeline & Analytics Engineer",
+      "match_tier": "Interdisciplinary Pivot",
+      "fit_score": 87,
+      "fit_rationale": "Translates raw operational data into structured business intelligence without requiring sales pitches.",
+      "majors": [
+        "Data Analytics",
+        "Management Information Systems",
+        "Applied Statistics"
+      ],
+      "daily_tasks": [
+        "Build automated data extract-transform-load (ETL) pipelines using Python and SQL",
+        "Cleanse and validate customer behavior datasets for quarterly operational reporting",
+        "Create interactive metric dashboards in tools like Metabase or Tableau"
+      ],
+      "course_challenges": "Applied Statistical Methods & Regression",
+      "reassurance": "Statistics at this level is practical and tool-driven; software handles the computations while you focus on interpreting what the data means.",
+      "trial_courses": [
+        {
+          "title": "SQL for Data Science",
+          "provider": "Coursera (UC Davis / Audit)",
+          "description": "Learn to query, filter, and summarize real-world datasets.",
+          "estimated_hours": 8
+        },
+        {
+          "title": "Python for Data Analysis Crash Course",
+          "provider": "Kaggle Learn",
+          "description": "Free, hands-on micro-course with interactive Jupyter notebooks in the browser.",
+          "estimated_hours": 4
+        }
+      ]
+    },
+    {
+      "id": "fallback_career_4",
+      "role_title": "Autonomous Systems Simulation Specialist",
+      "match_tier": "Moonshot Trajectory",
+      "fit_score": 83,
+      "fit_rationale": "High-impact emerging domain in robotics simulation, autonomous driving, and aerospace modeling.",
+      "majors": [
+        "Robotics Systems Technology",
+        "Simulation & Game Programming",
+        "Applied Computational Science"
+      ],
+      "daily_tasks": [
+        "Configure synthetic virtual test environments in simulation physics engines (e.g. Gazebo or Unreal)",
+        "Stress-test sensor perception algorithms under adverse weather simulations",
+        "Generate automated test telemetry reports for vehicle engineering teams"
+      ],
+      "course_challenges": "3D Kinematics and Simulation Mechanics",
+      "reassurance": "Modern simulation software allows you to visually inspect physics problems in 3D rather than wrestling with dry symbolic algebra.",
+      "trial_courses": [
+        {
+          "title": "Introduction to Robotics Simulation with ROS",
+          "provider": "ConstructSim / YouTube",
+          "description": "Beginner walkthrough of simulated robot movements in web-based Linux containers.",
+          "estimated_hours": 5
+        },
+        {
+          "title": "Physics for Game and Simulation Programmers",
+          "provider": "Khan Academy",
+          "description": "Intuitive visual physics and vector mathematics.",
+          "estimated_hours": 6
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "rev_alex_001",
+    "submission_id": "sub_alex_001",
+    "counselor_name": "Mrs. Vance, Academic Advisor",
+    "status": "pending_review",
+    "notes": "",
+    "flagged_friction": true,
+    "updated_at": "2026-10-02T02:15:30Z"
+  },
+  {
+    "id": "rev_taylor_002",
+    "submission_id": "sub_taylor_002",
+    "counselor_name": "Mr. Henderson, STEM Counselor",
+    "status": "follow_up_scheduled",
+    "notes": "Discussed public speaking concerns. Taylor was relieved to learn cybersecurity analyst roles emphasize written reporting. Scheduled follow-up session next Tuesday.",
+    "flagged_friction": true,
+    "updated_at": "2026-10-02T02:35:00Z"
+  },
+  {
+    "id": "rev_morgan_003",
+    "submission_id": "sub_morgan_003",
+    "counselor_name": "Mrs. Vance, Academic Advisor",
+    "status": "reviewed",
+    "notes": "Reviewed civic media pathways. Recommended Morgan begin with the free Michigan storytelling course and join the college sustainability media club.",
+    "flagged_friction": false,
+    "updated_at": "2026-10-02T02:40:00Z"
+  }
+]

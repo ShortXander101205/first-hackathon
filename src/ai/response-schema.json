@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PathwayAITriageResponseSchema",
+  "type": "OBJECT",
+  "properties": {
+    "summary": {
+      "type": "OBJECT",
+      "properties": {
+        "student_archetype": {
+          "type": "STRING",
+          "description": "A resonant 3-5 word archetype capturing the student's natural cognitive profile."
+        },
+        "triage_narrative": {
+          "type": "STRING",
+          "description": "An empathetic 2-3 sentence synthesis explaining how their energy aligns with these trajectories while mitigating their anxiety."
+        }
+      },
+      "required": ["student_archetype", "triage_narrative"]
+    },
+    "careers": {
+      "type": "ARRAY",
+      "description": "An array of exactly 4 career recommendation cards covering the 4 designated tiers.",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "STRING",
+            "description": "Unique card identifier (e.g. career_1, career_2)."
+          },
+          "role_title": {
+            "type": "STRING",
+            "description": "Professional job or vocational title."
+          },
+          "match_tier": {
+            "type": "STRING",
+            "enum": [
+              "Primary Direct Match",
+              "High-Growth Pathway",
+              "Interdisciplinary Pivot",
+              "Moonshot Trajectory"
+            ]
+          },
+          "fit_score": {
+            "type": "INTEGER",
+            "description": "Integer match percentage between 50 and 100."
+          },
+          "fit_rationale": {
+            "type": "STRING",
+            "description": "Concise rationale connecting this career to their intake choices."
+          },
+          "majors": {
+            "type": "ARRAY",
+            "description": "At least two associated collegiate majors or degree programs.",
+            "items": { "type": "STRING" }
+          },
+          "daily_tasks": {
+            "type": "ARRAY",
+            "description": "At least three concrete operational tasks performed on the job.",
+            "items": { "type": "STRING" }
+          },
+          "course_challenges": {
+            "type": "STRING",
+            "description": "The specific challenging courses or concepts encountered in this degree."
+          },
+          "reassurance": {
+            "type": "STRING",
+            "description": "Empathetic cognitive reframing directly addressing their stated Question 3 anxiety."
+          },
+          "trial_courses": {
+            "type": "ARRAY",
+            "description": "Exactly two zero-cost trial courses or hands-on tutorials.",
+            "items": {
+              "type": "OBJECT",
+              "properties": {
+                "title": { "type": "STRING" },
+                "provider": { "type": "STRING" },
+                "description": { "type": "STRING" },
+                "estimated_hours": { "type": "INTEGER" }
+              },
+              "required": ["title", "provider", "description", "estimated_hours"]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "role_title",
+          "match_tier",
+          "fit_score",
+          "fit_rationale",
+          "majors",
+          "daily_tasks",
+          "course_challenges",
+          "reassurance",
+          "trial_courses"
+        ]
+      }
+    }
+  },
+  "required": ["summary", "careers"]
+}

@@ -1,0 +1,425 @@
+[
+  {
+    "submission_id": "sub_alex_001",
+    "summary": {
+      "student_archetype": "The Purposeful Bio-Systems Builder",
+      "triage_narrative": "Alex thrives when engineering tangible systems that directly improve human lives, but carries significant anxiety around abstract higher mathematics. These recommendations focus on applied clinical technology, hardware diagnostics, and healthcare data systems where problem-solving is concrete rather than purely theoretical."
+    },
+    "careers": [
+      {
+        "id": "career_1",
+        "role_title": "Biomedical Equipment & Systems Technologist",
+        "match_tier": "Primary Direct Match",
+        "fit_score": 96,
+        "fit_rationale": "Directly converges hands-on system building with healthcare impact while applying practical physics rather than theoretical calculus.",
+        "majors": [
+          "Biomedical Engineering Technology",
+          "Clinical Laboratory Science",
+          "Applied Instrumentation Engineering"
+        ],
+        "daily_tasks": [
+          "Calibrate and diagnose telemetry, imaging, and dialysis systems in hospital surgical suites",
+          "Design customized hardware modifications for patient accessibility equipment",
+          "Perform preventive maintenance protocols to guarantee zero-failure healthcare devices"
+        ],
+        "course_challenges": "Applied Circuit Theory & Electronics Math",
+        "reassurance": "Unlike abstract theoretical calculus that causes anxiety, circuit math is grounded directly in hands-on breadboards, physical voltage measurements, and immediate visual feedback.",
+        "trial_courses": [
+          {
+            "title": "Introduction to Biomedical Technology",
+            "provider": "edX / DelftX (Free Audit)",
+            "description": "Explore how medical hardware saves lives through practical engineering simulations.",
+            "estimated_hours": 6
+          },
+          {
+            "title": "Hands-On Arduino for Beginners",
+            "provider": "freeCodeCamp (YouTube)",
+            "description": "Build simulated physical circuits online with zero hardware cost using Tinkercad.",
+            "estimated_hours": 4
+          }
+        ]
+      },
+      {
+        "id": "career_2",
+        "role_title": "Health Informatics Specialist",
+        "match_tier": "High-Growth Pathway",
+        "fit_score": 92,
+        "fit_rationale": "High-demand industry bridging healthcare clinical workflows with structured software systems.",
+        "majors": [
+          "Health Information Management",
+          "Bioinformatics",
+          "Information Systems"
+        ],
+        "daily_tasks": [
+          "Optimize hospital digital workflows to eliminate documentation friction for nurses",
+          "Implement patient record interoperability standards across multi-clinic hospital networks",
+          "Analyze patient safety data logs to flag adverse drug interactions"
+        ],
+        "course_challenges": "Relational Database Management & SQL Queries",
+        "reassurance": "Database querying is pure logic and language syntax rather than higher-order mathematics; you will learn it like building with digital LEGO blocks.",
+        "trial_courses": [
+          {
+            "title": "Health Informatics 101",
+            "provider": "Coursera (Johns Hopkins / Audit)",
+            "description": "Examine how clinical data drives patient health outcomes.",
+            "estimated_hours": 5
+          },
+          {
+            "title": "SQL for Health Data Beginners",
+            "provider": "Khan Academy",
+            "description": "Interactive browser exercises querying patient and clinic tables.",
+            "estimated_hours": 3
+          }
+        ]
+      },
+      {
+        "id": "career_3",
+        "role_title": "Assistive Technology Designer",
+        "match_tier": "Interdisciplinary Pivot",
+        "fit_score": 88,
+        "fit_rationale": "Combines human empathy, ergonomics, and physical fabrication for patients with disabilities.",
+        "majors": [
+          "Industrial Design",
+          "Human-Centered Design & Engineering",
+          "Occupational Therapy Pre-Professional"
+        ],
+        "daily_tasks": [
+          "Interview patients with mobility limitations to assess ergonomic pain points",
+          "Rapid prototype 3D-printed adaptive grips, utensils, and computer input devices",
+          "Test device usability with physical therapists to ensure patient safety and comfort"
+        ],
+        "course_challenges": "Ergonomics and Applied Biomechanics",
+        "reassurance": "Biomechanics focuses on the human body's movement and physical levers, intuitive concepts you observe every day in human posture.",
+        "trial_courses": [
+          {
+            "title": "Human-Centered Design: An Introduction",
+            "provider": "Coursera (UC San Diego / Audit)",
+            "description": "Learn the core design cycle: field observation, prototyping, and testing.",
+            "estimated_hours": 6
+          },
+          {
+            "title": "Assistive Tech in Action Case Studies",
+            "provider": "YouTube / Perkins Access",
+            "description": "Real-world walkthroughs of adaptive tools engineered for students with physical disabilities.",
+            "estimated_hours": 2
+          }
+        ]
+      },
+      {
+        "id": "career_4",
+        "role_title": "Surgical Robotics Operations Coordinator",
+        "match_tier": "Moonshot Trajectory",
+        "fit_score": 84,
+        "fit_rationale": "An ambitious emerging field at the intersection of robotic surgery, clinical operations, and technical leadership.",
+        "majors": [
+          "Robotics Systems Technology",
+          "Healthcare Operations Management",
+          "Applied Mechanical Systems"
+        ],
+        "daily_tasks": [
+          "Oversee pre-operative calibration and sterile draping for multi-million dollar robotic surgery consoles",
+          "Serve as in-room technical liaison assisting surgeon console settings during complex procedures",
+          "Coordinate software telemetry updates and hardware swaps with robotics manufacturer engineers"
+        ],
+        "course_challenges": "Robotic Kinematics & Applied Physics",
+        "reassurance": "Operations roles emphasize practical device diagnostics, communication, and system mastery rather than derivation of matrix physics.",
+        "trial_courses": [
+          {
+            "title": "Introduction to Surgical Robotics",
+            "provider": "YouTube / Stanford Medicine Lectures",
+            "description": "Watch robotic console dissections and surgeon interface overviews.",
+            "estimated_hours": 3
+          },
+          {
+            "title": "Medical Device Regulations & Safety",
+            "provider": "edX / MITx (Audit)",
+            "description": "Understand FDA compliance and robotic clinical protocol controls.",
+            "estimated_hours": 5
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "submission_id": "sub_taylor_002",
+    "summary": {
+      "student_archetype": "The Strategic Data Architect",
+      "triage_narrative": "Taylor is driven by uncovering patterns in complex digital systems and seeks high economic security, but experiences acute anxiety around public speaking. These pathways leverage asynchronous analytical depth, code-based problem solving, and structured technical writing."
+    },
+    "careers": [
+      {
+        "id": "career_1",
+        "role_title": "Cloud Infrastructure & Systems Engineer",
+        "match_tier": "Primary Direct Match",
+        "fit_score": 95,
+        "fit_rationale": "Aligns directly with systems building and technical problem solving while minimizing stressful public speaking.",
+        "majors": [
+          "Computer Information Systems",
+          "Cloud Computing",
+          "Network Engineering"
+        ],
+        "daily_tasks": [
+          "Provision and automate virtual server infrastructure using Infrastructure-as-Code (Terraform)",
+          "Monitor system performance dashboards and configure automated failover mechanisms",
+          "Troubleshoot database connectivity bottlenecks across containerized microservices"
+        ],
+        "course_challenges": "Distributed Operating Systems & Network Protocols",
+        "reassurance": "Technical coursework is evaluated through functioning code labs and lab reports rather than verbal presentations or speeches.",
+        "trial_courses": [
+          {
+            "title": "AWS Cloud Practitioner Essentials",
+            "provider": "AWS Skill Builder (Free)",
+            "description": "Learn the fundamental concepts of cloud servers, storage, and networking without fees.",
+            "estimated_hours": 6
+          },
+          {
+            "title": "Linux Command Line Basics",
+            "provider": "freeCodeCamp (YouTube)",
+            "description": "Hands-on terminal commands for beginners in 120 minutes.",
+            "estimated_hours": 2
+          }
+        ]
+      },
+      {
+        "id": "career_2",
+        "role_title": "Information Security Analyst",
+        "match_tier": "High-Growth Pathway",
+        "fit_score": 91,
+        "fit_rationale": "High labor demand with an anticipated 32% industry growth rate and high starting salaries.",
+        "majors": [
+          "Cybersecurity",
+          "Information Assurance",
+          "Computer Science"
+        ],
+        "daily_tasks": [
+          "Analyze security incident logs to detect unauthorized network penetration attempts",
+          "Run automated vulnerability scanning scripts against corporate web applications",
+          "Document remediation steps in clear, written technical security tickets"
+        ],
+        "course_challenges": "Cryptography and Network Security Algorithms",
+        "reassurance": "You don't need to invent cryptography formulas; practical analysts focus on applying established encryption libraries and auditing system configurations.",
+        "trial_courses": [
+          {
+            "title": "Google Cybersecurity Professional Certificate - Foundations",
+            "provider": "Coursera (Free Audit)",
+            "description": "Foundational cybersecurity practices taught by Google analysts.",
+            "estimated_hours": 8
+          },
+          {
+            "title": "OverTheWire: Bandit (Wargame)",
+            "provider": "OverTheWire.org",
+            "description": "Interactive cybersecurity puzzle game played in your terminal.",
+            "estimated_hours": 4
+          }
+        ]
+      },
+      {
+        "id": "career_3",
+        "role_title": "Data Pipeline & Analytics Engineer",
+        "match_tier": "Interdisciplinary Pivot",
+        "fit_score": 87,
+        "fit_rationale": "Translates raw operational data into structured business intelligence without requiring sales pitches.",
+        "majors": [
+          "Data Analytics",
+          "Management Information Systems",
+          "Applied Statistics"
+        ],
+        "daily_tasks": [
+          "Build automated data extract-transform-load (ETL) pipelines using Python and SQL",
+          "Cleanse and validate customer behavior datasets for quarterly operational reporting",
+          "Create interactive metric dashboards in tools like Metabase or Tableau"
+        ],
+        "course_challenges": "Applied Statistical Methods & Regression",
+        "reassurance": "Statistics at this level is practical and tool-driven; software handles the computations while you focus on interpreting what the data means.",
+        "trial_courses": [
+          {
+            "title": "SQL for Data Science",
+            "provider": "Coursera (UC Davis / Audit)",
+            "description": "Learn to query, filter, and summarize real-world datasets.",
+            "estimated_hours": 8
+          },
+          {
+            "title": "Python for Data Analysis Crash Course",
+            "provider": "Kaggle Learn",
+            "description": "Free, hands-on micro-course with interactive Jupyter notebooks in the browser.",
+            "estimated_hours": 4
+          }
+        ]
+      },
+      {
+        "id": "career_4",
+        "role_title": "Autonomous Systems Simulation Specialist",
+        "match_tier": "Moonshot Trajectory",
+        "fit_score": 83,
+        "fit_rationale": "High-impact emerging domain in robotics simulation, autonomous driving, and aerospace modeling.",
+        "majors": [
+          "Robotics Systems Technology",
+          "Simulation & Game Programming",
+          "Applied Computational Science"
+        ],
+        "daily_tasks": [
+          "Configure synthetic virtual test environments in simulation physics engines (e.g. Gazebo or Unreal)",
+          "Stress-test sensor perception algorithms under adverse weather simulations",
+          "Generate automated test telemetry reports for vehicle engineering teams"
+        ],
+        "course_challenges": "3D Kinematics and Simulation Mechanics",
+        "reassurance": "Modern simulation software allows you to visually inspect physics problems in 3D rather than wrestling with dry symbolic algebra.",
+        "trial_courses": [
+          {
+            "title": "Introduction to Robotics Simulation with ROS",
+            "provider": "ConstructSim / YouTube",
+            "description": "Beginner walkthrough of simulated robot movements in web-based Linux containers.",
+            "estimated_hours": 5
+          },
+          {
+            "title": "Physics for Game and Simulation Programmers",
+            "provider": "Khan Academy",
+            "description": "Intuitive visual physics and vector mathematics.",
+            "estimated_hours": 6
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "submission_id": "sub_morgan_003",
+    "summary": {
+      "student_archetype": "The Civic Creative Communicator",
+      "triage_narrative": "Morgan seeks creative autonomy and social purpose, with dread regarding exhaustive rote memorization. These pathways prioritize narrative design, community engagement, and digital media production where original expression and critical synthesis take precedence over memorizing formulas."
+    },
+    "careers": [
+      {
+        "id": "career_1",
+        "role_title": "Digital Civic Campaign Media Producer",
+        "match_tier": "Primary Direct Match",
+        "fit_score": 94,
+        "fit_rationale": "Directly empowers artistic storytelling in service of public interest and environmental initiatives.",
+        "majors": [
+          "Digital Media Studies",
+          "Strategic Communication",
+          "Civic & Community Media"
+        ],
+        "daily_tasks": [
+          "Produce short-form documentary videos highlighting grassroots environmental projects",
+          "Design accessible infographic series explaining complex legislative ballot initiatives",
+          "Coordinate community storytelling workshops for local nonprofit partners"
+        ],
+        "course_challenges": "Media Law and First Amendment Jurisprudence",
+        "reassurance": "Media law is taught through engaging historical storytelling and case debates, not dry flashcard memorization.",
+        "trial_courses": [
+          {
+            "title": "Storytelling for Social Change",
+            "provider": "edX / University of Michigan (Audit)",
+            "description": "Learn how narrative structure influences civic awareness and advocacy.",
+            "estimated_hours": 5
+          },
+          {
+            "title": "Video Editing and Visual Design with DaVinci Resolve",
+            "provider": "YouTube / Blackmagic Design",
+            "description": "Master free professional video editing software without subscription fees.",
+            "estimated_hours": 4
+          }
+        ]
+      },
+      {
+        "id": "career_2",
+        "role_title": "Interactive Exhibit & Experience Designer",
+        "match_tier": "High-Growth Pathway",
+        "fit_score": 90,
+        "fit_rationale": "Rapidly growing field in science centers, educational museums, and public cultural installations.",
+        "majors": [
+          "Exhibit Design",
+          "Interaction Design",
+          "Museum Studies"
+        ],
+        "daily_tasks": [
+          "Map visitor journeys through interactive public museum installations",
+          "Collaborate with curators to transform historical artifacts into touchable digital displays",
+          "Fabricate and test physical scale prototypes of gallery floor layouts"
+        ],
+        "course_challenges": "Spatial Acoustics and Lighting Fundamentals",
+        "reassurance": "Lighting and acoustics are evaluated via studio projects and spatial walk-throughs rather than memorizing textbooks.",
+        "trial_courses": [
+          {
+            "title": "Introduction to Interaction Design",
+            "provider": "Coursera / UC San Diego (Audit)",
+            "description": "Understand affordances, signifiers, and visitor experience flow.",
+            "estimated_hours": 6
+          },
+          {
+            "title": "Sketching User Experiences Workshop",
+            "provider": "YouTube / Interaction Design Foundation",
+            "description": "Rapid paper sketching techniques for spatial ideas.",
+            "estimated_hours": 3
+          }
+        ]
+      },
+      {
+        "id": "career_3",
+        "role_title": "Community Environmental Education Coordinator",
+        "match_tier": "Interdisciplinary Pivot",
+        "fit_score": 86,
+        "fit_rationale": "Combines outdoor ecology, education, and creative curriculum design with minimal laboratory rote science.",
+        "majors": [
+          "Environmental Studies",
+          "Outdoor Education",
+          "Public Humanities"
+        ],
+        "daily_tasks": [
+          "Lead guided interpretive ecology walks for K-12 school field trips in public parks",
+          "Develop hands-on outdoor science activity kits for community youth centers",
+          "Write grant proposals to secure funding for urban community pollinator gardens"
+        ],
+        "course_challenges": "Principles of Environmental Policy and Ecosystem Ecology",
+        "reassurance": "Field ecology emphasizes observational fieldwork and experiential journaling rather than molecular memorization.",
+        "trial_courses": [
+          {
+            "title": "The Science and Politics of the Climate Crisis",
+            "provider": "edX / MITx (Audit)",
+            "description": "Overview of community-level climate resilience projects.",
+            "estimated_hours": 6
+          },
+          {
+            "title": "Nature Journaling and Field Sketching",
+            "provider": "YouTube / John Muir Laws",
+            "description": "Learn to observe biodiversity through creative sketch notebooks.",
+            "estimated_hours": 2
+          }
+        ]
+      },
+      {
+        "id": "career_4",
+        "role_title": "Immersive Virtual Heritage Archivist",
+        "match_tier": "Moonshot Trajectory",
+        "fit_score": 82,
+        "fit_rationale": "Pioneering career digitizing vulnerable historical monuments and indigenous languages into VR/AR spaces.",
+        "majors": [
+          "Digital Humanities",
+          "Virtual Reality Heritage",
+          "Anthropology & Media"
+        ],
+        "daily_tasks": [
+          "Capture 3D photogrammetry scans of historic cultural heritage landmarks",
+          "Record oral histories in spatial audio with tribal elders and historians",
+          "Curate open-access WebXR virtual museum tours for global classrooms"
+        ],
+        "course_challenges": "3D Photogrammetry Reconstruction and Spatial Data Archiving",
+        "reassurance": "Digital humanities is deeply creative; modern software automates the mathematical polygon creation while you guide the historical story.",
+        "trial_courses": [
+          {
+            "title": "Digital Humanities in Practice",
+            "provider": "Coursera / University of London (Audit)",
+            "description": "Discover how technology revitalizes historical cultural archives.",
+            "estimated_hours": 6
+          },
+          {
+            "title": "Photogrammetry Basics with Smartphone and Meshroom",
+            "provider": "YouTube / Sketchfab Tutorials",
+            "description": "Turn everyday objects into 3D models using a phone camera and free open-source software.",
+            "estimated_hours": 3
+          }
+        ]
+      }
+    ]
+  }
+]
