@@ -17,7 +17,7 @@ export default function HomePage() {
           {/* Main Scholastic Heading */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-edu-slate-900 leading-[1.15]">
             College Major &amp; Career Triage for{' '}
-            <span className="text-edu-primary underline decoration-edu-interactive/30 decoration-wavy decoration-2">
+            <span className="text-edu-primary underline decoration-edu-blue-300 decoration-wavy decoration-2">
               Stressed Students
             </span>
           </h1>

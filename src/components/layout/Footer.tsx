@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer
       role="contentinfo"
-      className="border-t border-edu-slate-200 bg-edu-slate-100/80 py-8 text-sm text-edu-slate-600 mt-auto"
+      className="border-t border-edu-slate-200 bg-edu-slate-100 py-8 text-sm text-edu-slate-600 mt-auto"
     >
       <Container className="flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Reassurance & Brand Copy */}
