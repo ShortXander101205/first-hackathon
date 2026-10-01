@@ -41,8 +41,13 @@ export const triageSummarySchema = z.object({
 export const triageResultSchema = z.object({
   summary: triageSummarySchema,
   careers: z
-    .array(careerCardSchema)
-    .length(4, 'Must return exactly 4 career cards')
+    .tuple([
+      careerCardSchema,
+      careerCardSchema,
+      careerCardSchema,
+      careerCardSchema,
+    ])
+    .describe('Must return exactly 4 career cards')
     .refine((cards) => {
       const tiers = new Set(cards.map((c) => c.match_tier));
       return tiers.size === 4;

@@ -52,3 +52,12 @@ export interface CounselorReviewRow {
   flagged_friction: number; // 0 or 1 in SQLite
   updated_at: string;
 }
+
+export interface HealthCheckResponse {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  database: 'sqlite_connected' | 'sqlite_disconnected';
+  gemini_mode: 'live' | 'mock-fallback';
+  zero_cost_free_tier: boolean;
+  rate_limit_rpm_ceiling: number;
+  uptime_seconds: number;
+}

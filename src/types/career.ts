@@ -3,6 +3,9 @@
  * 4-Career Recommendation Dossier & Trial Course Contracts
  */
 
+import { IntakeAnswers, StudentInfo } from './intake';
+import { CounselorReview } from './counselor';
+
 export type MatchTier =
   | 'Primary Direct Match'
   | 'High-Growth Pathway'
@@ -56,4 +59,13 @@ export interface IntakeSubmissionResponse {
   summary: TriageSummary;
   careers: [CareerCard, CareerCard, CareerCard, CareerCard];
   meta: TriageGenerationMeta;
+}
+
+export interface SubmissionDetailResponse {
+  id: string;
+  created_at: string;
+  student: StudentInfo & { id: string };
+  intake_answers: IntakeAnswers;
+  recommendations: TriageResult;
+  review: CounselorReview;
 }

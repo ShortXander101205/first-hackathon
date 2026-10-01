@@ -27,6 +27,12 @@ export interface CounselorReviewUpdateRequest {
   counselor_name?: string;
 }
 
+export interface CounselorReviewUpdateResponse {
+  success: boolean;
+  submission_id: string;
+  updated_review: CounselorReview;
+}
+
 export interface CounselorDashboardItem {
   id: string;
   student_name: string;
