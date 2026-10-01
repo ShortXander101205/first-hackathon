@@ -1,0 +1,50 @@
+[
+  {
+    "id": "sub_alex_001",
+    "student_info": {
+      "full_name": "Alex Chen",
+      "email": "alex.chen@student.edu",
+      "grade_level": "high_school_senior",
+      "school_name": "Oakridge High School"
+    },
+    "answers": {
+      "q1_intellectual_energy": "BUILD_SYSTEMS",
+      "q2_work_context": "HEALTH_BIO",
+      "q3_academic_friction": "HARD_MATH",
+      "q4_horizon_priority": "PURPOSE_IMPACT"
+    },
+    "created_at": "2026-10-02T02:15:00Z"
+  },
+  {
+    "id": "sub_taylor_002",
+    "student_info": {
+      "full_name": "Taylor Ramirez",
+      "email": "taylor.r@westview.edu",
+      "grade_level": "high_school_junior",
+      "school_name": "Westview High School"
+    },
+    "answers": {
+      "q1_intellectual_energy": "ANALYZE_PATTERNS",
+      "q2_work_context": "TECH_INNOVATION",
+      "q3_academic_friction": "PUBLIC_SPEAKING",
+      "q4_horizon_priority": "HIGH_EARNING_SECURITY"
+    },
+    "created_at": "2026-10-02T02:20:00Z"
+  },
+  {
+    "id": "sub_morgan_003",
+    "student_info": {
+      "full_name": "Morgan Davis",
+      "email": "mdavis@statecollege.edu",
+      "grade_level": "college_sophomore",
+      "school_name": "Metro State Community College"
+    },
+    "answers": {
+      "q1_intellectual_energy": "CREATE_EXPRESS",
+      "q2_work_context": "SOCIAL_CIVIC",
+      "q3_academic_friction": "HEAVY_MEMORIZATION",
+      "q4_horizon_priority": "CREATIVE_AUTONOMY"
+    },
+    "created_at": "2026-10-02T02:28:00Z"
+  }
+]
