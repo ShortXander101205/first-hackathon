@@ -10,6 +10,8 @@ export interface QuestionTwoSubjectViewProps {
   onSelectSubject: (subjectId: string) => void;
   noteText: string;
   onChangeNoteText: (text: string) => void;
+  subjectErrorMessage?: string;
+  rationaleErrorMessage?: string;
   className?: string;
 }
 
@@ -18,10 +20,13 @@ export function QuestionTwoSubjectView({
   onSelectSubject,
   noteText,
   onChangeNoteText,
+  subjectErrorMessage,
+  rationaleErrorMessage,
   className,
 }: QuestionTwoSubjectViewProps) {
   const qCopy = INTAKE_COPY.questionTwo;
-  const currentLength = noteText.length;
+  const safeNoteText = typeof noteText === 'string' ? noteText : '';
+  const currentLength = safeNoteText.length;
   const maxLimit = qCopy.characterMaxLimit;
   const isNearLimit = currentLength >= 140;
   const isAtLimit = currentLength >= maxLimit;
@@ -40,6 +45,19 @@ export function QuestionTwoSubjectView({
           {qCopy.helperText}
         </p>
       </legend>
+
+      {/* Subject Error Alert if present */}
+      {subjectErrorMessage && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="flex items-center gap-2 p-3 rounded-xl bg-friction-50 border border-friction-200 text-xs sm:text-sm text-friction-700 font-medium animate-fadeIn"
+        >
+          <Icons.frictionAlert className="w-4 h-4 text-friction-500 shrink-0" aria-hidden="true" />
+          <span>{subjectErrorMessage}</span>
+        </div>
+      )}
+
 
       {/* Primary Subject Chips Section */}
       <div className="space-y-3 pt-1">
@@ -106,19 +124,38 @@ export function QuestionTwoSubjectView({
 
         <textarea
           id="q2-friction-notes"
-          value={noteText}
+          value={safeNoteText}
           onChange={(e) => onChangeNoteText(e.target.value.slice(0, maxLimit))}
+          onInput={(e) => onChangeNoteText((e.target as HTMLTextAreaElement).value.slice(0, maxLimit))}
           maxLength={maxLimit}
           rows={3}
+          autoComplete="off"
+          spellCheck="false"
+          data-lpignore="true"
           placeholder={qCopy.textAreaPlaceholder}
+          aria-invalid={rationaleErrorMessage ? 'true' : undefined}
+          aria-describedby={rationaleErrorMessage ? 'q2-rationale-error' : undefined}
           className={cn(
             'w-full p-3.5 rounded-xl border-2 text-sm leading-relaxed transition-all duration-200',
             'placeholder:text-edu-slate-400 bg-white text-edu-slate-900',
             'focus:outline-none focus:border-edu-interactive focus:ring-2 focus:ring-edu-interactive/30',
-            isNearLimit && 'border-friction-500/80',
-            !isNearLimit && 'border-edu-slate-200'
+            (isNearLimit || rationaleErrorMessage) && 'border-friction-500/80',
+            !isNearLimit && !rationaleErrorMessage && 'border-edu-slate-200'
           )}
         />
+
+        {/* Rationale Error Alert if present */}
+        {rationaleErrorMessage && (
+          <p
+            id="q2-rationale-error"
+            role="alert"
+            aria-live="polite"
+            className="text-xs text-friction-700 flex items-center gap-1.5 animate-fadeIn font-medium"
+          >
+            <Icons.frictionAlert className="w-3.5 h-3.5 text-friction-500 shrink-0" aria-hidden="true" />
+            <span>{rationaleErrorMessage}</span>
+          </p>
+        )}
 
         {/* Discrete Milestone Live Announcement for Screen Readers */}
         <div className="sr-only" role="status" aria-live="polite">
@@ -130,7 +167,7 @@ export function QuestionTwoSubjectView({
         </div>
 
         {/* Visual Near-Limit Warning Hint */}
-        {isNearLimit && (
+        {isNearLimit && !rationaleErrorMessage && (
           <p className="text-xs text-friction-700 flex items-center gap-1.5 animate-fadeIn">
             <Icons.frictionAlert className="w-3.5 h-3.5 text-friction-500 shrink-0" aria-hidden="true" />
             <span>{qCopy.characterLimitWarning}</span>
@@ -140,3 +177,4 @@ export function QuestionTwoSubjectView({
     </fieldset>
   );
 }
+

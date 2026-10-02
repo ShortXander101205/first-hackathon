@@ -123,7 +123,7 @@ export const INTAKE_COPY = {
         badge: 'Civics & Society',
       },
     ],
-    textAreaLabel: 'What makes you curious or nervous about this area? (Optional)',
+    textAreaLabel: 'What makes you curious or nervous about this area? (A sentence or two)',
     textAreaPlaceholder:
       'e.g., I love laboratory experiments, but advanced theoretical calculus stresses me out...',
     characterCounter: (current: number, max: number) => `${current}/${max} characters`,
@@ -190,6 +190,42 @@ export const INTAKE_COPY = {
     disabledNotice: 'Select an option above to continue',
   },
 
+  // Validation Prompts (Calm, non-judgmental tone)
+  validation: {
+    step1Required: 'Please select 1 or 2 tasks that feel natural to you.',
+    step2SubjectRequired: 'Please choose a subject area that interests you.',
+    step2RationaleRequired: 'Please share a brief thought (at least 1 character) about what excites or worries you.',
+    step2RationaleMaxLength: 'Please keep your thought within 150 characters.',
+    step3EnvironmentRequired: 'Please choose which day-to-day setting sounds best for your energy.',
+    step4AmbitionRequired: 'Please choose which post-college timeline feels right today.',
+    navigationBlocked: 'Please complete the question above before moving forward. Take your time.',
+  },
+
+  // Reset Dialog Copy (Calm, non-punitive tone)
+  resetDialog: {
+    triggerButton: 'Start Over',
+    counselorTriggerButton: 'Reset Intake Data',
+    title: 'Start fresh with a clean slate?',
+    description:
+      'This will clear all your answers and return you to Question 1. You can take as much time as you need.',
+    confirm: 'Yes, start over',
+    cancel: 'Keep my answers',
+    ariaLabel: 'Reset intake questionnaire confirmation',
+  },
+
+  // Student Nickname & Personalization Copy
+  nicknamePrompt: {
+    label: 'First name or nickname (optional)',
+    placeholder: 'e.g., Alex',
+    helperText: 'Used only to personalize your career pathways. You can leave this blank if you prefer.',
+  },
+
+  // Storage Notices & Edge Case Guidance
+  storageNotice: {
+    inMemoryFallback:
+      'Note: Browser session storage is disabled. Your answers will be saved in memory for this session only.',
+  },
+
   // Accessibility & ARIA Announcements
   a11y: {
     wizardLandmark: 'College Major and Career Intake Wizard',
@@ -200,6 +236,8 @@ export const INTAKE_COPY = {
     characterMilestoneWarning: (remaining: number) => `${remaining} characters remaining`,
     characterLimitReached: 'Maximum 150 character limit reached',
     taskMaxReachedHint: 'You have selected 2 tasks. Deselect one to choose this instead.',
+    resetCompleted: 'Intake answers have been reset to Question 1.',
+    navigationBlocked: 'Please complete the current question before moving forward.',
     selected: 'Selected',
     unselected: 'Not selected',
   },
@@ -210,7 +248,8 @@ export const INTAKE_COPY = {
     headingHighlight: 'Stressed Students',
     counselorLink: 'Counselor Dashboard',
     quickSwitcherLabel: 'Jump to question view:',
-    summaryTitle: 'Alex Persona Preview Summary',
+    summaryTitle: (nickname?: string) =>
+      nickname?.trim() ? `${nickname.trim()}'s Pathway Summary` : 'Your Pathway Summary',
     summaryEnergyLabel: 'Q1 Energy:',
     summarySubjectLabel: 'Q2 Subject:',
     summarySettingLabel: 'Q3 Setting:',
@@ -220,3 +259,4 @@ export const INTAKE_COPY = {
 } as const;
 
 export type IntakeCopyType = typeof INTAKE_COPY;
+

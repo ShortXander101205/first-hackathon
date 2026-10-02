@@ -10,12 +10,14 @@ export type EnvironmentChoice = 'REMOTE_DESK' | 'ACTIVE_FIELD_LAB';
 export interface QuestionThreeEnvironmentViewProps {
   selectedEnvironment: EnvironmentChoice | null;
   onSelectEnvironment: (env: EnvironmentChoice) => void;
+  errorMessage?: string;
   className?: string;
 }
 
 export function QuestionThreeEnvironmentView({
   selectedEnvironment,
   onSelectEnvironment,
+  errorMessage,
   className,
 }: QuestionThreeEnvironmentViewProps) {
   const qCopy = INTAKE_COPY.questionThree;
@@ -35,8 +37,21 @@ export function QuestionThreeEnvironmentView({
         </p>
       </legend>
 
+      {/* Inline Validation Error Alert if present */}
+      {errorMessage && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="flex items-center gap-2 p-3 rounded-xl bg-friction-50 border border-friction-200 text-xs sm:text-sm text-friction-700 font-medium animate-fadeIn"
+        >
+          <Icons.frictionAlert className="w-4 h-4 text-friction-500 shrink-0" aria-hidden="true" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
       {/* Binary Toggle Cards (Mobile-First 1-column expanding to 2-column) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
         {qCopy.options.map((option) => {
           const isSelected = selectedEnvironment === option.id;
           const isRemote = option.id === 'REMOTE_DESK';
