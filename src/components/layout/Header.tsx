@@ -13,35 +13,35 @@ export function Header() {
         {/* Brand & Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 text-edu-primary hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-edu-interactive rounded-md px-1"
+          className="flex items-center gap-2 sm:gap-2.5 text-edu-primary hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-edu-interactive rounded-md px-1 shrink-0"
         >
-          <div className="w-9 h-9 rounded-lg bg-edu-primary flex items-center justify-center text-white shadow-sm">
-            <Icons.logo className="w-5 h-5 text-white" strokeWidth={2} aria-hidden="true" />
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-edu-primary flex items-center justify-center text-white shadow-sm shrink-0">
+            <Icons.logo className="w-4 h-4 sm:w-5 sm:h-5 text-white" strokeWidth={2} aria-hidden="true" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg leading-tight tracking-tight text-edu-slate-900">
+            <span className="font-bold text-base sm:text-lg leading-tight tracking-tight text-edu-slate-900">
               Pathway<span className="text-edu-interactive">AI</span>
             </span>
-            <span className="text-[11px] font-medium text-edu-slate-500 leading-none">
+            <span className="hidden sm:inline text-[11px] font-medium text-edu-slate-500 leading-none">
               Major & Career Triage
             </span>
           </div>
         </Link>
 
         {/* Primary Navigation & Rate Guard Pill */}
-        <div className="flex items-center gap-3 sm:gap-6">
-          <nav aria-label="Main Navigation" className="flex items-center gap-1 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-6">
+          <nav aria-label="Main Navigation" className="flex items-center gap-1 sm:gap-2">
             <Link
               href="/"
-              className="px-3 py-1.5 rounded-md text-sm font-medium text-edu-slate-700 hover:text-edu-primary hover:bg-edu-slate-100 transition-colors"
+              className="px-2.5 py-1.5 sm:px-3 rounded-md text-xs sm:text-sm font-medium text-edu-slate-700 hover:text-edu-primary hover:bg-edu-slate-100 transition-colors whitespace-nowrap"
             >
-              Student Triage
+              <span className="hidden sm:inline">Student </span>Triage
             </Link>
             <Link
               href="/counselor"
-              className="px-3 py-1.5 rounded-md text-sm font-medium text-edu-slate-700 hover:text-edu-primary hover:bg-edu-slate-100 transition-colors"
+              className="px-2.5 py-1.5 sm:px-3 rounded-md text-xs sm:text-sm font-medium text-edu-slate-700 hover:text-edu-primary hover:bg-edu-slate-100 transition-colors whitespace-nowrap"
             >
-              Counselor Dashboard
+              <span className="hidden sm:inline">Counselor </span>Dashboard
             </Link>
           </nav>
 

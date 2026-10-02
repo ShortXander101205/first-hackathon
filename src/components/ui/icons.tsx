@@ -16,6 +16,11 @@ import {
   Filter,
   Users,
   ChevronRight,
+  ArrowLeft,
+  Check,
+  Laptop,
+  FlaskConical,
+  Briefcase,
   type LucideProps,
 } from 'lucide-react';
 
@@ -42,7 +47,14 @@ export const Icons = {
   duration: Clock,
   externalLink: ExternalLink,
   arrowRight: ArrowRight,
+  arrowLeft: ArrowLeft,
   chevronRight: ChevronRight,
+  check: Check,
+
+  // Question & Setting Icons
+  laptop: Laptop,
+  flask: FlaskConical,
+  briefcase: Briefcase,
 
   // Counselor Dashboard
   shield: ShieldCheck,
