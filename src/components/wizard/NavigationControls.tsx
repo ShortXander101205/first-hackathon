@@ -81,6 +81,7 @@ export function NavigationControls({
         <button
           type="button"
           onClick={handleNextClick}
+          disabled={isNextDisabled}
           aria-disabled={isNextDisabled ? 'true' : undefined}
           aria-describedby={isNextDisabled ? 'next-disabled-notice' : undefined}
           aria-label={isLastStep ? navCopy.reviewAriaLabel : navCopy.nextAriaLabel}

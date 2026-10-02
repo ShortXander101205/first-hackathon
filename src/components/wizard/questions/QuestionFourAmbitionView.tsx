@@ -10,12 +10,14 @@ export type AmbitionChoice = 'WORKFORCE_DIRECT' | 'GRADUATE_STUDY';
 export interface QuestionFourAmbitionViewProps {
   selectedAmbition: AmbitionChoice | null;
   onSelectAmbition: (ambition: AmbitionChoice) => void;
+  errorMessage?: string;
   className?: string;
 }
 
 export function QuestionFourAmbitionView({
   selectedAmbition,
   onSelectAmbition,
+  errorMessage,
   className,
 }: QuestionFourAmbitionViewProps) {
   const qCopy = INTAKE_COPY.questionFour;
@@ -35,8 +37,21 @@ export function QuestionFourAmbitionView({
         </p>
       </legend>
 
+      {/* Inline Validation Error Alert if present */}
+      {errorMessage && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="flex items-center gap-2 p-3 rounded-xl bg-friction-50 border border-friction-200 text-xs sm:text-sm text-friction-700 font-medium animate-fadeIn"
+        >
+          <Icons.frictionAlert className="w-4 h-4 text-friction-500 shrink-0" aria-hidden="true" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
       {/* Binary Toggle Cards (Mobile-First 1-column expanding to 2-column) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
         {qCopy.options.map((option) => {
           const isSelected = selectedAmbition === option.id;
           const isWorkforce = option.id === 'WORKFORCE_DIRECT';

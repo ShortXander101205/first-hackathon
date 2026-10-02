@@ -80,3 +80,29 @@ export const intakeSubmissionRequestSchema = z.object({
 export type StudentInfoInput = z.infer<typeof studentInfoSchema>;
 export type IntakeAnswersInput = z.infer<typeof intakeAnswersSchema>;
 export type IntakeSubmissionRequestInput = z.infer<typeof intakeSubmissionRequestSchema>;
+
+// ==========================================
+// Feature 4: Client State & Storage Schemas
+// ==========================================
+
+export const environmentChoiceSchema = z.enum(['REMOTE_DESK', 'ACTIVE_FIELD_LAB']);
+export const ambitionChoiceSchema = z.enum(['WORKFORCE_DIRECT', 'GRADUATE_STUDY']);
+
+export const intakeAnswersStateSchema = z.object({
+  q1TaskIds: z.array(z.string()).max(2).default([]),
+  q2SubjectId: z.string().nullable().default(null),
+  q2Rationale: z.string().max(150).default(''),
+  q3Environment: environmentChoiceSchema.nullable().default(null),
+  q4Ambition: ambitionChoiceSchema.nullable().default(null),
+});
+
+export const intakeStoredStateSchema = z.object({
+  version: z.number(),
+  currentStep: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+  studentNickname: z.string().max(50).default(''),
+  answers: intakeAnswersStateSchema,
+  timestamp: z.number().optional(),
+});
+
+export type IntakeStoredStateInput = z.infer<typeof intakeStoredStateSchema>;
+

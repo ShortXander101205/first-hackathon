@@ -8,12 +8,14 @@ import { cn } from '@/lib/utils';
 export interface QuestionOneTaskViewProps {
   selectedTaskIds: string[];
   onToggleTask: (taskId: string) => void;
+  errorMessage?: string;
   className?: string;
 }
 
 export function QuestionOneTaskView({
   selectedTaskIds,
   onToggleTask,
+  errorMessage,
   className,
 }: QuestionOneTaskViewProps) {
   const qCopy = INTAKE_COPY.questionOne;
@@ -47,8 +49,21 @@ export function QuestionOneTaskView({
         </p>
       </legend>
 
+      {/* Inline Validation Error Alert if present */}
+      {errorMessage && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="flex items-center gap-2 p-3 rounded-xl bg-friction-50 border border-friction-200 text-xs sm:text-sm text-friction-700 font-medium animate-fadeIn"
+        >
+          <Icons.frictionAlert className="w-4 h-4 text-friction-500 shrink-0" aria-hidden="true" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
       {/* Selection Status Badge */}
       <div className="flex items-center justify-between text-xs font-medium">
+
         <span
           className={cn(
             'inline-flex items-center gap-1.5 px-3 py-1 rounded-full border transition-colors',

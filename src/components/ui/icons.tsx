@@ -21,8 +21,10 @@ import {
   Laptop,
   FlaskConical,
   Briefcase,
+  RotateCcw,
   type LucideProps,
 } from 'lucide-react';
+
 
 export interface IconProps extends LucideProps {
   className?: string;
@@ -55,6 +57,8 @@ export const Icons = {
   laptop: Laptop,
   flask: FlaskConical,
   briefcase: Briefcase,
+  reset: RotateCcw,
+
 
   // Counselor Dashboard
   shield: ShieldCheck,
