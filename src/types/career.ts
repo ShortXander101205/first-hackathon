@@ -1,10 +1,9 @@
 /**
- * PathwayAI: College Major & Career Triage MVP
- * 4-Career Recommendation Dossier & Trial Course Contracts
+ * PathLess: College Major and Career Discovery Guide v2
+ * Recommendation Results & Career Pathway Contracts
  */
 
-import { IntakeAnswers, StudentInfo } from './intake';
-import { CounselorReview } from './counselor';
+import { IntakeAnswers, StudentProfile } from './intake';
 
 export type MatchTier =
   | 'Primary Direct Match'
@@ -16,6 +15,7 @@ export interface TrialCourse {
   title: string;
   provider: string;
   description: string;
+  estimatedHours?: number;
   estimated_hours: number;
 }
 
@@ -24,55 +24,70 @@ export interface DayInTheLife {
   misconceptions: string[];
 }
 
-export interface CareerCard {
+export interface PathwayCard {
   id: string;
   role_title: string;
+  roleTitle?: string;
   match_tier: MatchTier;
+  matchTier?: MatchTier;
   fit_score: number;
+  fitScore?: number;
   fit_rationale: string;
+  fitRationale?: string;
   majors: string[];
   minors?: string[];
   daily_tasks?: string[];
+  dailyTasks?: string[];
   day_in_the_life?: DayInTheLife;
+  misconceptions?: string[];
   course_challenges: string;
+  courseChallenges?: string;
   reassurance: string;
   trial_courses: [TrialCourse, TrialCourse];
+  trialCourses?: [TrialCourse, TrialCourse];
 }
 
-export interface TriageSummary {
-  student_archetype: string;
-  triage_narrative: string;
+export type CareerCard = PathwayCard;
+
+export interface GuideSummary {
+  student_archetype?: string;
+  studentArchetype?: string;
+  narrativeSummary?: string;
+  narrative_summary?: string;
 }
 
-export interface TriageResult {
-  summary: TriageSummary;
-  careers: [CareerCard, CareerCard, CareerCard, CareerCard];
-}
-
-export interface TriageGenerationMeta {
+export interface GuideMeta {
   engine: string;
-  generation_latency_ms: number;
-  fallback_used: boolean;
+  generation_latency_ms?: number;
+  generationLatencyMs?: number;
+  fallback_used?: boolean;
+  fallbackUsed?: boolean;
 }
 
-export interface IntakeSubmissionResponse {
+export interface GuideResult {
   success: boolean;
-  submission_id: string;
-  student: {
-    id: string;
-    full_name: string;
-    grade_level: string;
-  };
-  summary: TriageSummary;
-  careers: [CareerCard, CareerCard, CareerCard, CareerCard];
-  meta: TriageGenerationMeta;
+  submission_id?: string;
+  submissionId?: string;
+  studentProfile?: StudentProfile;
+  summary: GuideSummary;
+  pathways: PathwayCard[];
+  meta: GuideMeta;
+}
+
+export interface AdvisorReview {
+  id: string;
+  submissionId: string;
+  advisorName: string;
+  status: 'PENDING' | 'REVIEWED' | 'DISCUSSED';
+  notes: string;
+  updatedAt: string;
 }
 
 export interface SubmissionDetailResponse {
   id: string;
   created_at: string;
-  student: StudentInfo & { id: string };
+  student: StudentProfile & { id: string };
   intake_answers: IntakeAnswers;
-  recommendations: TriageResult;
-  review: CounselorReview;
+  recommendations: GuideResult;
+  review?: AdvisorReview;
 }

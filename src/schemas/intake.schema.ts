@@ -1,108 +1,63 @@
 /**
- * PathwayAI: Student Intake Zod Validation Schemas
+ * PathLess: Student Intake Zod Validation Schemas
  */
 
 import { z } from 'zod';
 
 export const gradeLevelSchema = z.enum([
-  'high_school_junior',
-  'high_school_senior',
+  'grade_10',
+  'grade_11',
+  'grade_12',
   'college_freshman',
   'college_sophomore',
+  'high_school_junior',
+  'high_school_senior',
 ]);
 
-export const intellectualEnergySchema = z.enum([
-  'BUILD_SYSTEMS',
-  'ANALYZE_PATTERNS',
-  'HELP_HUMANS',
-  'CREATE_EXPRESS',
-  'LEAD_ORGANIZING',
-]);
-
-export const workContextSchema = z.enum([
-  'TECH_INNOVATION',
-  'HEALTH_BIO',
-  'BUSINESS_FINANCE',
-  'SOCIAL_CIVIC',
-  'MEDIA_CULTURE',
-]);
-
-export const academicFrictionSchema = z.enum([
-  'HARD_MATH',
-  'PUBLIC_SPEAKING',
-  'HEAVY_MEMORIZATION',
-  'ABSTRACT_WRITING',
-  'ISOLATED_DESKWORK',
-]);
-
-export const horizonPrioritySchema = z.enum([
-  'HIGH_EARNING_SECURITY',
-  'PURPOSE_IMPACT',
-  'CREATIVE_AUTONOMY',
-  'INTELLECTUAL_DEPTH',
-  'WORK_LIFE_BALANCE',
-]);
-
-export const studentInfoSchema = z.object({
-  full_name: z
-    .string()
-    .trim()
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name cannot exceed 100 characters')
-    .regex(/^[^<>]*$/, 'Name contains invalid characters'),
-  email: z
-    .string()
-    .trim()
-    .email('Please enter a valid email address')
-    .optional()
-    .or(z.literal('')),
-  grade_level: gradeLevelSchema,
-  school_name: z
-    .string()
-    .trim()
-    .max(100, 'School name cannot exceed 100 characters')
-    .optional()
-    .or(z.literal('')),
+export const studentProfileSchema = z.object({
+  fullName: z.string().trim().min(1).max(100),
+  gradeLevel: gradeLevelSchema,
+  studentId: z.string().trim().max(64).optional().or(z.literal('')),
 });
 
-export const intakeAnswersSchema = z.object({
-  q1_intellectual_energy: intellectualEnergySchema,
-  q2_work_context: workContextSchema,
-  q3_academic_friction: academicFrictionSchema,
-  q4_horizon_priority: horizonPrioritySchema,
-});
+export const environmentChoiceSchema = z.enum([
+  'REMOTE_DESK',
+  'ACTIVE_FIELD_LAB',
+  'REMOTE_DIGITAL',
+  'COLLABORATIVE_STUDIO',
+  'HEALTHCARE_COMMUNITY',
+]);
 
-export const intakeSubmissionRequestSchema = z.object({
-  student_info: studentInfoSchema,
-  answers: intakeAnswersSchema,
-});
-
-export type StudentInfoInput = z.infer<typeof studentInfoSchema>;
-export type IntakeAnswersInput = z.infer<typeof intakeAnswersSchema>;
-export type IntakeSubmissionRequestInput = z.infer<typeof intakeSubmissionRequestSchema>;
-
-// ==========================================
-// Feature 4: Client State & Storage Schemas
-// ==========================================
-
-export const environmentChoiceSchema = z.enum(['REMOTE_DESK', 'ACTIVE_FIELD_LAB']);
-export const ambitionChoiceSchema = z.enum(['WORKFORCE_DIRECT', 'GRADUATE_STUDY']);
+export const ambitionChoiceSchema = z.enum([
+  'WORKFORCE_DIRECT',
+  'GRADUATE_STUDY',
+  'FLEXIBLE_ENTREPRENEURSHIP',
+]);
 
 export const intakeAnswersStateSchema = z.object({
   q1TaskIds: z.array(z.string()).max(2).default([]),
   q2SubjectId: z.string().nullable().default(null),
-  q2Rationale: z.string().max(150).default(''),
+  q2Rationale: z.string().max(200).default(''),
   q3Environment: environmentChoiceSchema.nullable().default(null),
   q4Ambition: ambitionChoiceSchema.nullable().default(null),
+  q3AcademicHesitation: z.string().max(200).optional(),
+  q4EnvironmentChoice: z.string().optional(),
+  q5ProblemSolving: z.string().optional(),
+  q6SocialEnergy: z.string().optional(),
+  q7StructureTolerance: z.string().optional(),
+  q8AcademicFriction: z.string().optional(),
+  q9HorizonPriority: z.string().optional(),
+  q10PostCollegeAmbition: z.string().optional(),
 });
 
 export const intakeStoredStateSchema = z.object({
   version: z.number(),
-  currentStep: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+  currentStep: z.number().min(0).max(10),
+  profile: studentProfileSchema.optional(),
   studentNickname: z.string().max(50).default(''),
-  answers: intakeAnswersStateSchema,
+  answers: intakeAnswersStateSchema.passthrough(),
   timestamp: z.number().optional(),
 });
 
+export type StudentProfileInput = z.infer<typeof studentProfileSchema>;
 export type IntakeStoredStateInput = z.infer<typeof intakeStoredStateSchema>;
-

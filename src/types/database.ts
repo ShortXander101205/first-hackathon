@@ -1,5 +1,5 @@
 /**
- * PathwayAI: College Major & Career Triage MVP
+ * PathLess: College Major & Career Guide MVP
  * SQLite Database Entity & Row TypeScript Contracts
  */
 
@@ -10,7 +10,8 @@ import {
   IntellectualEnergy,
   WorkContext,
 } from './intake';
-import { CounselorStatus } from './counselor';
+export type AdvisorStatus = 'PENDING' | 'REVIEWED' | 'DISCUSSED';
+export type CounselorStatus = AdvisorStatus;
 
 export interface StudentRow {
   id: string;

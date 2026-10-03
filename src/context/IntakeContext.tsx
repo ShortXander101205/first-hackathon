@@ -5,10 +5,22 @@ import type {
   IntakeState,
   IntakeAction,
   IntakeAnswersState,
+  IntakeAnswers,
   IntakeContextValue,
+  StudentProfile,
+  GradeLevel,
+  WorkEnvironment,
+  ProblemSolvingStyle,
+  SocialEnergyStyle,
+  StructureTolerance,
+  FrictionTolerance,
+  HorizonPriority,
+  AmbitionTimeline,
   EnvironmentChoice,
   AmbitionChoice,
+  WizardStep,
 } from '@/types/intake';
+import { GUIDE_COPY } from '@/content/guideCopy';
 import { INTAKE_COPY } from '@/constants/intakeCopy';
 import { useWizardSession } from '@/hooks/useWizardSession';
 
@@ -24,10 +36,20 @@ export const INITIAL_INTAKE_ANSWERS: IntakeAnswersState = {
   q4Ambition: null,
 };
 
+export const INITIAL_STUDENT_PROFILE: StudentProfile = {
+  fullName: '',
+  gradeLevel: 'grade_10',
+  studentId: '',
+};
+
 export const INITIAL_INTAKE_STATE: IntakeState = {
-  currentStep: 1,
+  currentStep: 0,
+  profile: INITIAL_STUDENT_PROFILE,
   studentNickname: '',
-  answers: INITIAL_INTAKE_ANSWERS,
+  answers: {
+    ...INITIAL_INTAKE_ANSWERS,
+    q3AcademicHesitation: '',
+  },
   validationErrors: {},
   isResetDialogOpen: false,
   isCompleted: false,
@@ -38,10 +60,32 @@ export const INITIAL_INTAKE_STATE: IntakeState = {
 // Pure Validation Engine
 // ==========================================
 
-export function isStep1Valid(answers: IntakeAnswersState): boolean {
+export function isStep0Valid(profile?: Partial<StudentProfile> | null): boolean {
+  if (!profile) return false;
+  const hasName =
+    typeof profile.fullName === 'string' &&
+    profile.fullName.trim().length >= 1 &&
+    profile.fullName.length <= 100;
+  const validGrades: GradeLevel[] = [
+    'grade_10',
+    'grade_11',
+    'grade_12',
+    'college_freshman',
+    'college_sophomore',
+    'high_school_junior',
+    'high_school_senior',
+  ];
+  const hasGrade = Boolean(profile.gradeLevel && validGrades.includes(profile.gradeLevel));
+  const hasValidId =
+    !profile.studentId ||
+    (typeof profile.studentId === 'string' && profile.studentId.trim().length <= 64);
+  return hasName && hasGrade && hasValidId;
+}
+
+export function isStep1Valid(answers: any): boolean {
   if (!answers?.q1TaskIds || !Array.isArray(answers.q1TaskIds)) return false;
   const validTasks = answers.q1TaskIds.filter(
-    (id) => typeof id === 'string' && id.trim().length > 0
+    (id: any) => typeof id === 'string' && id.trim().length > 0
   );
   const uniqueTasks = new Set(validTasks);
   return (
@@ -51,31 +95,137 @@ export function isStep1Valid(answers: IntakeAnswersState): boolean {
   );
 }
 
-export function isStep2Valid(answers: IntakeAnswersState): boolean {
+export function isStep2Valid(answers: any): boolean {
   if (!answers) return false;
   const hasSubject = Boolean(
     answers.q2SubjectId &&
       typeof answers.q2SubjectId === 'string' &&
       answers.q2SubjectId.trim() !== ''
   );
-  const rawRationale = typeof answers.q2Rationale === 'string' ? answers.q2Rationale : '';
-  const trimmedRationale = rawRationale.trim();
-  const hasValidRationale = trimmedRationale.length >= 1 && rawRationale.length <= 150;
-  return hasSubject && hasValidRationale;
+  if (!hasSubject) return false;
+
+  // If a legacy rationale is provided, it cannot exceed 150 chars
+  if (answers.q2Rationale && answers.q2Rationale.length > 150) {
+    return false;
+  }
+
+  // In legacy v1 (no v2 hesitation field), Step 2 required both subject and 1-150 char rationale
+  if (answers.q3AcademicHesitation === undefined && answers.q2Rationale !== undefined) {
+    const rawRationale = typeof answers.q2Rationale === 'string' ? answers.q2Rationale : '';
+    const trimmed = rawRationale.trim();
+    return trimmed.length >= 1 && rawRationale.length <= 150;
+  }
+
+  // In v2, Step 2 solely evaluates primary academic subject curiosity
+  return true;
 }
 
-export function isStep3Valid(answers: IntakeAnswersState): boolean {
+export function isStep3Valid(answers: any): boolean {
   if (!answers) return false;
-  return answers.q3Environment === 'REMOTE_DESK' || answers.q3Environment === 'ACTIVE_FIELD_LAB';
+  // If v2 hesitation text is present
+  if (typeof answers.q3AcademicHesitation === 'string') {
+    const trimmed = answers.q3AcademicHesitation.trim();
+    if (trimmed.length >= 1 && answers.q3AcademicHesitation.length <= 200) {
+      return true;
+    }
+  }
+  // If v1 environment is present
+  if (answers.q3Environment === 'REMOTE_DESK' || answers.q3Environment === 'ACTIVE_FIELD_LAB') {
+    return true;
+  }
+  return false;
 }
 
-export function isStep4Valid(answers: IntakeAnswersState): boolean {
+export function isStep4Valid(answers: any): boolean {
   if (!answers) return false;
-  return answers.q4Ambition === 'WORKFORCE_DIRECT' || answers.q4Ambition === 'GRADUATE_STUDY';
+  // v2 environment
+  const validEnvs: WorkEnvironment[] = [
+    'REMOTE_DIGITAL',
+    'COLLABORATIVE_STUDIO',
+    'ACTIVE_FIELD_LAB',
+    'HEALTHCARE_COMMUNITY',
+  ];
+  if (answers.q4Environment && validEnvs.includes(answers.q4Environment)) {
+    return true;
+  }
+  // v1 ambition
+  if (answers.q4Ambition === 'WORKFORCE_DIRECT' || answers.q4Ambition === 'GRADUATE_STUDY') {
+    return true;
+  }
+  return false;
 }
 
-export function validateStep(step: 1 | 2 | 3 | 4, answers: IntakeAnswersState): boolean {
+export function isStep5Valid(answers: any): boolean {
+  const valid: ProblemSolvingStyle[] = [
+    'SYSTEMATIC_LOGIC',
+    'CREATIVE_EXPLORATION',
+    'PEOPLE_RELATIONAL',
+    'PRACTICAL_HANDS_ON',
+  ];
+  return Boolean(answers?.q5ProblemSolving && valid.includes(answers.q5ProblemSolving));
+}
+
+export function isStep6Valid(answers: any): boolean {
+  const valid: SocialEnergyStyle[] = [
+    'INDEPENDENT_DEEP_FOCUS',
+    'BALANCED_TEAM',
+    'HIGH_CONTACT_PEOPLE',
+  ];
+  return Boolean(answers?.q6SocialEnergy && valid.includes(answers.q6SocialEnergy));
+}
+
+export function isStep7Valid(answers: any): boolean {
+  const valid: StructureTolerance[] = [
+    'HIGH_STRUCTURE_CLEAR_RULES',
+    'BALANCED_MILESTONES',
+    'HIGH_AUTONOMY_AMBIGUITY',
+  ];
+  return Boolean(answers?.q7StructureTolerance && valid.includes(answers.q7StructureTolerance));
+}
+
+export function isStep8Valid(answers: any): boolean {
+  const valid: FrictionTolerance[] = [
+    'ADVANCED_MATH',
+    'PUBLIC_SPEAKING',
+    'HEAVY_MEMORIZATION',
+    'INTENSIVE_WRITING',
+    'ISOLATED_THEORY',
+  ];
+  return Boolean(answers?.q8AcademicFriction && valid.includes(answers.q8AcademicFriction));
+}
+
+export function isStep9Valid(answers: any): boolean {
+  const valid: HorizonPriority[] = [
+    'FINANCIAL_STABILITY',
+    'PURPOSE_IMPACT',
+    'CREATIVE_AUTONOMY',
+    'INTELLECTUAL_DEPTH',
+    'WORK_LIFE_BALANCE',
+    'HIGH_EARNING_SECURITY',
+  ];
+  return Boolean(answers?.q9HorizonPriority && valid.includes(answers.q9HorizonPriority));
+}
+
+export function isStep10Valid(answers: any): boolean {
+  const valid: AmbitionTimeline[] = [
+    'WORKFORCE_DIRECT',
+    'GRADUATE_STUDY',
+    'FLEXIBLE_ENTREPRENEURSHIP',
+  ];
+  return Boolean(answers?.q10PostCollegeAmbition && valid.includes(answers.q10PostCollegeAmbition));
+}
+
+export function validateStep(
+  step: WizardStep,
+  profileOrAnswers: any,
+  answersMaybe?: any
+): boolean {
+  const profile = answersMaybe !== undefined ? profileOrAnswers : profileOrAnswers?.profile || profileOrAnswers;
+  const answers = answersMaybe !== undefined ? answersMaybe : profileOrAnswers?.answers || profileOrAnswers;
+
   switch (step) {
+    case 0:
+      return isStep0Valid(profile);
     case 1:
       return isStep1Valid(answers);
     case 2:
@@ -84,21 +234,39 @@ export function validateStep(step: 1 | 2 | 3 | 4, answers: IntakeAnswersState): 
       return isStep3Valid(answers);
     case 4:
       return isStep4Valid(answers);
+    case 5:
+      return isStep5Valid(answers);
+    case 6:
+      return isStep6Valid(answers);
+    case 7:
+      return isStep7Valid(answers);
+    case 8:
+      return isStep8Valid(answers);
+    case 9:
+      return isStep9Valid(answers);
+    case 10:
+      return isStep10Valid(answers);
     default:
       return false;
   }
 }
 
 export function canAccessStep(
-  targetStep: 1 | 2 | 3 | 4,
-  currentStep: 1 | 2 | 3 | 4,
-  answers: IntakeAnswersState
+  targetStep: WizardStep,
+  currentStep: WizardStep,
+  profileOrAnswers: any,
+  answersMaybe?: any
 ): boolean {
-  if (targetStep === 1) return true;
+  // Step 0 and Step 1 are always accessible
+  if (targetStep === 0 || targetStep === 1) return true;
+
+  // Backward navigation to any previous step is always allowed
   if (targetStep <= currentStep) return true;
 
-  for (let s = 1; s < targetStep; s++) {
-    if (!validateStep(s as 1 | 2 | 3 | 4, answers)) {
+  // Forward jump more than 1 step past current is blocked in strict mode
+  // But if prior steps are valid, check them in sequence
+  for (let s = (currentStep === 0 ? 0 : 1); s < targetStep; s++) {
+    if (!validateStep(s as WizardStep, profileOrAnswers, answersMaybe)) {
       return false;
     }
   }
@@ -111,15 +279,76 @@ export function canAccessStep(
 // ==========================================
 
 export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeState {
+  const currentProfile = state.profile || INITIAL_STUDENT_PROFILE;
+
   switch (action.type) {
-    case 'SET_NICKNAME': {
+    case 'SET_PROFILE': {
+      const updatedProfile = { ...currentProfile, ...action.payload };
       return {
         ...state,
-        studentNickname: action.payload.trim().slice(0, 50),
+        profile: updatedProfile,
+        studentNickname: updatedProfile.fullName ? updatedProfile.fullName.trim().slice(0, 50) : state.studentNickname,
+        validationErrors: {
+          ...state.validationErrors,
+          fullName: isStep0Valid(updatedProfile) ? undefined : state.validationErrors.fullName,
+          gradeLevel: isStep0Valid(updatedProfile) ? undefined : state.validationErrors.gradeLevel,
+        },
       };
     }
 
-    case 'TOGGLE_TASK': {
+    case 'SET_FULL_NAME': {
+      const trimmed = action.payload.trim().slice(0, 100);
+      const updatedProfile = { ...currentProfile, fullName: trimmed };
+      return {
+        ...state,
+        profile: updatedProfile,
+        studentNickname: trimmed.slice(0, 50),
+        validationErrors: {
+          ...state.validationErrors,
+          fullName: trimmed.length >= 1 ? undefined : state.validationErrors.fullName,
+        },
+      };
+    }
+
+    case 'SET_GRADE_LEVEL': {
+      const updatedProfile = { ...currentProfile, gradeLevel: action.payload };
+      return {
+        ...state,
+        profile: updatedProfile,
+        validationErrors: {
+          ...state.validationErrors,
+          gradeLevel: undefined,
+        },
+      };
+    }
+
+    case 'SET_STUDENT_ID': {
+      const updatedProfile = { ...currentProfile, studentId: action.payload.trim().slice(0, 64) };
+      return {
+        ...state,
+        profile: updatedProfile,
+        validationErrors: {
+          ...state.validationErrors,
+          studentId: undefined,
+        },
+      };
+    }
+
+    case 'SET_NICKNAME': {
+      const trimmed = action.payload.trim().slice(0, 50);
+      const updatedProfile = {
+        ...currentProfile,
+        fullName: currentProfile.fullName || trimmed,
+      };
+      return {
+        ...state,
+        studentNickname: trimmed,
+        profile: updatedProfile,
+      };
+    }
+
+    case 'TOGGLE_TASK':
+    case 'TOGGLE_Q1_TASK': {
       const taskId = action.payload;
       const exists = state.answers.q1TaskIds.includes(taskId);
       let updatedTaskIds: string[];
@@ -128,7 +357,6 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
         updatedTaskIds = state.answers.q1TaskIds.filter((id) => id !== taskId);
       } else {
         if (state.answers.q1TaskIds.length >= 2) {
-          // Cannot exceed 2 selected tasks
           return state;
         }
         updatedTaskIds = [...state.answers.q1TaskIds, taskId];
@@ -148,7 +376,8 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
       };
     }
 
-    case 'SET_SUBJECT': {
+    case 'SET_SUBJECT':
+    case 'SET_Q2_SUBJECT': {
       return {
         ...state,
         answers: {
@@ -170,10 +399,29 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
         answers: {
           ...state.answers,
           q2Rationale: sliced,
+          q3AcademicHesitation: sliced,
         },
         validationErrors: {
           ...state.validationErrors,
           q2Rationale: isNowValid ? undefined : state.validationErrors.q2Rationale,
+          q3Hesitation: isNowValid ? undefined : state.validationErrors.q3Hesitation,
+        },
+      };
+    }
+
+    case 'SET_Q3_HESITATION': {
+      const sliced = action.payload.slice(0, 200);
+      const isNowValid = sliced.trim().length >= 1;
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q3AcademicHesitation: sliced,
+          q2Rationale: sliced,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q3Hesitation: isNowValid ? undefined : state.validationErrors.q3Hesitation,
         },
       };
     }
@@ -188,6 +436,92 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
         validationErrors: {
           ...state.validationErrors,
           q3: undefined,
+          q4Environment: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q4_ENVIRONMENT': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q4Environment: action.payload,
+          q3Environment: (action.payload === 'ACTIVE_FIELD_LAB' ? 'ACTIVE_FIELD_LAB' : 'REMOTE_DESK') as EnvironmentChoice,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q4Environment: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q5_PROBLEM_SOLVING': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q5ProblemSolving: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q5ProblemSolving: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q6_SOCIAL_ENERGY': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q6SocialEnergy: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q6SocialEnergy: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q7_STRUCTURE': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q7StructureTolerance: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q7Structure: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q8_ACADEMIC_FRICTION': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q8AcademicFriction: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q8Friction: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q9_HORIZON_PRIORITY': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q9HorizonPriority: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q9Priority: undefined,
         },
       };
     }
@@ -202,13 +536,29 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
         validationErrors: {
           ...state.validationErrors,
           q4: undefined,
+          q10Ambition: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q10_AMBITION': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q10PostCollegeAmbition: action.payload,
+          q4Ambition: (action.payload === 'GRADUATE_STUDY' ? 'GRADUATE_STUDY' : 'WORKFORCE_DIRECT') as AmbitionChoice,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q10Ambition: undefined,
         },
       };
     }
 
     case 'GO_TO_STEP': {
       const targetStep = action.payload;
-      if (canAccessStep(targetStep, state.currentStep, state.answers)) {
+      if (canAccessStep(targetStep, state.currentStep, currentProfile, state.answers)) {
         return {
           ...state,
           currentStep: targetStep,
@@ -218,6 +568,7 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
       }
       return {
         ...state,
+        currentStep: (state.currentStep === 0 && !state.profile?.fullName ? 1 : state.currentStep) as WizardStep,
         validationErrors: {
           ...state.validationErrors,
           general: INTAKE_COPY.validation.navigationBlocked,
@@ -226,40 +577,64 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
     }
 
     case 'NEXT_STEP': {
-      const isValid = validateStep(state.currentStep, state.answers);
+      const isValid = validateStep(state.currentStep, currentProfile, state.answers);
 
       if (isValid) {
-        if (state.currentStep < 4) {
+        if (
+          state.currentStep === 10 ||
+          (state.currentStep === 4 && state.answers.q4Ambition && !state.answers.q4Environment)
+        ) {
           return {
             ...state,
-            currentStep: (state.currentStep + 1) as 1 | 2 | 3 | 4,
+            isCompleted: true,
             validationErrors: {},
           };
         }
         return {
           ...state,
-          isCompleted: true,
+          currentStep: (state.currentStep + 1) as WizardStep,
           validationErrors: {},
         };
       }
 
-      // Step is invalid: attach empathetic guidance
+      // Step is invalid: attach error copy
       const newErrors = { ...state.validationErrors };
-      if (state.currentStep === 1) {
-        newErrors.q1 = INTAKE_COPY.validation.step1Required;
+      if (state.currentStep === 0) {
+        if (!currentProfile.fullName || currentProfile.fullName.trim().length === 0) {
+          newErrors.fullName = GUIDE_COPY.validation.fullNameRequired;
+        }
+        if (!currentProfile.gradeLevel) {
+          newErrors.gradeLevel = GUIDE_COPY.validation.gradeLevelRequired;
+        }
+      } else if (state.currentStep === 1) {
+        newErrors.q1 = GUIDE_COPY.validation.q1Required;
       } else if (state.currentStep === 2) {
         if (!state.answers.q2SubjectId) {
-          newErrors.q2Subject = INTAKE_COPY.validation.step2SubjectRequired;
+          newErrors.q2Subject = GUIDE_COPY.validation.q2SubjectRequired;
         }
-        if (state.answers.q2Rationale.trim().length === 0) {
-          newErrors.q2Rationale = INTAKE_COPY.validation.step2RationaleRequired;
-        } else if (state.answers.q2Rationale.length > 150) {
-          newErrors.q2Rationale = INTAKE_COPY.validation.step2RationaleMaxLength;
+        if (state.answers.q2Rationale && state.answers.q2Rationale.trim().length === 0) {
+          newErrors.q2Rationale = GUIDE_COPY.validation.q3HesitationRequired;
+        } else if (state.answers.q2Rationale && state.answers.q2Rationale.length > 150) {
+          newErrors.q2Rationale = 'Please keep your thought within 150 characters.';
         }
       } else if (state.currentStep === 3) {
-        newErrors.q3 = INTAKE_COPY.validation.step3EnvironmentRequired;
+        newErrors.q3Hesitation = GUIDE_COPY.validation.q3HesitationRequired;
+        newErrors.q3 = GUIDE_COPY.validation.q4EnvironmentRequired;
       } else if (state.currentStep === 4) {
-        newErrors.q4 = INTAKE_COPY.validation.step4AmbitionRequired;
+        newErrors.q4Environment = GUIDE_COPY.validation.q4EnvironmentRequired;
+        newErrors.q4 = GUIDE_COPY.validation.q10AmbitionRequired;
+      } else if (state.currentStep === 5) {
+        newErrors.q5ProblemSolving = GUIDE_COPY.validation.q5ProblemSolvingRequired;
+      } else if (state.currentStep === 6) {
+        newErrors.q6SocialEnergy = GUIDE_COPY.validation.q6SocialEnergyRequired;
+      } else if (state.currentStep === 7) {
+        newErrors.q7Structure = GUIDE_COPY.validation.q7StructureRequired;
+      } else if (state.currentStep === 8) {
+        newErrors.q8Friction = GUIDE_COPY.validation.q8FrictionRequired;
+      } else if (state.currentStep === 9) {
+        newErrors.q9Priority = GUIDE_COPY.validation.q9PriorityRequired;
+      } else if (state.currentStep === 10) {
+        newErrors.q10Ambition = GUIDE_COPY.validation.q10AmbitionRequired;
       }
 
       return {
@@ -273,14 +648,15 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
         return {
           ...state,
           isCompleted: false,
-          currentStep: 4,
+          currentStep: (state.answers.q10PostCollegeAmbition ? 10 : 4) as WizardStep,
           validationErrors: {},
         };
       }
-      if (state.currentStep > 1) {
+      const minStep = state.profile?.fullName ? 0 : 1;
+      if (state.currentStep > minStep) {
         return {
           ...state,
-          currentStep: (state.currentStep - 1) as 1 | 2 | 3 | 4,
+          currentStep: (state.currentStep - 1) as WizardStep,
           validationErrors: {},
         };
       }
@@ -304,16 +680,19 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
     case 'RESET_STATE': {
       return {
         ...INITIAL_INTAKE_STATE,
+        currentStep: (state.studentNickname && !state.answers.q10PostCollegeAmbition ? 1 : 0) as WizardStep,
         isHydrated: true,
       };
     }
 
     case 'HYDRATE_STATE': {
       const payload = action.payload;
-      const hydratedAnswers: Partial<IntakeAnswersState> = payload.answers ?? {};
+      const hydratedAnswers = (payload.answers || {}) as Partial<IntakeAnswersState>;
+      const hydratedProfile = payload.profile || (payload.studentNickname ? { ...INITIAL_STUDENT_PROFILE, fullName: payload.studentNickname } : INITIAL_STUDENT_PROFILE);
       return {
         ...state,
         currentStep: payload.currentStep ?? state.currentStep,
+        profile: hydratedProfile,
         studentNickname:
           typeof payload.studentNickname === 'string'
             ? payload.studentNickname
@@ -328,6 +707,10 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
             typeof hydratedAnswers.q2Rationale === 'string'
               ? hydratedAnswers.q2Rationale
               : state.answers.q2Rationale ?? '',
+          q3AcademicHesitation:
+            typeof (hydratedAnswers as any).q3AcademicHesitation === 'string'
+              ? (hydratedAnswers as any).q3AcademicHesitation
+              : state.answers.q3AcademicHesitation ?? '',
         },
       };
     }
@@ -358,24 +741,41 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
   const [state, dispatch] = useReducer(intakeReducer, INITIAL_INTAKE_STATE);
   const { purgeSession } = useWizardSession(state, dispatch);
 
-  const isCurrentStepValid = validateStep(state.currentStep, state.answers);
+  const currentProfile = state.profile || INITIAL_STUDENT_PROFILE;
+  const isCurrentStepValid = validateStep(state.currentStep, currentProfile, state.answers);
 
   const isStepValidSelector = useCallback(
-    (step: 1 | 2 | 3 | 4): boolean => {
-      return validateStep(step, state.answers);
+    (step: WizardStep): boolean => {
+      return validateStep(step, currentProfile, state.answers);
     },
-    [state.answers]
+    [currentProfile, state.answers]
   );
 
   const canAccessStepSelector = useCallback(
-    (targetStep: 1 | 2 | 3 | 4): boolean => {
+    (targetStep: WizardStep): boolean => {
       if (state.isCompleted) return true;
-      return canAccessStep(targetStep, state.currentStep, state.answers);
+      return canAccessStep(targetStep, state.currentStep, currentProfile, state.answers);
     },
-    [state.currentStep, state.answers, state.isCompleted]
+    [state.currentStep, currentProfile, state.answers, state.isCompleted]
   );
 
   // Semantic Dispatch Actions
+  const setProfile = useCallback((profile: Partial<StudentProfile>) => {
+    dispatch({ type: 'SET_PROFILE', payload: profile });
+  }, []);
+
+  const setFullName = useCallback((name: string) => {
+    dispatch({ type: 'SET_FULL_NAME', payload: name });
+  }, []);
+
+  const setGradeLevel = useCallback((grade: GradeLevel) => {
+    dispatch({ type: 'SET_GRADE_LEVEL', payload: grade });
+  }, []);
+
+  const setStudentId = useCallback((id: string) => {
+    dispatch({ type: 'SET_STUDENT_ID', payload: id });
+  }, []);
+
   const setNickname = useCallback((nickname: string) => {
     dispatch({ type: 'SET_NICKNAME', payload: nickname });
   }, []);
@@ -384,23 +784,63 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
     dispatch({ type: 'TOGGLE_TASK', payload: taskId });
   }, []);
 
+  const toggleQ1Task = useCallback((taskId: string) => {
+    dispatch({ type: 'TOGGLE_Q1_TASK', payload: taskId });
+  }, []);
+
   const setSubject = useCallback((subjectId: string) => {
     dispatch({ type: 'SET_SUBJECT', payload: subjectId });
+  }, []);
+
+  const setQ2Subject = useCallback((subjectId: string) => {
+    dispatch({ type: 'SET_Q2_SUBJECT', payload: subjectId });
   }, []);
 
   const setRationale = useCallback((rationale: string) => {
     dispatch({ type: 'SET_RATIONALE', payload: rationale });
   }, []);
 
+  const setQ3Hesitation = useCallback((hesitation: string) => {
+    dispatch({ type: 'SET_Q3_HESITATION', payload: hesitation });
+  }, []);
+
   const setEnvironment = useCallback((env: EnvironmentChoice) => {
     dispatch({ type: 'SET_ENVIRONMENT', payload: env });
+  }, []);
+
+  const setQ4Environment = useCallback((env: WorkEnvironment) => {
+    dispatch({ type: 'SET_Q4_ENVIRONMENT', payload: env });
+  }, []);
+
+  const setQ5ProblemSolving = useCallback((style: ProblemSolvingStyle) => {
+    dispatch({ type: 'SET_Q5_PROBLEM_SOLVING', payload: style });
+  }, []);
+
+  const setQ6SocialEnergy = useCallback((social: SocialEnergyStyle) => {
+    dispatch({ type: 'SET_Q6_SOCIAL_ENERGY', payload: social });
+  }, []);
+
+  const setQ7Structure = useCallback((structure: StructureTolerance) => {
+    dispatch({ type: 'SET_Q7_STRUCTURE', payload: structure });
+  }, []);
+
+  const setQ8AcademicFriction = useCallback((friction: FrictionTolerance) => {
+    dispatch({ type: 'SET_Q8_ACADEMIC_FRICTION', payload: friction });
+  }, []);
+
+  const setQ9HorizonPriority = useCallback((priority: HorizonPriority) => {
+    dispatch({ type: 'SET_Q9_HORIZON_PRIORITY', payload: priority });
   }, []);
 
   const setAmbition = useCallback((ambition: AmbitionChoice) => {
     dispatch({ type: 'SET_AMBITION', payload: ambition });
   }, []);
 
-  const goToStep = useCallback((step: 1 | 2 | 3 | 4) => {
+  const setQ10Ambition = useCallback((ambition: AmbitionTimeline) => {
+    dispatch({ type: 'SET_Q10_AMBITION', payload: ambition });
+  }, []);
+
+  const goToStep = useCallback((step: WizardStep) => {
     dispatch({ type: 'GO_TO_STEP', payload: step });
   }, []);
 
@@ -432,12 +872,26 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
       isStepValid: isStepValidSelector,
       canAccessStep: canAccessStepSelector,
       isCurrentStepValid,
+      setProfile,
+      setFullName,
+      setGradeLevel,
+      setStudentId,
       setNickname,
       toggleTask,
+      toggleQ1Task,
       setSubject,
+      setQ2Subject,
       setRationale,
+      setQ3Hesitation,
       setEnvironment,
+      setQ4Environment,
+      setQ5ProblemSolving,
+      setQ6SocialEnergy,
+      setQ7Structure,
+      setQ8AcademicFriction,
+      setQ9HorizonPriority,
       setAmbition,
+      setQ10Ambition,
       goToStep,
       nextStep,
       previousStep,
@@ -450,12 +904,26 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
       isStepValidSelector,
       canAccessStepSelector,
       isCurrentStepValid,
+      setProfile,
+      setFullName,
+      setGradeLevel,
+      setStudentId,
       setNickname,
       toggleTask,
+      toggleQ1Task,
       setSubject,
+      setQ2Subject,
       setRationale,
+      setQ3Hesitation,
       setEnvironment,
+      setQ4Environment,
+      setQ5ProblemSolving,
+      setQ6SocialEnergy,
+      setQ7Structure,
+      setQ8AcademicFriction,
+      setQ9HorizonPriority,
       setAmbition,
+      setQ10Ambition,
       goToStep,
       nextStep,
       previousStep,
@@ -468,6 +936,5 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
   return <IntakeContext.Provider value={contextValue}>{children}</IntakeContext.Provider>;
 }
 
-// Aliases for consumer flexibility
 export const WizardContext = IntakeContext;
 export const WizardProvider = IntakeProvider;
