@@ -256,7 +256,37 @@ export const INTAKE_COPY = {
     summaryAmbitionLabel: 'Q4 Ambition:',
     restartButton: 'Restart Intake Preview',
   },
+
+  // Server & API Error Copy for Feature 5
+  serverErrors: {
+    validationFailed:
+      'We could not process your responses. Please verify that each question has been answered and try again.',
+    payloadTooLarge:
+      'The submission payload was too large. Please shorten your response and try again.',
+    unsupportedMediaType:
+      'The request format is unsupported. Please submit your responses as application/json.',
+    rateLimited:
+      'PathwayAI is experiencing high demand right now. Please take a deep breath and try again in a few moments.',
+    serviceUnavailable:
+      'Our career synthesis service is taking a brief moment to recharge. Your answers are safe—please try submitting again shortly.',
+    timeout:
+      'Generating your pathways took a little longer than expected. Please try submitting again.',
+    demoModeActive:
+      'Career synthesis is operating in demo mode. High-fidelity realistic pathways will be provided.',
+    generic:
+      'Something unexpected occurred while crafting your pathways. Please try again in a moment.',
+  },
+
+  // Loading & Progressive Reassurance Copy
+  loadingReassurance: [
+    'Reviewing your natural energy and focus...',
+    'Exploring modern, high-demand career pathways...',
+    'Connecting day-to-day tasks with low-friction college majors...',
+    'Addressing your academic dread with supportive reassurance...',
+    'Curating zero-cost weekend trial courses...',
+  ],
 } as const;
 
 export type IntakeCopyType = typeof INTAKE_COPY;
+
 

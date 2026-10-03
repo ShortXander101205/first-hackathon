@@ -19,6 +19,11 @@ export interface TrialCourse {
   estimated_hours: number;
 }
 
+export interface DayInTheLife {
+  tasks: string[];
+  misconceptions: string[];
+}
+
 export interface CareerCard {
   id: string;
   role_title: string;
@@ -26,7 +31,9 @@ export interface CareerCard {
   fit_score: number;
   fit_rationale: string;
   majors: string[];
-  daily_tasks: string[];
+  minors?: string[];
+  daily_tasks?: string[];
+  day_in_the_life?: DayInTheLife;
   course_challenges: string;
   reassurance: string;
   trial_courses: [TrialCourse, TrialCourse];

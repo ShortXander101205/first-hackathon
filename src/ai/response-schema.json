@@ -1,38 +1,40 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PathwayAITriageResponseSchema",
-  "type": "OBJECT",
+  "type": "object",
   "properties": {
     "summary": {
-      "type": "OBJECT",
+      "type": "object",
       "properties": {
         "student_archetype": {
-          "type": "STRING",
+          "type": "string",
           "description": "A resonant 3-5 word archetype capturing the student's natural cognitive profile."
         },
         "triage_narrative": {
-          "type": "STRING",
+          "type": "string",
           "description": "An empathetic 2-3 sentence synthesis explaining how their energy aligns with these trajectories while mitigating their anxiety."
         }
       },
       "required": ["student_archetype", "triage_narrative"]
     },
     "careers": {
-      "type": "ARRAY",
+      "type": "array",
       "description": "An array of exactly 4 career recommendation cards covering the 4 designated tiers.",
+      "minItems": 4,
+      "maxItems": 4,
       "items": {
-        "type": "OBJECT",
+        "type": "object",
         "properties": {
           "id": {
-            "type": "STRING",
+            "type": "string",
             "description": "Unique card identifier (e.g. career_1, career_2)."
           },
           "role_title": {
-            "type": "STRING",
+            "type": "string",
             "description": "Professional job or vocational title."
           },
           "match_tier": {
-            "type": "STRING",
+            "type": "string",
             "enum": [
               "Primary Direct Match",
               "High-Growth Pathway",
@@ -41,41 +43,63 @@
             ]
           },
           "fit_score": {
-            "type": "INTEGER",
+            "type": "integer",
             "description": "Integer match percentage between 50 and 100."
           },
           "fit_rationale": {
-            "type": "STRING",
+            "type": "string",
             "description": "Concise rationale connecting this career to their intake choices."
           },
           "majors": {
-            "type": "ARRAY",
+            "type": "array",
             "description": "At least two associated collegiate majors or degree programs.",
-            "items": { "type": "STRING" }
+            "items": { "type": "string" }
+          },
+          "minors": {
+            "type": "array",
+            "description": "At least one complementary college minor or specialization.",
+            "items": { "type": "string" }
+          },
+          "day_in_the_life": {
+            "type": "object",
+            "description": "Daily operational reality vs common misconceptions.",
+            "properties": {
+              "tasks": {
+                "type": "array",
+                "description": "At least 3 concrete tasks performed on the job.",
+                "items": { "type": "string" }
+              },
+              "misconceptions": {
+                "type": "array",
+                "description": "At least 1 common misconception vs reality.",
+                "items": { "type": "string" }
+              }
+            },
+            "required": ["tasks", "misconceptions"]
           },
           "daily_tasks": {
-            "type": "ARRAY",
+            "type": "array",
             "description": "At least three concrete operational tasks performed on the job.",
-            "items": { "type": "STRING" }
+            "items": { "type": "string" }
           },
           "course_challenges": {
-            "type": "STRING",
+            "type": "string",
             "description": "The specific challenging courses or concepts encountered in this degree."
           },
           "reassurance": {
-            "type": "STRING",
-            "description": "Empathetic cognitive reframing directly addressing their stated Question 3 anxiety."
+            "type": "string",
+            "description": "Empathetic cognitive reframing directly addressing their stated Question 2 academic dread and anxiety."
           },
           "trial_courses": {
-            "type": "ARRAY",
+            "type": "array",
             "description": "Exactly two zero-cost trial courses or hands-on tutorials.",
             "items": {
-              "type": "OBJECT",
+              "type": "object",
               "properties": {
-                "title": { "type": "STRING" },
-                "provider": { "type": "STRING" },
-                "description": { "type": "STRING" },
-                "estimated_hours": { "type": "INTEGER" }
+                "title": { "type": "string" },
+                "provider": { "type": "string" },
+                "description": { "type": "string" },
+                "estimated_hours": { "type": "integer" }
               },
               "required": ["title", "provider", "description", "estimated_hours"]
             }

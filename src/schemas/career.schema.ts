@@ -18,16 +18,23 @@ export const trialCourseSchema = z.object({
   estimated_hours: z.number().int().min(1).max(40),
 });
 
+export const dayInTheLifeSchema = z.object({
+  tasks: z.array(z.string().trim().min(5)).min(3, 'Must include at least 3 daily tasks'),
+  misconceptions: z.array(z.string().trim().min(5)).min(1, 'Must include at least 1 misconception vs reality'),
+});
+
 export const careerCardSchema = z.object({
   id: z.string().trim().min(1),
   role_title: z.string().trim().min(2).max(100),
   match_tier: matchTierSchema,
   fit_score: z.number().int().min(50).max(100),
-  fit_rationale: z.string().trim().min(10).max(350),
+  fit_rationale: z.string().trim().min(10).max(450),
   majors: z.array(z.string().trim().min(2)).min(2, 'Must include at least 2 relevant college majors'),
-  daily_tasks: z.array(z.string().trim().min(5)).min(3, 'Must include at least 3 daily tasks'),
-  course_challenges: z.string().trim().min(5).max(250),
-  reassurance: z.string().trim().min(10).max(450),
+  minors: z.array(z.string().trim().min(2)).default([]),
+  day_in_the_life: dayInTheLifeSchema.optional(),
+  daily_tasks: z.array(z.string().trim().min(5)).optional(),
+  course_challenges: z.string().trim().min(5).max(350),
+  reassurance: z.string().trim().min(10).max(500),
   trial_courses: z
     .tuple([trialCourseSchema, trialCourseSchema])
     .describe('Must include exactly 2 introductory trial courses'),
