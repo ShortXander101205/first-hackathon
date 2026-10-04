@@ -67,12 +67,15 @@ export function ResultsHeader({
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <h2 className="text-sm font-semibold text-sky-950">
               {copy.disclaimerTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-sky-800 leading-relaxed">
-              {copy.disclaimerBody}
+            <p className="text-xs sm:text-sm text-sky-900 font-medium leading-relaxed">
+              {copy.advisoryNote || copy.disclaimerBody}
+            </p>
+            <p className="text-xs text-sky-800 leading-relaxed">
+              {copy.advisorReminder || copy.disclaimerBody}
             </p>
           </div>
         </div>

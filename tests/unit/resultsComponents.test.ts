@@ -127,15 +127,16 @@ describe('Feature 8: Results UI Components Unit Tests', () => {
   });
 
   describe('WhereToStudySection', () => {
-    it('renders groundwork placeholder shell with regional pathways badge', () => {
+    it('renders verified regional pathways panel with directory badge', () => {
       const html = renderToStaticMarkup(
         React.createElement(WhereToStudySection, {
           roleTitle: 'Cloud Engineer',
-          majors: ['Cloud Architecture', 'Informatics'],
+          majors: ['Information Technology', 'Computer Engineering'],
+          broadField: 'Engineering & Technology',
         })
       );
       assert.ok(html.includes('Where to Study'));
-      assert.ok(html.includes('Regional Pathways Coming Soon'));
+      assert.ok(html.includes('Verified Institution Directory'));
       assert.ok(html.includes('Zero unverified admissions claims'));
       assert.ok(html.includes('contain:content') || html.includes('contain: content'));
     });
@@ -153,8 +154,8 @@ describe('Feature 8: Results UI Components Unit Tests', () => {
 
       assert.ok(html.includes('aria-expanded="false"'));
       assert.ok(html.includes('Cloud Reliability &amp; Operations Specialist') || html.includes('Cloud Reliability & Operations Specialist'));
-      assert.ok(html.includes('Primary Direct Match'));
-      assert.ok(html.includes('96%'));
+      assert.ok(html.includes('Top Match'));
+      assert.ok(!html.includes('96%'));
       assert.ok(html.includes('View pathway details'));
 
       // DOM Persistence: verify details container is mounted with hidden print:block

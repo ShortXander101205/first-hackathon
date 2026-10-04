@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { submissionPayloadSchema } from '@/schemas/intake.schema';
 import { generateGuideRecommendations } from '@/lib/gemini';
 import { checkRateLimit, recordRequest } from '@/lib/rateLimiter';
-import { getMockGuideRecommendations } from '@/lib/ai/mockFallback';
+import { getMockCareerResults } from '@/data/mockCareerResults';
+import { validateGuideSynthesisResult } from '@/lib/guideValidator';
 import { ProblemDetails, ProblemErrorCode, SubmissionPayload } from '@/types/api';
 
 export const runtime = 'nodejs';
@@ -165,13 +166,23 @@ export async function POST(request: Request): Promise<NextResponse> {
     apiKey === 'test' ||
     apiKey === 'your_gemini_api_key_here'
   ) {
-    const fallbackResult = getMockGuideRecommendations(payload);
+    const fallbackResult = getMockCareerResults(payload);
     return NextResponse.json(fallbackResult, { status: 200 });
   }
 
   try {
     const synthesis = await generateGuideRecommendations(payload);
     recordRequest(clientIp);
+
+    // Validate synthesized result against the 48-entry catalog whitelist & 2 primary + 2 adjacent field spread
+    const isValid = validateGuideSynthesisResult(synthesis.result);
+    if (!isValid) {
+      console.warn(
+        '[PathLess Route] AI synthesis violated career catalog whitelist or 2+2 field spread. Falling back to curated mock data.'
+      );
+      const fallbackResult = getMockCareerResults(payload);
+      return NextResponse.json(fallbackResult, { status: 200 });
+    }
 
     return NextResponse.json(synthesis.result, { status: 200 });
   } catch (error: any) {

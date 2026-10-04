@@ -6,3 +6,4 @@ export * from './intake';
 export * from './career';
 export * from './database';
 export * from './api';
+export * from './university';

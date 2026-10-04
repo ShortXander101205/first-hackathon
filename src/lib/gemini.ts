@@ -17,6 +17,7 @@ import { guideResultSchema } from '@/schemas/career.schema';
 import { IntakeAnswersState } from '@/types/intake';
 import { SubmissionPayload } from '@/types/api';
 import { GuideResult } from '@/types/career';
+import { getCatalogEntryByTitle, isWhitelistedMajor } from '@/data/careerCatalog';
 import responseSchema from '@/ai/response-schema.json';
 
 export interface GeminiSynthesisResult {
@@ -99,15 +100,16 @@ export async function generateTriageRecommendations(
   try {
     const userPrompt = buildTriageUserPrompt(answers, studentNickname);
 
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     // Call generateContent with timeout race
     const callPromise = client.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: modelName,
       contents: userPrompt,
       config: {
         systemInstruction: ALEX_SYSTEM_PROMPT,
         temperature: 0.2,
         topP: 0.8,
-        maxOutputTokens: 3000,
+        maxOutputTokens: 8192,
         responseMimeType: 'application/json',
         responseSchema: responseSchema as any,
       },
@@ -198,15 +200,15 @@ export async function generateGuideRecommendations(
 
   try {
     const userPrompt = buildGuideUserPrompt(payload);
-
+    const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
     const callPromise = client.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: modelName,
       contents: userPrompt,
       config: {
         systemInstruction: PATHLESS_SYSTEM_PROMPT,
         temperature: 0.2,
         topP: 0.8,
-        maxOutputTokens: 3000,
+        maxOutputTokens: 8192,
         responseMimeType: 'application/json',
         responseSchema: responseSchema as any,
       },
@@ -248,6 +250,26 @@ export async function generateGuideRecommendations(
       parsedJson.careers = parsedJson.pathways;
     }
 
+    const cards = parsedJson.pathways || parsedJson.careers;
+    if (Array.isArray(cards)) {
+      for (const card of cards) {
+        const title = card.roleTitle || card.role_title;
+        const entry = getCatalogEntryByTitle(title);
+        if (entry) {
+          card.roleTitle = entry.roleTitle;
+          card.broadField = entry.field;
+          if (
+            !card.majors ||
+            !Array.isArray(card.majors) ||
+            card.majors.length === 0 ||
+            !card.majors.every((m: string) => isWhitelistedMajor(m))
+          ) {
+            card.majors = entry.standardMajors;
+          }
+        }
+      }
+    }
+
     // Downstream Zod verification against guideResultSchema
     const validatedResult = guideResultSchema.parse(parsedJson);
 
@@ -259,7 +281,7 @@ export async function generateGuideRecommendations(
       pathways: validatedResult.pathways as any,
       careers: validatedResult.careers as any,
       meta: {
-        engine: 'gemini-2.5-flash',
+        engine: modelName,
         generationLatencyMs: latencyMs,
         fallbackUsed: false,
       },
@@ -269,7 +291,7 @@ export async function generateGuideRecommendations(
       result: guideResult,
       latencyMs,
       fallbackUsed: false,
-      engine: 'gemini-2.5-flash',
+      engine: modelName,
     };
   } catch (err: any) {
     clearTimeout(timeoutHandle);

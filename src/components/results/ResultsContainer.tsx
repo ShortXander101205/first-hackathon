@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { RESULTS_COPY } from '@/content/guideCopy';
 import { GuideResult } from '@/types/career';
 import { ResultsHeader } from './ResultsHeader';
+import { PrintHeader } from './PrintHeader';
 import { CareerMatchCard } from './CareerMatchCard';
 import { ResultsFooter } from './ResultsFooter';
 
@@ -45,6 +46,13 @@ export function ResultsContainer({ result, onClear, onPrint }: ResultsContainerP
       aria-label={RESULTS_COPY.a11y.resultsLandmark}
       className="w-full max-w-4xl mx-auto px-4 py-8 sm:px-6 sm:py-12"
     >
+      {/* Dedicated Print & PDF Export Header (Hidden on Screen, Visible in Print) */}
+      <PrintHeader
+        studentName={studentName}
+        gradeLevel={result.studentProfile?.gradeLevel}
+        fallbackUsed={fallbackUsed}
+      />
+
       {/* Calm Advisory Header */}
       <ResultsHeader
         studentName={studentName}

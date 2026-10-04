@@ -1,4 +1,6 @@
 export * from './WhereToStudySection';
+export * from './UniversityProgramBadge';
+export * from './PrintHeader';
 export * from './ResultsHeader';
 export * from './ResultsFooter';
 export * from './CareerMatchCard';

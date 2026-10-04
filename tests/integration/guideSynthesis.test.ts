@@ -41,11 +41,18 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
     pathways: [
       {
         id: 'match_1',
-        roleTitle: 'Cloud Reliability & Operations Specialist',
-        broadField: 'Information Technology & Cloud Systems',
+        roleTitle: 'Software Developer',
+        broadField: 'Engineering & Technology',
+        badge: 'Top Match',
         matchTier: 'Primary Direct Match',
         fitScore: 96,
-        overview: 'Automates and maintains resilient digital cloud systems so services run smoothly without interruptions.',
+        overview: 'Automates and maintains resilient digital software and tools so services run smoothly without interruptions.',
+        groundedRationale: 'Your interest in building systems connects naturally to designing software logic.',
+        milestones: {
+          education: 'Bachelor of Science in Computer Science or Software Engineering',
+          entryRole: 'Junior Software Engineer',
+          growthRole: 'Lead Software Architect',
+        },
         dailyTasks: [
           'Deploy infrastructure automation scripts across virtual servers',
           'Monitor application performance metrics for system bottlenecks',
@@ -53,7 +60,7 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
         ],
         studyPath: 'Studies encompass operating systems, virtual networking, scripting, and cloud architecture fundamentals in hands-on labs.',
         reassurance: 'Instead of abstract calculus tests, coursework focuses on real virtual server configurations with immediate feedback.',
-        majors: ['Cloud Computing Architecture', 'Information Technology'],
+        majors: ['Computer Science', 'Software Engineering'],
         minors: ['Technical Communication'],
         trialCourses: [
           {
@@ -74,11 +81,18 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
       },
       {
         id: 'match_2',
-        roleTitle: 'Cyber Defense Incident Analyst',
-        broadField: 'Information Assurance & Security',
+        roleTitle: 'Data Analyst',
+        broadField: 'Engineering & Technology',
+        badge: 'Top Match',
         matchTier: 'High-Growth Pathway',
         fitScore: 92,
         overview: 'Analyzes digital network activity to detect security vulnerabilities and safeguard sensitive institutional data.',
+        groundedRationale: 'Methodical investigation of datasets lets you uncover actionable trends.',
+        milestones: {
+          education: 'Bachelor of Science in Data Science and Analytics',
+          entryRole: 'Junior Data Analyst',
+          growthRole: 'Senior Business Intelligence Analyst',
+        },
         dailyTasks: [
           'Examine automated security alerts for unauthorized access attempts',
           'Perform vulnerability scans across internal web applications',
@@ -86,7 +100,7 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
         ],
         studyPath: 'Coursework covers defense principles, network architecture, compliance auditing, and hands-on digital forensics.',
         reassurance: 'You do not need to be a math genius; modern security analysts focus on pattern detection and policy auditing.',
-        majors: ['Cybersecurity', 'Information Assurance'],
+        majors: ['Data Science and Analytics', 'Applied Statistics'],
         minors: ['Criminal Justice'],
         trialCourses: [
           {
@@ -107,11 +121,18 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
       },
       {
         id: 'match_3',
-        roleTitle: 'Health Systems Data Coordinator',
-        broadField: 'Healthcare Informatics & Technology',
+        roleTitle: 'UI/UX & Product Designer',
+        broadField: 'Design & Creative Arts',
+        badge: 'Explore Also',
         matchTier: 'Interdisciplinary Pivot',
         fitScore: 88,
         overview: 'Coordinates clinical database systems and medical workflows so healthcare providers have rapid, secure patient access.',
+        groundedRationale: 'An adjacent creative field channeling visual design and user flow clarity.',
+        milestones: {
+          education: 'Bachelor of Fine Arts in Visual Communication Design',
+          entryRole: 'Junior UI/UX Designer',
+          growthRole: 'Lead Product Designer',
+        },
         dailyTasks: [
           'Streamline electronic medical record forms for clinical staff',
           'Analyze data intake accuracy across department records',
@@ -119,7 +140,7 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
         ],
         studyPath: 'Combines health system operations, healthcare privacy laws, medical databases, and applied information management.',
         reassurance: 'You make an impact in medicine without taking high-stakes biology labs or clinical medical exams.',
-        majors: ['Health Informatics', 'Information Management'],
+        majors: ['Visual Communication Design', 'Industrial Design'],
         minors: ['Public Health'],
         trialCourses: [
           {
@@ -140,11 +161,18 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
       },
       {
         id: 'match_4',
-        roleTitle: 'Autonomous Simulation Graphics Specialist',
-        broadField: 'Applied Robotics & Computational Media',
+        roleTitle: 'Public Health Coordinator',
+        broadField: 'Healthcare & Life Sciences',
+        badge: 'Explore Also',
         matchTier: 'Moonshot Trajectory',
         fitScore: 84,
         overview: 'Creates virtual physics simulations to test autonomous robotics and vehicles before real-world physical deployment.',
+        groundedRationale: 'A broader health systems role promoting community wellness without clinical exams.',
+        milestones: {
+          education: 'Bachelor of Science in Public Health',
+          entryRole: 'Community Health Assistant',
+          growthRole: 'Public Health Program Manager',
+        },
         dailyTasks: [
           'Design 3D virtual testing environments in simulation software',
           'Test vehicle perception algorithms under virtual weather conditions',
@@ -152,7 +180,7 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
         ],
         studyPath: 'Focuses on 3D computer graphics, physics simulation engines, computational mechanics, and robotic telemetry.',
         reassurance: 'Interactive 3D simulation tools allow you to visualize physics problems directly rather than solving abstract equations on paper.',
-        majors: ['Robotics Technology', 'Computational Media'],
+        majors: ['Public Health', 'Community Health'],
         minors: ['Applied Physics'],
         trialCourses: [
           {

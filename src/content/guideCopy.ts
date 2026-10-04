@@ -379,9 +379,46 @@ export const RESULTS_COPY = {
     disclaimerTitle: 'Advisory Guide Notice',
     disclaimerBody:
       'These recommendations are starting points for conversation and discovery, not permanent life decisions. We encourage you to share and discuss these pathways with your school advisor, mentor, or trusted guide.',
+    advisoryNote:
+      'Suggestions, not decisions. These pathways are starting points for conversation and personal discovery.',
+    advisorReminder:
+      'We encourage you to share and discuss these pathways with your school advisor, mentor, or trusted guide.',
     archetypeLabel: 'Your Discovery Profile',
     demoModeNotice:
       'Sample pathways are shown for demonstration. Take your time exploring each option.',
+  },
+
+  badges: {
+    'Top Match': {
+      label: 'Top Match',
+      badge: 'Top Match',
+      description: 'Closest alignment with your natural problem-solving interests and preferred environment.',
+    },
+    'Explore Also': {
+      label: 'Explore Also',
+      badge: 'Explore Also',
+      description: 'Adjacent pathways that broaden your options across related fields.',
+    },
+  },
+
+  milestones: {
+    heading: 'Career Progression Milestones',
+    subheading: 'A realistic 3-stage journey from university study to professional growth in Thailand',
+    stage1Label: '1. Education & Degree',
+    stage2Label: '2. Entry-Level Role',
+    stage3Label: '3. Long-Term Growth',
+  },
+
+  printHeader: {
+    institution: 'PathLess Educational Guidance Report',
+    confidentialNotice: 'Student Guidance Document • For Academic Discovery Only',
+    nameLabel: 'Student Name',
+    gradeLabel: 'Grade / Year',
+    dateLabel: 'Date Generated',
+    advisorNoteTitle: 'Advisor & Student Discussion Note',
+    advisorNoteBody:
+      'These career and major pathways are starting points for conversation and discovery, not permanent decisions. Discuss these options with your school advisor, teacher, or family mentor.',
+    sampleDataNotice: 'Sample Exploration Data • Showing representative pathways',
   },
 
   card: {
@@ -389,6 +426,8 @@ export const RESULTS_COPY = {
     expandedCta: 'Hide pathway details',
     fitScoreLabel: 'Natural Fit',
     fitScoreTooltip: 'Reflects how closely this pathway matches your daily task preferences and work comfort.',
+    groundedRationaleLabel: 'Why This Fits You',
+    milestonesHeading: 'Career Progression Milestones',
     dailyTasksLabel: 'What a Typical Day Looks Like',
     dailyTasksSublabel: 'Real responsibilities and daily projects',
     studyPathLabel: 'Foundational Study Path',
@@ -430,8 +469,24 @@ export const RESULTS_COPY = {
   whereToStudy: {
     title: 'Where to Study',
     badge: 'Regional Pathways Coming Soon',
+    verifiedRegistryBadge: 'Verified Institution Directory',
+    needsCheckingBadge: 'Needs Checking',
+    verifiedBadge: 'Verified Entry',
     description:
-      'Verified university degree listings and academic department mappings are curated by university advisors. We connect you with regional university partners without guessing admissions criteria.',
+      'Explore standard undergraduate degree programs at verified universities across Thailand. Pathways are human-curated to help you and your advisor discover genuine academic environments.',
+    publicAutonomousLabel: 'Public / Autonomous',
+    privateLabel: 'Private University',
+    lastCheckedLabel: 'Last checked',
+    targetMajorsLabel: 'Target Fields',
+    visitOfficialProgramCta: 'Visit official department page',
+    openProgramLinkAria: (program: string, university: string) =>
+      `Visit official ${program} program page at ${university} (opens in new tab)`,
+    admissionsNoticeTitle: 'Official Admissions Advisory',
+    admissionsNoticeBody:
+      'Admission requirements, portfolio guidelines, and annual seat allocations are determined independently by each university and change each academic cycle. We strongly encourage you to consult the official university admissions office and discuss requirements with your school advisor.',
+    fallbackTitle: 'Curating Pathways for This Major',
+    fallbackDescription: (major: string) =>
+      `Verified institutional degree mappings for ${major} are currently being audited by regional advisors. We recommend exploring general university catalog listings or discussing options with your mentor.`,
     zeroHallucinationNote:
       'Zero unverified admissions claims. All university pathway data is verified by academic advisors.',
     comingSoonNotice:

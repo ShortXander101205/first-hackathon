@@ -21,7 +21,7 @@
       "type": "array",
       "minItems": 4,
       "maxItems": 4,
-      "description": "Exactly 4 distinct career match cards conforming to the designated tiers.",
+      "description": "Exactly 4 distinct career match cards conforming to catalog whitelist and 2 Top Match + 2 Explore Also.",
       "items": {
         "type": "object",
         "properties": {
@@ -31,29 +31,43 @@
           },
           "roleTitle": {
             "type": "string",
-            "description": "Specific, modern career concentration role title (avoiding generic umbrella titles like 'Engineer' or 'Doctor')."
+            "description": "Common, recognizable career role title selected strictly from the catalog whitelist."
           },
           "broadField": {
             "type": "string",
-            "description": "Broad academic or vocational discipline area (e.g. Information Technology & Systems)."
+            "description": "One of the 8 approved fields (Engineering & Technology, Healthcare & Life Sciences, Business & Economics, Design & Creative Arts, Communication & Humanities, Social Sciences & Law, Hospitality & Tourism, Environmental & Agricultural Sciences)."
           },
-          "matchTier": {
+          "badge": {
             "type": "string",
-            "enum": [
-              "Primary Direct Match",
-              "High-Growth Pathway",
-              "Interdisciplinary Pivot",
-              "Moonshot Trajectory"
-            ]
-          },
-          "fitScore": {
-            "type": "integer",
-            "minimum": 50,
-            "maximum": 100
+            "enum": ["Top Match", "Explore Also"],
+            "description": "Locked qualitative badge: Top Match for the 2 primary matches, Explore Also for the 2 adjacent matches."
           },
           "overview": {
             "type": "string",
             "description": "Single sentence summary of 30 words or fewer."
+          },
+          "groundedRationale": {
+            "type": "string",
+            "description": "Two plain-language sentences directly connecting the role's daily reality to the student's intake answers."
+          },
+          "milestones": {
+            "type": "object",
+            "description": "3-stage progression line familiar in Thailand.",
+            "properties": {
+              "education": {
+                "type": "string",
+                "description": "Stage 1: What to study in college (Bachelor's major & degree)."
+              },
+              "entryRole": {
+                "type": "string",
+                "description": "Stage 2: Common first job after graduation (0-2 years)."
+              },
+              "growthRole": {
+                "type": "string",
+                "description": "Stage 3: Later career role (3-5+ years specialization/leadership)."
+              }
+            },
+            "required": ["education", "entryRole", "growthRole"]
           },
           "dailyTasks": {
             "type": "array",
@@ -74,18 +88,18 @@
             "type": "array",
             "minItems": 2,
             "items": { "type": "string" },
-            "description": "At least 2 associated college majors or degree concentrations."
+            "description": "Standard college majors selected strictly from the catalog whitelist."
           },
           "minors": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "Optional complementary minors or secondary specializations."
+            "description": "Optional complementary minors."
           },
           "trialCourses": {
             "type": "array",
             "minItems": 2,
             "maxItems": 2,
-            "description": "Exactly 2 zero-cost trial courses from free platforms (e.g. Coursera Free Audit, edX, Khan Academy, freeCodeCamp).",
+            "description": "Exactly 2 zero-cost trial courses from free platforms.",
             "items": {
               "type": "object",
               "properties": {
@@ -103,9 +117,10 @@
           "id",
           "roleTitle",
           "broadField",
-          "matchTier",
-          "fitScore",
+          "badge",
           "overview",
+          "groundedRationale",
+          "milestones",
           "dailyTasks",
           "studyPath",
           "reassurance",

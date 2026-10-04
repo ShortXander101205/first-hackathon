@@ -13,4 +13,12 @@ Career path steps: Each card includes a simple 3-stage progression line: (1) wha
 The PDF: Generated via a clean print-dedicated browser stylesheet (@media print), not a separate file generator. All 4 cards automatically expand their full details in the print layout. Includes Student Name, Grade Level, Date, the persistent Advisor note, and the sample data notice if mock data is used. Student ID is omitted from the print layout for privacy. Zero technical terms appear in the PDF.
 
 ### Open Questions
+
 Open questions: The exact list of titles and majors in the curated catalog has not been provided. The wording for the qualitative badges that replace percentage scores has not been chosen.
+
+## Feature 9: Thai University Scaffold (Completed: October 4, 2026)
+
+- Data architecture: Implemented static human-curated registry (`src/data/thaiUniversities.ts`) with deterministic lookup utility (`src/lib/universityMatcher.ts`); zero AI runtime generation or external web scraping.
+- Coverage: Seeded 17 confirmed institutions across Bangkok, Central, and regional flagships, mapped strictly to the 8 career catalog fields.
+- UI Integration: Updated `WhereToStudySection` inside expanded career cards with bilingual labels, verified source links (`rel="noopener noreferrer"`), and last-checked timestamps.
+- Fallback: Non-breaking calm curation placeholder rendered when a recommended major has no active regional entries.

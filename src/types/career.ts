@@ -1,10 +1,17 @@
 /**
  * PathLess: College Major and Career Discovery Guide v2
  * Recommendation Results & Career Pathway Contracts
+ * Refined for Feature 14: Simpler Suggestions and Clean PDF
  */
 
 import { IntakeAnswers, StudentProfile } from './intake';
+import { ApprovedField, CareerMilestones } from '@/data/careerCatalog';
 
+export type { ApprovedField, CareerMilestones };
+
+export type QualitativeBadge = 'Top Match' | 'Explore Also';
+
+/** @deprecated Legacy MatchTier from Feature 8 - superseded by QualitativeBadge */
 export type MatchTier =
   | 'Primary Direct Match'
   | 'High-Growth Pathway'
@@ -29,15 +36,21 @@ export interface PathwayCard {
   id: string;
   roleTitle?: string;
   role_title?: string;
-  broadField?: string;
-  broad_field?: string;
+  broadField?: ApprovedField | string;
+  broad_field?: ApprovedField | string;
+  badge?: QualitativeBadge;
+  matchBadge?: QualitativeBadge;
+  /** @deprecated Legacy tier label - superseded by badge */
   matchTier?: MatchTier;
   match_tier?: MatchTier;
+  /** @deprecated Numerical percentage score - eliminated in Feature 14 */
   fitScore?: number;
   fit_score?: number;
   overview?: string; // 1 sentence <= 30 words
+  groundedRationale?: string; // Synthesis linking daily tasks to student's intake answers
   fitRationale?: string;
   fit_rationale?: string;
+  milestones?: CareerMilestones; // 3-stage milestone progression (education, entryRole, growthRole)
   dailyTasks?: string[]; // 3-4 concrete tasks
   daily_tasks?: string[];
   day_in_the_life?: DayInTheLife;
