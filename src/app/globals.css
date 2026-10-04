@@ -75,3 +75,31 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Native Print & PDF Export Optimization */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .no-print,
+  button,
+  [role="button"] {
+    display: none !important;
+  }
+
+  article {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Force all pathway card details containers visible in print */
+  [id^="pathway-details-"] {
+    display: block !important;
+  }
+}
+

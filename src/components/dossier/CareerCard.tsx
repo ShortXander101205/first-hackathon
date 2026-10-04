@@ -71,7 +71,9 @@ function getTierConfig(tier: MatchTier): TierStyleConfig {
 }
 
 export function CareerCard({ card, index }: CareerCardProps) {
-  const tierConfig = getTierConfig(card.match_tier);
+  const matchTier = (card.match_tier || card.matchTier || 'Primary Direct Match') as MatchTier;
+  const fitScore = card.fit_score ?? card.fitScore ?? 85;
+  const tierConfig = getTierConfig(matchTier);
   const TierIcon = tierConfig.icon;
   const copy = DOSSIER_COPY.card;
 
@@ -89,17 +91,17 @@ export function CareerCard({ card, index }: CareerCardProps) {
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${tierConfig.badgeBg} ${tierConfig.badgeBorder} ${tierConfig.badgeText}`}
           >
             <TierIcon className="w-3.5 h-3.5 shrink-0" />
-            <span>{card.match_tier}</span>
+            <span>{matchTier}</span>
           </div>
 
           {/* Fit Score Badge */}
           <div
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-edu-slate-100 text-edu-slate-800 border border-edu-slate-200 shrink-0"
-            aria-label={DOSSIER_COPY.a11y.fitScoreAnnouncement(card.fit_score)}
+            aria-label={DOSSIER_COPY.a11y.fitScoreAnnouncement(fitScore)}
             title={copy.fitScoreClarification}
           >
             <Icons.verifiedCourse className="w-3 h-3 text-edu-interactive" aria-hidden="true" />
-            <span>{copy.fitScoreLabel(card.fit_score)}</span>
+            <span>{copy.fitScoreLabel(fitScore)}</span>
           </div>
         </div>
 
@@ -168,12 +170,12 @@ export function CareerCard({ card, index }: CareerCardProps) {
 
         {/* Course Challenge & Reassurance */}
         <CourseChallengeAndReassurance
-          challenge={card.course_challenges}
+          challenge={card.course_challenges || card.courseChallenges || card.studyPath || ''}
           reassurance={card.reassurance}
         />
 
         {/* Trial Courses Badges */}
-        <TrialCoursesBadgeList trialCourses={card.trial_courses} />
+        <TrialCoursesBadgeList trialCourses={(card.trial_courses || card.trialCourses || []) as any} />
       </div>
     </article>
   );

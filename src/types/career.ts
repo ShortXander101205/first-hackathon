@@ -16,7 +16,8 @@ export interface TrialCourse {
   provider: string;
   description: string;
   estimatedHours?: number;
-  estimated_hours: number;
+  estimated_hours?: number;
+  searchQuery?: string;
 }
 
 export interface DayInTheLife {
@@ -26,51 +27,57 @@ export interface DayInTheLife {
 
 export interface PathwayCard {
   id: string;
-  role_title: string;
   roleTitle?: string;
-  match_tier: MatchTier;
+  role_title?: string;
+  broadField?: string;
+  broad_field?: string;
   matchTier?: MatchTier;
-  fit_score: number;
+  match_tier?: MatchTier;
   fitScore?: number;
-  fit_rationale: string;
+  fit_score?: number;
+  overview?: string; // 1 sentence <= 30 words
   fitRationale?: string;
+  fit_rationale?: string;
+  dailyTasks?: string[]; // 3-4 concrete tasks
+  daily_tasks?: string[];
+  day_in_the_life?: DayInTheLife;
+  studyPath?: string; // Foundational study topics <= 65 words
+  courseChallenges?: string;
+  course_challenges?: string;
+  reassurance: string; // Academic friction mitigation <= 65 words
   majors: string[];
   minors?: string[];
-  daily_tasks?: string[];
-  dailyTasks?: string[];
-  day_in_the_life?: DayInTheLife;
-  misconceptions?: string[];
-  course_challenges: string;
-  courseChallenges?: string;
-  reassurance: string;
-  trial_courses: [TrialCourse, TrialCourse];
   trialCourses?: [TrialCourse, TrialCourse];
+  trial_courses?: [TrialCourse, TrialCourse];
+  whereToStudyReady?: boolean;
 }
 
 export type CareerCard = PathwayCard;
 
 export interface GuideSummary {
-  student_archetype?: string;
   studentArchetype?: string;
+  student_archetype?: string;
   narrativeSummary?: string;
   narrative_summary?: string;
+  triage_narrative?: string;
 }
 
 export interface GuideMeta {
   engine: string;
-  generation_latency_ms?: number;
   generationLatencyMs?: number;
-  fallback_used?: boolean;
+  generation_latency_ms?: number;
   fallbackUsed?: boolean;
+  fallback_used?: boolean;
 }
 
 export interface GuideResult {
   success: boolean;
-  submission_id?: string;
   submissionId?: string;
+  submission_id?: string;
   studentProfile?: StudentProfile;
   summary: GuideSummary;
   pathways: PathwayCard[];
+  careers?: PathwayCard[];
   meta: GuideMeta;
 }
 

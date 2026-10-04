@@ -369,4 +369,115 @@ export const GUIDE_COPY = {
   },
 } as const;
 
+export const RESULTS_COPY = {
+  header: {
+    badge: 'Personalized Exploration Pathways',
+    defaultTitle: 'Your Recommended Pathways',
+    personalizedTitle: (name: string) => `${name}'s Recommended Pathways`,
+    subtitle:
+      'College major choice is a flexible springboard, not a permanent trap. Here are 4 distinct pathways aligned with what naturally energizes you.',
+    disclaimerTitle: 'Advisory Guide Notice',
+    disclaimerBody:
+      'These recommendations are starting points for conversation and discovery, not permanent life decisions. We encourage you to share and discuss these pathways with your school advisor, mentor, or trusted guide.',
+    archetypeLabel: 'Your Discovery Profile',
+    demoModeNotice:
+      'Sample pathways are shown for demonstration. Take your time exploring each option.',
+  },
+
+  card: {
+    collapsedCta: 'View pathway details',
+    expandedCta: 'Hide pathway details',
+    fitScoreLabel: 'Natural Fit',
+    fitScoreTooltip: 'Reflects how closely this pathway matches your daily task preferences and work comfort.',
+    dailyTasksLabel: 'What a Typical Day Looks Like',
+    dailyTasksSublabel: 'Real responsibilities and daily projects',
+    studyPathLabel: 'Foundational Study Path',
+    studyPathSublabel: 'Helpful classes and topics to build your skills',
+    reassuranceLabel: 'Working Through Common Challenges',
+    reassuranceSublabel: 'How to navigate friction and feel supported',
+    majorsLabel: 'Related College Majors',
+    minorsLabel: 'Complementary Minors',
+    trialCoursesLabel: 'Free Ways to Try This Out',
+    trialCoursesSublabel: 'Low-pressure, zero-cost introductory courses from trusted platforms',
+    hoursEstimated: (hours: number) => `~${hours} hrs to complete`,
+    courseSearchHint: 'Search for this course on free educational platforms',
+    overviewLabel: 'Overview',
+  },
+
+  tiers: {
+    'Primary Direct Match': {
+      label: 'Primary Direct Match',
+      badge: 'Immediate Fit',
+      description: 'Closest immediate alignment with your task interests and comfort zone.',
+    },
+    'High-Growth Pathway': {
+      label: 'High-Growth Pathway',
+      badge: 'Emerging Field',
+      description: 'Expanding fields with strong emerging demand and practical applications.',
+    },
+    'Interdisciplinary Pivot': {
+      label: 'Interdisciplinary Pivot',
+      badge: 'Hybrid Focus',
+      description: 'Combines multiple subjects for versatile, creative problem solvers.',
+    },
+    'Moonshot Trajectory': {
+      label: 'Moonshot Trajectory',
+      badge: 'Bold Ambition',
+      description: 'An ambitious stretch pathway with high creative or technical upside.',
+    },
+  },
+
+  whereToStudy: {
+    title: 'Where to Study',
+    badge: 'Regional Pathways Coming Soon',
+    description:
+      'Verified university degree listings and academic department mappings are curated by university advisors. We connect you with regional university partners without guessing admissions criteria.',
+    zeroHallucinationNote:
+      'Zero unverified admissions claims. All university pathway data is verified by academic advisors.',
+    comingSoonNotice:
+      'Verified regional university connections and department pathways are being prepared for your area.',
+  },
+
+  actions: {
+    printButton: 'Print or Save as PDF',
+    printButtonAriaLabel: 'Print or save these 4 career pathway recommendations as a PDF document',
+    clearButton: 'Start Over',
+    clearButtonAriaLabel: 'Start over and clear all recommendations',
+    clearDialogTitle: 'Start fresh with a clean slate?',
+    clearDialogDescription:
+      'This will clear your current pathways and answers, allowing you to retake the guide whenever you are ready.',
+    confirmClear: 'Yes, start over',
+    cancelClear: 'Keep my pathways',
+  },
+
+  loading: {
+    title: 'Discovering Your Pathways...',
+    messages: [
+      'Reflecting on what naturally energizes you...',
+      'Mapping out supportive college majors...',
+      'Finding zero-cost exploratory trial courses...',
+      'Assembling your personalized guide...',
+    ],
+    reassurance: 'Take a gentle breath. Discovery takes time, and there is no rush.',
+  },
+
+  error: {
+    title: 'We hit a temporary bump',
+    description:
+      'We were unable to assemble your pathways right now. Please try again in a few moments, or review your answers.',
+    retryButton: 'Try Again',
+    editAnswersButton: 'Review My Answers',
+    startOverButton: 'Start Over',
+  },
+
+  a11y: {
+    resultsLandmark: 'College major and career discovery pathways',
+    cardExpandedAnnouncement: (title: string) => `Expanded details for ${title}`,
+    cardCollapsedAnnouncement: (title: string) => `Collapsed details for ${title}`,
+    printTriggered: 'Opening print dialog to save your pathways',
+    clearTriggered: 'Answers and pathways cleared. Returning to welcome screen.',
+  },
+} as const;
+
 export type GuideCopyType = typeof GUIDE_COPY;
+export type ResultsCopyType = typeof RESULTS_COPY;

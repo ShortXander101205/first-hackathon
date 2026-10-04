@@ -42,7 +42,7 @@ export function TrialCoursesBadgeList({ trialCourses }: TrialCoursesBadgeListPro
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-edu-slate-100 text-edu-slate-700 shrink-0 self-start sm:self-auto">
                 <span>{course.provider}</span>
                 <span aria-hidden="true">•</span>
-                <span>{copy.hoursBadge(course.estimated_hours)}</span>
+                <span>{copy.hoursBadge(course.estimated_hours ?? course.estimatedHours ?? 4)}</span>
               </span>
             </div>
 

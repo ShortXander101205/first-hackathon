@@ -6,7 +6,11 @@ import { GUIDE_COPY } from '@/content/guideCopy';
 import { Icons } from '@/components/ui/icons';
 import { WelcomeProfileStep } from './WelcomeProfileStep';
 import { QuestionStepView } from './QuestionStepView';
+import { useGuideSynthesis } from '@/hooks/useGuideSynthesis';
+import { ResultsContainer } from '@/components/results';
+import { RESULTS_COPY } from '@/content/guideCopy';
 import type { WizardStep } from '@/types/intake';
+import type { SubmissionPayload } from '@/types/api';
 
 const STEP_TITLES: Record<WizardStep, string> = {
   0: 'Welcome and Student Profile',
@@ -97,6 +101,108 @@ export function IntakeWizardContainer() {
       : currentStep === 10
       ? validationErrors.q10Ambition || validationErrors.q4
       : undefined;
+
+  const { isLoading, guideResult, error, fetchGuide, resetGuide } = useGuideSynthesis();
+
+  const handleTriggerSynthesis = React.useCallback(() => {
+    const payload: SubmissionPayload = {
+      studentProfile: {
+        fullName: profile?.fullName?.trim() || 'Alex',
+        gradeLevel: profile?.gradeLevel || 'grade_12',
+        studentId: profile?.studentId?.trim() || undefined,
+      },
+      intakeAnswers: {
+        q1TaskIds: answers.q1TaskIds && answers.q1TaskIds.length > 0 ? answers.q1TaskIds : ['BUILD_SYSTEMS'],
+        q2SubjectId: answers.q2SubjectId || 'TECH_COMPUTING',
+        q3AcademicHesitation: answers.q3AcademicHesitation || answers.q2Rationale || 'None shared',
+        q4Environment: (answers.q4Environment || answers.q3Environment || 'REMOTE_DIGITAL') as any,
+        q5ProblemSolving: answers.q5ProblemSolving || 'SYSTEMATIC_LOGIC',
+        q6SocialEnergy: answers.q6SocialEnergy || 'BALANCED_TEAM',
+        q7StructureTolerance: answers.q7StructureTolerance || 'BALANCED_MILESTONES',
+        q8AcademicFriction: answers.q8AcademicFriction || 'ADVANCED_MATH',
+        q9HorizonPriority: answers.q9HorizonPriority || 'FINANCIAL_STABILITY',
+        q10PostCollegeAmbition: (answers.q10PostCollegeAmbition || answers.q4Ambition || 'WORKFORCE_DIRECT') as any,
+      },
+      metadata: {
+        clientTimestamp: new Date().toISOString(),
+        schemaVersion: 2,
+      },
+    };
+    fetchGuide(payload);
+  }, [profile, answers, fetchGuide]);
+
+  // Auto-trigger synthesis when the student finishes Step 10
+  useEffect(() => {
+    if (isCompleted && !guideResult && !isLoading && !error) {
+      handleTriggerSynthesis();
+    }
+  }, [isCompleted, guideResult, isLoading, error, handleTriggerSynthesis]);
+
+  // 1. Render ResultsContainer when synthesis successfully completes
+  if (isCompleted && guideResult) {
+    return (
+      <ResultsContainer
+        result={guideResult}
+        onClear={() => {
+          resetGuide();
+          resetState();
+        }}
+      />
+    );
+  }
+
+  // 2. Render calm recovery view if an upstream error occurs
+  if (isCompleted && error && !guideResult) {
+    return (
+      <div className="w-full max-w-4xl mx-auto py-12 px-4 text-center space-y-5">
+        <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+          <Icons.frictionAlert className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-xl font-bold text-slate-900">{RESULTS_COPY.error.title}</h2>
+          <p className="text-sm text-slate-600 max-w-md mx-auto">{RESULTS_COPY.error.description}</p>
+        </div>
+        <div className="pt-2 flex justify-center gap-3">
+          <button
+            type="button"
+            onClick={handleTriggerSynthesis}
+            className="min-h-[44px] px-5 py-2.5 rounded-xl bg-edu-interactive hover:bg-edu-interactive-hover text-white font-medium text-sm transition-colors"
+          >
+            {RESULTS_COPY.error.retryButton}
+          </button>
+          <button
+            type="button"
+            onClick={previousStep}
+            className="min-h-[44px] px-5 py-2.5 rounded-xl border border-edu-border-subtle bg-white text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-50 transition-colors"
+          >
+            {RESULTS_COPY.error.editAnswersButton}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. Render calm loading state while synthesis is in progress or waiting to complete
+  if (isCompleted && !guideResult) {
+    return (
+      <div className="w-full max-w-4xl mx-auto py-16 px-4 text-center space-y-6">
+        <div className="w-16 h-16 rounded-full bg-blue-50 text-edu-interactive flex items-center justify-center mx-auto shadow-sm">
+          <svg className="w-8 h-8 animate-spin text-edu-interactive" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-slate-900">{RESULTS_COPY.loading.title}</h2>
+          <p className="text-sm text-slate-600 max-w-md mx-auto">{RESULTS_COPY.loading.reassurance}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto py-4 sm:py-8 px-4 sm:px-6">

@@ -61,3 +61,28 @@ export const intakeStoredStateSchema = z.object({
 
 export type StudentProfileInput = z.infer<typeof studentProfileSchema>;
 export type IntakeStoredStateInput = z.infer<typeof intakeStoredStateSchema>;
+
+export const intakeAnswersSchema = z.object({
+  q1TaskIds: z.array(z.string().trim().min(1)).min(1, 'Please select 1 or 2 task interests').max(2, 'Please select up to 2 task interests'),
+  q2SubjectId: z.string().trim().min(1, 'Please select a primary subject area'),
+  q3AcademicHesitation: z.string().trim().min(1, 'Please share your thoughts on academic hesitations').max(200, 'Please keep thoughts within 200 characters'),
+  q4Environment: z.string().trim().min(1, 'Please select a work environment'),
+  q5ProblemSolving: z.string().trim().min(1, 'Please select a problem-solving approach'),
+  q6SocialEnergy: z.string().trim().min(1, 'Please select a social energy preference'),
+  q7StructureTolerance: z.string().trim().min(1, 'Please select a structure preference'),
+  q8AcademicFriction: z.string().trim().min(1, 'Please select an academic friction area'),
+  q9HorizonPriority: z.string().trim().min(1, 'Please select a horizon priority'),
+  q10PostCollegeAmbition: z.string().trim().min(1, 'Please select a post-college ambition'),
+});
+
+export const submissionPayloadSchema = z.object({
+  studentProfile: studentProfileSchema,
+  intakeAnswers: intakeAnswersSchema,
+  metadata: z.object({
+    clientTimestamp: z.string().optional(),
+    schemaVersion: z.number().optional(),
+  }).passthrough().optional(),
+});
+
+export type IntakeAnswersInput = z.infer<typeof intakeAnswersSchema>;
+export type SubmissionPayloadInput = z.infer<typeof submissionPayloadSchema>;
