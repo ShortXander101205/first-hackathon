@@ -7,6 +7,7 @@ import { ResultsHeader } from './ResultsHeader';
 import { PrintHeader } from './PrintHeader';
 import { CareerMatchCard } from './CareerMatchCard';
 import { ResultsFooter } from './ResultsFooter';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 export interface ResultsContainerProps {
   result: GuideResult;
@@ -61,19 +62,21 @@ export function ResultsContainer({ result, onClear, onPrint }: ResultsContainerP
       />
 
       {/* 4 Progressive Disclosure Career Concentration Cards */}
-      <main className="space-y-6" aria-label={RESULTS_COPY.header.pathwaysSectionLabel}>
-        {pathways.map((card) => {
-          const isExpanded = expandedCardIds.has(card.id);
-          return (
-            <CareerMatchCard
-              key={card.id}
-              card={card}
-              isExpanded={isExpanded}
-              onToggle={handleToggleCard}
-            />
-          );
-        })}
-      </main>
+      <ErrorBoundary componentName="ResultsContainer" onReset={onClear}>
+        <main className="space-y-6" aria-label={RESULTS_COPY.header.pathwaysSectionLabel}>
+          {pathways.map((card) => {
+            const isExpanded = expandedCardIds.has(card.id);
+            return (
+              <CareerMatchCard
+                key={card.id}
+                card={card}
+                isExpanded={isExpanded}
+                onToggle={handleToggleCard}
+              />
+            );
+          })}
+        </main>
+      </ErrorBoundary>
 
       {/* Native Print & Reset Footer Actions */}
       <ResultsFooter onClear={onClear} onPrint={onPrint} />

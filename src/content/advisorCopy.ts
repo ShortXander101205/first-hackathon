@@ -115,10 +115,26 @@ export const ADVISOR_COPY = {
       `Archived ${count} submissions from prior academic cycles (cut-off: ${date}).`,
   },
 
+  security: {
+    rateLimitedTitle: 'Too Many Access Attempts',
+    rateLimitedMessage:
+      'Too many passcode attempts have been made recently. For school security, please wait a minute before trying again.',
+    rateLimitedRetryNotice: (seconds: number) =>
+      `You can enter your school passcode again in ${seconds} seconds.`,
+    noteRateLimited:
+      'You are saving notes faster than normal. Please pause a moment before submitting your next note.',
+    sanitizedNotice:
+      'Special formatting tags were cleaned from your note to ensure student record safety.',
+  },
+
   errors: {
     sessionExpired: 'Your advisor session has expired. Please enter your school passcode again.',
     networkError: 'We could not reach the school server. Please verify your connection.',
     unauthorized: 'Advisor authentication required.',
+    portalErrorTitle: 'Advisor Directory Unavailable',
+    portalErrorMessage:
+      'A temporary issue occurred while displaying the advisor directory. Please refresh to continue reviewing student records.',
+    retryButton: 'Reload Student Directory',
   },
 } as const;
 

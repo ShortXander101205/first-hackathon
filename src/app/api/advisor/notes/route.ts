@@ -2,35 +2,52 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdvisorSessionFromRequest } from '@/lib/auth';
 import { MOCK_ADVISOR_SUBMISSIONS } from '@/data/mockAdvisorSubmissions';
+import { advisorNotesRateLimiter, getClientIp } from '@/lib/rateLimit';
+import { sanitizeString } from '@/lib/sanitize';
+import { createProblemResponse, handleServerError, generateRequestId } from '@/lib/apiErrors';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request): Promise<NextResponse> {
+  const requestId = generateRequestId();
+  const clientIp = getClientIp(request);
+
+  // 1. Session verification
   const session = getAdvisorSessionFromRequest(request);
   if (!session) {
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/unauthorized',
-        title: 'Advisor Authentication Required',
-        status: 401,
-        detail: 'Please enter your advisor passcode to save advisor notes.',
-      },
-      { status: 401 }
+    return createProblemResponse(
+      401,
+      'UNAUTHORIZED',
+      'Please enter your advisor passcode to save advisor notes.',
+      { instance: '/api/advisor/notes', requestId }
     );
   }
 
+  // 2. Rate limiting check (30 req / 1 min)
+  const rateStatus = advisorNotesRateLimiter.consume(clientIp);
+  if (!rateStatus.allowed) {
+    return createProblemResponse(
+      429,
+      'RATE_LIMITED',
+      'You are saving notes faster than normal. Please pause a moment before submitting your next note.',
+      {
+        instance: '/api/advisor/notes',
+        requestId,
+        retryAfter: rateStatus.retryAfterSeconds,
+      }
+    );
+  }
+
+  // 3. Parse JSON body
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/validation-failed',
-        title: 'Bad Request',
-        status: 400,
-        detail: 'Invalid request format. Expected JSON.',
-      },
-      { status: 400 }
+    return createProblemResponse(
+      400,
+      'VALIDATION_FAILED',
+      'Invalid request format. Expected JSON.',
+      { instance: '/api/advisor/notes', requestId }
     );
   }
 
@@ -40,55 +57,49 @@ export async function POST(request: Request): Promise<NextResponse> {
     authorName?: string;
   }) || {};
 
-  if (!submissionId || typeof submissionId !== 'string' || submissionId.trim() === '') {
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/validation-failed',
-        title: 'Bad Request',
-        status: 400,
-        detail: 'A valid student submission identifier is required.',
-      },
-      { status: 400 }
+  // 4. Validate and sanitize inputs
+  const sanitizedSubmissionId = sanitizeString(submissionId);
+  if (!sanitizedSubmissionId || sanitizedSubmissionId.trim() === '') {
+    return createProblemResponse(
+      400,
+      'VALIDATION_FAILED',
+      'A valid student submission identifier is required.',
+      { instance: '/api/advisor/notes', requestId }
     );
   }
 
-  const trimmedContent = typeof content === 'string' ? content.trim() : '';
-  if (!trimmedContent || trimmedContent.length === 0) {
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/validation-failed',
-        title: 'Bad Request',
-        status: 400,
-        detail: 'Note content cannot be blank.',
-      },
-      { status: 400 }
+  const sanitizedContent = sanitizeString(content);
+  if (!sanitizedContent || sanitizedContent.trim().length === 0) {
+    return createProblemResponse(
+      400,
+      'VALIDATION_FAILED',
+      'Note content cannot be blank.',
+      { instance: '/api/advisor/notes', requestId }
     );
   }
 
-  if (trimmedContent.length > 2000) {
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/validation-failed',
-        title: 'Note Exceeds Length Limit',
-        status: 400,
-        detail: 'Notes are limited to a maximum of 2,000 characters.',
-      },
-      { status: 400 }
+  if (sanitizedContent.length > 2000) {
+    return createProblemResponse(
+      400,
+      'VALIDATION_FAILED',
+      'Notes are limited to a maximum of 2,000 characters.',
+      { instance: '/api/advisor/notes', requestId }
     );
   }
 
+  const sanitizedAuthor = sanitizeString(authorName);
   const noteAuthor =
-    (authorName && authorName.trim() !== '')
-      ? authorName.trim()
-      : (session.authorName && session.authorName.trim() !== '')
+    sanitizedAuthor && sanitizedAuthor.trim() !== ''
+      ? sanitizedAuthor.trim()
+      : session.authorName && session.authorName.trim() !== ''
       ? session.authorName.trim()
       : 'Advisor';
 
   try {
     const note = await prisma.advisorNote.create({
       data: {
-        submissionId: submissionId.trim(),
-        content: trimmedContent,
+        submissionId: sanitizedSubmissionId.trim(),
+        content: sanitizedContent.trim(),
         authorName: noteAuthor,
       },
     });
@@ -108,13 +119,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   } catch (error) {
     // If DB is offline or mock submission is being edited in local demo
-    const mockSub = MOCK_ADVISOR_SUBMISSIONS.find((m) => m.id === submissionId);
+    const mockSub = MOCK_ADVISOR_SUBMISSIONS.find((m) => m.id === sanitizedSubmissionId);
     if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '' || mockSub) {
       const mockNote = {
         id: `note_${Date.now()}`,
-        submissionId: submissionId.trim(),
+        submissionId: sanitizedSubmissionId.trim(),
         authorName: noteAuthor,
-        content: trimmedContent,
+        content: sanitizedContent.trim(),
         createdAt: new Date().toISOString(),
       };
 
@@ -131,15 +142,6 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
     }
 
-    console.error('[PathLess Advisor API] Error saving note:', error);
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/internal-error',
-        title: 'Unable to Save Advisor Note',
-        status: 500,
-        detail: 'We encountered an error saving this note. Please try again.',
-      },
-      { status: 500 }
-    );
+    return handleServerError(error, '/api/advisor/notes', requestId);
   }
 }

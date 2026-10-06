@@ -153,6 +153,60 @@ export const GUIDE_COPY = {
     characterLimitReached: 'Maximum 200 character limit reached',
     resetCompleted: 'Answers have been reset. Welcome to PathLess Guide.',
   },
+
+  apiErrors: {
+    RATE_LIMITED: {
+      title: 'High Community Activity',
+      detail:
+        'PathLess is experiencing high interest right now. Please take a gentle breath and try submitting again in a few moments.',
+      retryPrompt: (seconds: number) =>
+        `Please wait ${Math.ceil(seconds)} seconds before exploring new pathways.`,
+    },
+    VALIDATION_FAILED: {
+      title: 'Check Your Responses',
+      detail:
+        'We could not process your responses. Please verify that each question has been answered and try again.',
+    },
+    PAYLOAD_TOO_LARGE: {
+      title: 'Response Too Detailed',
+      detail:
+        'Your answers exceeded our submission size limit. Please shorten your written thoughts and try again.',
+    },
+    UNSUPPORTED_MEDIA_TYPE: {
+      title: 'Unsupported Request Format',
+      detail:
+        'Please submit your responses as standard JSON data.',
+    },
+    UNAUTHORIZED: {
+      title: 'Authorization Required',
+      detail:
+        'Please provide valid authorization credentials to access this service.',
+    },
+    GATEWAY_TIMEOUT: {
+      title: 'Taking Longer Than Usual',
+      detail:
+        'Generating your pathways took longer than expected. Please try submitting again.',
+    },
+    INTERNAL_ERROR: {
+      title: 'Temporary System Pause',
+      detail:
+        'We encountered a temporary bump assembling your guide. Please try again in a moment.',
+    },
+  },
+
+  clientErrors: {
+    defaultTitle: 'Something Went Off Course',
+    defaultMessage:
+      'We ran into an unexpected display issue. Your answers are safe, and you can reload the view to continue exploring.',
+    retryButton: 'Try Again',
+    reloadAppButton: 'Reload PathLess',
+    routeErrorTitle: 'Unable to Load This Section',
+    routeErrorMessage:
+      'A temporary glitch prevented this page from displaying properly. Please refresh to pick up where you left off.',
+    globalErrorTitle: 'PathLess Is Temporarily Paused',
+    globalErrorMessage:
+      'An unexpected application issue occurred. Please reload your browser to start fresh.',
+  },
 } as const;
 
 export const RESULTS_COPY = {

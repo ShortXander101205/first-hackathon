@@ -38,3 +38,11 @@ Open questions: The exact list of titles and majors in the curated catalog has n
 - Reading Level & Tone: Standardized intake questions, helper hints, error notices, and results milestones to a calm, supportive 8th-to-12th grade reading comprehension level.
 - Educator Interface: Refactored `/advisor` dashboard labels, empty states, and action buttons to intuitive educational terminology.
 - Accessibility & Styling: Verified WCAG 2.1 AA text contrast and smooth responsive text reflow across mobile, desktop, print views, and 200% zoom.
+
+## Feature 12: Safety and Guardrails (Completed: October 7, 2026)
+
+- Rate Limiting: Implemented in-memory sliding-window throttling for `/api/guide` (5 req/10 min per IP) and `/api/advisor/login` (5 req/min per IP) without paid third-party infrastructure.
+- Input Validation & Sanitization: Integrated Zod schemas across all API route payloads; stripped HTML/script injection patterns from student names, IDs, and free-text responses.
+- Prompt Injection Defenses: Enclosed user free-text in strict delimiter boundaries within the synthesis prompt to neutralize instruction overrides.
+- Error Resilience: Deployed React Error Boundaries across intake and advisor routes to intercept runtime exceptions and display calm, accessible fallbacks with zero exposed stack traces or system internals.
+

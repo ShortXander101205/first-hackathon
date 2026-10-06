@@ -11,8 +11,7 @@ import { ResultsContainer } from '@/components/results';
 import { RESULTS_COPY } from '@/content/guideCopy';
 import type { WizardStep } from '@/types/intake';
 import type { SubmissionPayload } from '@/types/api';
-
-
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 export function IntakeWizardContainer() {
   const {
@@ -251,76 +250,78 @@ export function IntakeWizardContainer() {
       )}
 
       {/* Main Content Stage */}
-      <main className="min-w-0">
-        {currentStep === 0 && (
-          <WelcomeProfileStep
-            profile={profile || { fullName: '', gradeLevel: 'grade_10' }}
-            validationErrors={validationErrors}
-            onUpdateProfile={(p) => setProfile?.(p)}
-            onContinue={nextStep}
-            isValid={isCurrentStepValid}
-          />
-        )}
+      <ErrorBoundary componentName="IntakeWizard" onReset={resetState}>
+        <main className="min-w-0">
+          {currentStep === 0 && (
+            <WelcomeProfileStep
+              profile={profile || { fullName: '', gradeLevel: 'grade_10' }}
+              validationErrors={validationErrors}
+              onUpdateProfile={(p) => setProfile?.(p)}
+              onContinue={nextStep}
+              isValid={isCurrentStepValid}
+            />
+          )}
 
-        {currentStep >= 1 && currentStep <= 10 && !isCompleted && (
-          <QuestionStepView
-            step={currentStep}
-            answers={answers}
-            validationError={activeQuestionError}
-            onToggleTask={(id) => {
-              toggleQ1Task ? toggleQ1Task(id) : toggleTask(id);
-            }}
-            onSelectSubject={(id) => {
-              setQ2Subject ? setQ2Subject(id) : setSubject(id);
-            }}
-            onChangeHesitation={(text) => {
-              setQ3Hesitation ? setQ3Hesitation(text) : setRationale(text);
-            }}
-            onSelectEnvironment={(env) => {
-              setQ4Environment ? setQ4Environment(env) : setEnvironment(env as any);
-            }}
-            onSelectProblemSolving={(style) => setQ5ProblemSolving?.(style)}
-            onSelectSocialEnergy={(social) => setQ6SocialEnergy?.(social)}
-            onSelectStructure={(structure) => setQ7Structure?.(structure)}
-            onSelectFriction={(friction) => setQ8AcademicFriction?.(friction)}
-            onSelectPriority={(priority) => setQ9HorizonPriority?.(priority)}
-            onSelectAmbition={(ambition) => {
-              setQ10Ambition ? setQ10Ambition(ambition) : setAmbition(ambition as any);
-            }}
-          />
-        )}
+          {currentStep >= 1 && currentStep <= 10 && !isCompleted && (
+            <QuestionStepView
+              step={currentStep}
+              answers={answers}
+              validationError={activeQuestionError}
+              onToggleTask={(id) => {
+                toggleQ1Task ? toggleQ1Task(id) : toggleTask(id);
+              }}
+              onSelectSubject={(id) => {
+                setQ2Subject ? setQ2Subject(id) : setSubject(id);
+              }}
+              onChangeHesitation={(text) => {
+                setQ3Hesitation ? setQ3Hesitation(text) : setRationale(text);
+              }}
+              onSelectEnvironment={(env) => {
+                setQ4Environment ? setQ4Environment(env) : setEnvironment(env as any);
+              }}
+              onSelectProblemSolving={(style) => setQ5ProblemSolving?.(style)}
+              onSelectSocialEnergy={(social) => setQ6SocialEnergy?.(social)}
+              onSelectStructure={(structure) => setQ7Structure?.(structure)}
+              onSelectFriction={(friction) => setQ8AcademicFriction?.(friction)}
+              onSelectPriority={(priority) => setQ9HorizonPriority?.(priority)}
+              onSelectAmbition={(ambition) => {
+                setQ10Ambition ? setQ10Ambition(ambition) : setAmbition(ambition as any);
+              }}
+            />
+          )}
 
-        {/* Completion Review Banner */}
-        {isCompleted && (
-          <div className="text-center py-10 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-reassurance-100 text-reassurance-700 flex items-center justify-center mx-auto shadow-xs">
-              <Icons.check className="w-6 h-6" />
+          {/* Completion Review Banner */}
+          {isCompleted && (
+            <div className="text-center py-10 space-y-4">
+              <div className="w-12 h-12 rounded-full bg-reassurance-100 text-reassurance-700 flex items-center justify-center mx-auto shadow-xs">
+                <Icons.check className="w-6 h-6" />
+              </div>
+              <h2 className="text-2xl font-bold text-edu-slate-900">
+                {GUIDE_COPY.shell.completionTitle}
+              </h2>
+              <p className="text-sm text-edu-slate-600 max-w-md mx-auto">
+                {GUIDE_COPY.shell.completionMessage}
+              </p>
+              <div className="pt-4 flex justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={previousStep}
+                  className="min-h-[44px] px-5 py-2.5 rounded-xl border border-edu-border-subtle bg-white text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-50 transition-colors focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:outline-none"
+                >
+                  {GUIDE_COPY.shell.reviewAnswersButton}
+                </button>
+                <button
+                  type="button"
+                  onClick={openResetDialog}
+                  className="min-h-[44px] px-5 py-2.5 rounded-xl bg-edu-slate-100 text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-200 transition-colors focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:outline-none"
+                >
+                  {GUIDE_COPY.resetDialog.triggerButton}
+                </button>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-edu-slate-900">
-              {GUIDE_COPY.shell.completionTitle}
-            </h2>
-            <p className="text-sm text-edu-slate-600 max-w-md mx-auto">
-              {GUIDE_COPY.shell.completionMessage}
-            </p>
-            <div className="pt-4 flex justify-center gap-4">
-              <button
-                type="button"
-                onClick={previousStep}
-                className="min-h-[44px] px-5 py-2.5 rounded-xl border border-edu-border-subtle bg-white text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-50 transition-colors focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:outline-none"
-              >
-                {GUIDE_COPY.shell.reviewAnswersButton}
-              </button>
-              <button
-                type="button"
-                onClick={openResetDialog}
-                className="min-h-[44px] px-5 py-2.5 rounded-xl bg-edu-slate-100 text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-200 transition-colors focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:outline-none"
-              >
-                {GUIDE_COPY.resetDialog.triggerButton}
-              </button>
-            </div>
-          </div>
-        )}
-      </main>
+          )}
+        </main>
+      </ErrorBoundary>
 
       {/* Navigation Controls Footer (Visible on Steps 1 to 10) */}
       {currentStep >= 1 && currentStep <= 10 && !isCompleted && (

@@ -1,12 +1,32 @@
 import { NextResponse } from 'next/server';
 import { getAdvisorSessionFromRequest } from '@/lib/auth';
-import { executeAnnualPurge, getPrecedingJuly1Cutoff } from '@/lib/purge';
+import { executeAnnualPurge } from '@/lib/purge';
 import { ADVISOR_COPY } from '@/content/advisorCopy';
+import { adminPurgeRateLimiter, getClientIp } from '@/lib/rateLimit';
+import { createProblemResponse, handleServerError, generateRequestId } from '@/lib/apiErrors';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request): Promise<NextResponse> {
-  // 1. Authorization check
+  const requestId = generateRequestId();
+  const clientIp = getClientIp(request);
+
+  // 1. Rate Limiting Check (5 req / 1 min)
+  const rateStatus = adminPurgeRateLimiter.consume(clientIp);
+  if (!rateStatus.allowed) {
+    return createProblemResponse(
+      429,
+      'RATE_LIMITED',
+      'Annual archive requests are throttled. Please wait a moment before trying again.',
+      {
+        instance: '/api/admin/purge',
+        requestId,
+        retryAfter: rateStatus.retryAfterSeconds,
+      }
+    );
+  }
+
+  // 2. Authorization check
   const adminKey = request.headers.get('x-admin-key');
   const expectedAdminSecret = process.env.ADMIN_SECRET;
 
@@ -19,18 +39,15 @@ export async function POST(request: Request): Promise<NextResponse> {
   const isSessionAuthorized = Boolean(session);
 
   if (!isKeyAuthorized && !isSessionAuthorized) {
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/unauthorized',
-        title: 'Unauthorized',
-        status: 401,
-        detail: 'Administrative authorization or valid advisor session required.',
-      },
-      { status: 401 }
+    return createProblemResponse(
+      401,
+      'UNAUTHORIZED',
+      'Administrative authorization or valid advisor session required.',
+      { instance: '/api/admin/purge', requestId }
     );
   }
 
-  // 2. Parse payload and query parameters
+  // 3. Parse payload and query parameters safely
   const url = new URL(request.url);
   const dryRunParam = url.searchParams.get('dryRun');
 
@@ -38,7 +55,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     body = await request.json();
   } catch {
-    // Body is optional
+    // Body is optional for purge endpoint
   }
 
   const dryRun =
@@ -61,15 +78,6 @@ export async function POST(request: Request): Promise<NextResponse> {
       { status: 200 }
     );
   } catch (error: any) {
-    console.error('[PathLess Admin Purge] Execution failure:', error);
-    return NextResponse.json(
-      {
-        type: 'https://pathless.app/errors/internal-error',
-        title: 'Error Archiving Records',
-        status: 500,
-        detail: 'Unable to complete the annual archive at this time.',
-      },
-      { status: 500 }
-    );
+    return handleServerError(error, '/api/admin/purge', requestId);
   }
 }

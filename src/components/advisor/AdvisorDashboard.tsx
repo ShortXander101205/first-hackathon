@@ -6,6 +6,7 @@ import { StudentTable } from './StudentTable';
 import { StudentDetailModal } from './StudentDetailModal';
 import { ADVISOR_COPY } from '@/content/advisorCopy';
 import { Compass, LogOut, UserCheck } from 'lucide-react';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 interface AdvisorDashboardProps {
   initialAdvisorName?: string;
@@ -110,29 +111,31 @@ export const AdvisorDashboard: React.FC<AdvisorDashboardProps> = ({
       </header>
 
       {/* Main Workspace */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            {ADVISOR_COPY.portal.pageTitle}
-          </h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            {ADVISOR_COPY.portal.tagline}
-          </p>
-        </div>
+      <ErrorBoundary componentName="AdvisorDashboard" onReset={fetchStudents}>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {ADVISOR_COPY.portal.pageTitle}
+            </h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              {ADVISOR_COPY.portal.tagline}
+            </p>
+          </div>
 
-        {/* Directory Table with search and filters */}
-        <StudentTable
-          students={students}
-          isLoading={isLoading}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedGrade={selectedGrade}
-          onGradeChange={setSelectedGrade}
-          selectedDateRange={selectedDateRange}
-          onDateRangeChange={setSelectedDateRange}
-          onSelectStudent={handleSelectStudent}
-        />
-      </main>
+          {/* Directory Table with search and filters */}
+          <StudentTable
+            students={students}
+            isLoading={isLoading}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedGrade={selectedGrade}
+            onGradeChange={setSelectedGrade}
+            selectedDateRange={selectedDateRange}
+            onDateRangeChange={setSelectedDateRange}
+            onSelectStudent={handleSelectStudent}
+          />
+        </main>
+      </ErrorBoundary>
 
       {/* Student Detail Modal / Drawer */}
       <StudentDetailModal

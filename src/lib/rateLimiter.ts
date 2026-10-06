@@ -1,7 +1,9 @@
 /**
- * PathwayAI: Dual-Tier In-Memory Rate Limiter
+ * PathLess: Dual-Tier In-Memory Rate Limiter
  * Guards the 15 RPM Gemini free-tier ceiling (14 RPM global buffer) and prevents per-IP spam (3 RPM).
  */
+
+import { guideRateLimiter, globalGuideRateLimiter } from './rateLimit';
 
 export interface RateLimitStatus {
   allowed: boolean;
@@ -77,4 +79,6 @@ export function recordRequest(clientIp: string = 'unknown'): void {
 export function resetRateLimits(): void {
   globalTimestamps = [];
   clientTimestamps.clear();
+  guideRateLimiter.reset();
+  globalGuideRateLimiter.reset();
 }

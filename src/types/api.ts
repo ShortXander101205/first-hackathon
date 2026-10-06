@@ -13,7 +13,9 @@ export type ProblemErrorCode =
   | 'UNSUPPORTED_MEDIA_TYPE'
   | 'RATE_LIMITED'
   | 'AI_SYNTHESIS_FAILED'
-  | 'GATEWAY_TIMEOUT';
+  | 'GATEWAY_TIMEOUT'
+  | 'INTERNAL_ERROR'
+  | 'UNAUTHORIZED';
 
 /**
  * Standard RFC 7807 Problem Details representation.

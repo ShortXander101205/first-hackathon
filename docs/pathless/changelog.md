@@ -23,3 +23,11 @@ Feature 14: Simpler Suggestions and Clean PDF. Refines results cards by removing
 - Fully purged legacy naming (`dossier`, `PathwayAI`, `Triage`, `Counselor`) and developer jargon.
 - Standardized form guidance and error messaging to a supportive 8th-to-12th grade reading level.
 - Features affected: Feature 12 (Safety hardening and input guardrails).
+
+### Feature 12: Safety and Guardrails
+
+- Added in-memory sliding-window rate limiting to protect Gemini quotas and PostgreSQL connections.
+- Implemented Zod schema validation and input sanitization across all API endpoints.
+- Hardened synthesis prompt boundaries against prompt injection.
+- Added client React Error Boundaries and sanitized plain-language API error responses.
+- Features affected: Feature 13 (Deployment and E2E testing).

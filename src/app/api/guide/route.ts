@@ -1,61 +1,23 @@
 import { NextResponse } from 'next/server';
 import { submissionPayloadSchema } from '@/schemas/intake.schema';
 import { generateGuideRecommendations, sanitizeError } from '@/lib/gemini';
+import {
+  guideRateLimiter,
+  globalGuideRateLimiter,
+  getClientIp,
+  getClientRateLimitKey,
+} from '@/lib/rateLimit';
 import { checkRateLimit, recordRequest } from '@/lib/rateLimiter';
 import { getMockCareerResults } from '@/data/mockCareerResults';
 import { validateGuideSynthesisResult } from '@/lib/guideValidator';
-import { ProblemDetails, ProblemErrorCode, SubmissionPayload } from '@/types/api';
+import { SubmissionPayload } from '@/types/api';
 import { GuideResult } from '@/types/career';
 import { prisma } from '@/lib/prisma';
+import { createProblemResponse, generateRequestId } from '@/lib/apiErrors';
 
 export const runtime = 'nodejs';
 
 const MAX_PAYLOAD_BYTES = 10 * 1024; // 10 KB request size limit
-
-function generateRequestId(): string {
-  const timestamp = Date.now().toString(36);
-  const randomStr = Math.random().toString(36).substring(2, 8);
-  return `req_${timestamp}_${randomStr}`;
-}
-
-function createProblemResponse(
-  status: number,
-  title: string,
-  code: ProblemErrorCode,
-  detail: string,
-  requestId: string,
-  options?: {
-    invalidParams?: Array<{ name: string; reason: string }>;
-    retryAfter?: number;
-  }
-): NextResponse<ProblemDetails> {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/problem+json',
-  };
-
-  if (options?.retryAfter) {
-    headers['Retry-After'] = String(options.retryAfter);
-  }
-
-  const problem: ProblemDetails = {
-    type: `https://pathless.app/errors/${code.toLowerCase().replace(/_/g, '-')}`,
-    title,
-    status,
-    detail,
-    instance: '/api/guide',
-    code,
-    requestId,
-    ...(options?.invalidParams
-      ? {
-          invalidParams: options.invalidParams,
-          errors: options.invalidParams,
-        }
-      : {}),
-    ...(options?.retryAfter ? { retryAfter: options.retryAfter } : {}),
-  };
-
-  return NextResponse.json(problem, { status, headers });
-}
 
 export async function POST(request: Request): Promise<NextResponse> {
   const requestId = generateRequestId();
@@ -65,10 +27,9 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (!contentType.toLowerCase().includes('application/json')) {
     return createProblemResponse(
       415,
-      'Unsupported Media Type',
       'UNSUPPORTED_MEDIA_TYPE',
       'The request format is unsupported. Please submit your responses as application/json.',
-      requestId
+      { instance: '/api/guide', requestId }
     );
   }
 
@@ -77,41 +38,88 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (contentLength > MAX_PAYLOAD_BYTES) {
     return createProblemResponse(
       413,
-      'Payload Too Large',
       'PAYLOAD_TOO_LARGE',
       'The submission payload was too large. Please shorten your response and try again.',
-      requestId
+      { instance: '/api/guide', requestId }
     );
   }
 
-  // 3. Guard: Parse JSON body safely
+  // 3. Rate Limiting Check (dual-tier sliding-window)
+  const clientIp = getClientIp(request);
+  const clientKey = getClientRateLimitKey(request, 'guide_synthesis');
+
+  // Check per-IP burst limit (3 RPM)
+  const burstStatus = checkRateLimit(clientIp);
+  if (!burstStatus.allowed) {
+    return createProblemResponse(
+      429,
+      'RATE_LIMITED',
+      'PathLess is experiencing high demand right now. Please take a deep breath and try again in a few moments.',
+      {
+        instance: '/api/guide',
+        requestId,
+        retryAfter: burstStatus.retryAfterSeconds,
+      }
+    );
+  }
+
+  // Check global Gemini ceiling (14 RPM)
+  const globalStatus = globalGuideRateLimiter.check('global');
+  if (!globalStatus.allowed) {
+    return createProblemResponse(
+      429,
+      'RATE_LIMITED',
+      'PathLess is experiencing high demand right now. Please take a deep breath and try again in a few moments.',
+      {
+        instance: '/api/guide',
+        requestId,
+        retryAfter: globalStatus.retryAfterSeconds,
+      }
+    );
+  }
+
+  // Atomically check and consume client rate limit (5 req / 10-min window)
+  const clientStatus = guideRateLimiter.consume(clientKey);
+  if (!clientStatus.allowed) {
+    return createProblemResponse(
+      429,
+      'RATE_LIMITED',
+      'PathLess is experiencing high demand right now. Please take a deep breath and try again in a few moments.',
+      {
+        instance: '/api/guide',
+        requestId,
+        retryAfter: clientStatus.retryAfterSeconds,
+      }
+    );
+  }
+
+  // 4. Guard: Parse JSON body safely
   let rawBody: unknown;
   try {
     const rawText = await request.text();
     if (rawText.length > MAX_PAYLOAD_BYTES) {
       return createProblemResponse(
         413,
-        'Payload Too Large',
         'PAYLOAD_TOO_LARGE',
         'The submission payload was too large. Please shorten your response and try again.',
-        requestId
+        { instance: '/api/guide', requestId }
       );
     }
     rawBody = JSON.parse(rawText);
   } catch {
     return createProblemResponse(
       400,
-      'Bad Request',
       'VALIDATION_FAILED',
       'We could not process your responses. Please verify that each question has been answered and try again. Specific errors: body: Invalid JSON syntax',
-      requestId,
       {
+        instance: '/api/guide',
+        requestId,
         invalidParams: [{ name: 'body', reason: 'Invalid JSON syntax' }],
       }
     );
   }
 
-  // 4. Guard: Zod request validation
+  // 5. Guard: Zod request validation and sanitization
   const validationResult = submissionPayloadSchema.safeParse(rawBody);
   if (!validationResult.success) {
     const invalidParams = validationResult.error.issues.map((issue) => ({
@@ -129,33 +137,17 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return createProblemResponse(
       400,
-      'Bad Request',
       'VALIDATION_FAILED',
       detailMessage,
-      requestId,
-      { invalidParams }
+      {
+        instance: '/api/guide',
+        requestId,
+        invalidParams,
+      }
     );
   }
 
   const payload: SubmissionPayload = validationResult.data as SubmissionPayload;
-
-  // 5. Rate Limiting Check
-  const clientIp =
-    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-    request.headers.get('x-real-ip') ||
-    '127.0.0.1';
-
-  const rateStatus = checkRateLimit(clientIp);
-  if (!rateStatus.allowed) {
-    return createProblemResponse(
-      429,
-      'Too Many Requests',
-      'RATE_LIMITED',
-      'PathLess is experiencing high demand right now. Please take a deep breath and try again in a few moments.',
-      requestId,
-      { retryAfter: rateStatus.retryAfterSeconds }
-    );
-  }
 
   // Helper to persist student submissions to PostgreSQL safely and asynchronously
   async function persistSubmissionSafely(
@@ -219,12 +211,13 @@ export async function POST(request: Request): Promise<NextResponse> {
       fallbackResult.submissionId = submissionId;
       fallbackResult.submission_id = submissionId;
     }
+    recordRequest(clientIp);
     return NextResponse.json(fallbackResult, { status: 200 });
   }
 
   try {
     const synthesis = await generateGuideRecommendations(payload);
-    recordRequest(clientIp);
+    globalGuideRateLimiter.record('global');
 
     // Validate synthesized result against the 48-entry catalog whitelist & 2 primary + 2 adjacent field spread
     const isValid = validateGuideSynthesisResult(synthesis.result);
@@ -238,6 +231,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         fallbackResult.submissionId = submissionId;
         fallbackResult.submission_id = submissionId;
       }
+      recordRequest(clientIp);
       return NextResponse.json(fallbackResult, { status: 200 });
     }
 
@@ -247,6 +241,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       synthesis.result.submission_id = submissionId;
     }
 
+    recordRequest(clientIp);
     return NextResponse.json(synthesis.result, { status: 200 });
   } catch (error: any) {
     const errMsg = String(error?.message || '');
@@ -255,10 +250,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (error?.name === 'TimeoutError' || errMsg.includes('timed out')) {
       return createProblemResponse(
         504,
-        'Gateway Timeout',
         'GATEWAY_TIMEOUT',
         'Generating your pathways took a little longer than expected. Please try submitting again.',
-        requestId
+        { instance: '/api/guide', requestId }
       );
     }
 
@@ -275,6 +269,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       fallbackResult.submission_id = submissionId;
     }
 
+    recordRequest(clientIp);
     return NextResponse.json(fallbackResult, { status: 200 });
   }
 }
