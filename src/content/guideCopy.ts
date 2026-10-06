@@ -1,12 +1,16 @@
 /**
  * PathLess: College Major and Career Discovery Guide v2
- * Centralized User-Facing Copy for Guide and Intake Wizard
- * Tone: Calm, validating, plain language tailored for 16-20 year old students.
+ * Centralized User-Facing Copy for Guide, Intake Wizard, Results and Print
+ * Tone: Calm, validating, plain language tailored for 16-20 year old students (8th–12th grade level).
  * 
- * Strict Contract: 100% of user-facing strings, questions, helper copy,
+ * Strict Invariant: 100% of user-facing strings, questions, helper copy,
  * button labels, step titles, character count labels, and ARIA announcements
- * must live strictly in this file.
+ * must live strictly in this file and modularized content files.
+ * Invariant: Zero legacy branding or clinical jargon permitted.
  */
+
+import { INTAKE_QUESTIONS } from './intakeQuestions';
+export { INTAKE_QUESTIONS } from './intakeQuestions';
 
 export const GUIDE_COPY = {
   brand: {
@@ -15,13 +19,61 @@ export const GUIDE_COPY = {
     guideTitle: 'PathLess Guide',
   },
 
+  nav: {
+    brandName: 'PathLess',
+    brandTagline: 'College & Career Discovery',
+    studentGuideLink: 'Discovery Guide',
+    advisorPortalLink: 'Advisor Portal',
+  },
+
+  footer: {
+    brandName: 'PathLess',
+    tagline: 'Turning college major anxiety into calm, confident exploration.',
+    frameworkBadge: 'PathLess Framework v2',
+    versionBadge: 'v2.0.0',
+  },
+
+  meta: {
+    title: 'PathLess — College Major and Career Discovery Guide',
+    template: '%s | PathLess',
+    description:
+      'A calm, zero-pressure college major and career discovery guide helping high school and early college students find clarity and explore realistic pathways.',
+    siteName: 'PathLess',
+    keywords: [
+      'college major discovery',
+      'career pathway exploration',
+      'student guidance',
+      'education guide',
+      'academic reassurance',
+    ],
+  },
+
   shell: {
     badge: 'Zero-Pressure Exploration',
     subBadge: '10 Questions • Takes ~3 minutes • No test scores or grades required',
     reassuranceNote:
       'There are no right or wrong answers. Choose what feels natural to you right now—your pathways are built to fit your comfort, not test your knowledge.',
     stepProgressLabel: (current: number, total: number) => `Question ${current} of ${total}`,
+    stepPercentLabel: (percent: number) => `${percent}% Complete`,
     welcomeStepLabel: 'Welcome & Profile',
+    brandSuffix: 'Guide',
+    completionTitle: 'You Have Completed the PathLess Guide!',
+    completionMessage: 'Your 10 responses have been validated and saved for personal synthesis.',
+    reviewAnswersButton: 'Review Answers',
+  },
+
+  stepTitles: {
+    0: 'Welcome and Student Profile',
+    1: 'Daily Focus & Task Energy',
+    2: 'Academic Curiosity',
+    3: 'Academic Hesitation & Worry',
+    4: 'Physical Work Environment',
+    5: 'Problem-Solving Instinct',
+    6: 'Social Energy & Collaboration',
+    7: 'Structure vs. Ambiguity',
+    8: 'Academic Stress Minimization',
+    9: 'Core Life & Career Horizon',
+    10: 'Post-College Next Chapter',
   },
 
   welcome: {
@@ -52,273 +104,7 @@ export const GUIDE_COPY = {
     ctaButton: 'Begin PathLess Guide',
   },
 
-  questions: {
-    q1: {
-      stepNumber: 1,
-      title: 'When you lose track of time, what kinds of tasks feel most natural?',
-      helperText: 'Pick 1 or 2 options that feel most like you. There is no need to overthink it.',
-      maxSelections: 2,
-      selectionStatus: (count: number, max: number) =>
-        count === 0
-          ? 'Select 1 or 2 options'
-          : count === 1
-          ? `1 of ${max} selected (you can pick 1 more)`
-          : `${count} of ${max} selected (maximum reached)`,
-      options: [
-        {
-          id: 'BUILD_SYSTEMS',
-          title: 'Building & Designing',
-          description: 'Fixing things, coding, assembling physical projects, or figuring out how mechanical and digital systems connect.',
-        },
-        {
-          id: 'ANALYZE_PATTERNS',
-          title: 'Investigating & Solving Puzzles',
-          description: 'Digging into curious questions, spotting hidden trends, researching facts, and untangling complicated mysteries.',
-        },
-        {
-          id: 'HELP_HUMANS',
-          title: 'Guiding & Supporting Others',
-          description: 'Listening closely to people, offering thoughtful advice, teaching concepts, and helping friends navigate tricky problems.',
-        },
-        {
-          id: 'CREATE_EXPRESS',
-          title: 'Creating & Storytelling',
-          description: 'Writing, designing graphics, editing media, visual art, or communicating ideas through creative expression.',
-        },
-        {
-          id: 'LEAD_ORGANIZING',
-          title: 'Organizing & Leading Initiatives',
-          description: 'Bringing groups together, mapping out schedules, coordinating events, and turning scattered ideas into action.',
-        },
-      ],
-    },
-
-    q2: {
-      stepNumber: 2,
-      title: 'Which general subject area sparks the most genuine curiosity for you?',
-      helperText: 'Choose the subject field you lean toward when you get to pick what you learn.',
-      options: [
-        { id: 'TECH_COMPUTING', title: 'Technology & Computing', badge: 'Software & Systems' },
-        { id: 'HEALTH_MEDICINE', title: 'Health, Medicine & Biology', badge: 'Life Sciences' },
-        { id: 'BUSINESS_INNOVATION', title: 'Business & Social Enterprise', badge: 'Strategy & Org' },
-        { id: 'ARTS_MEDIA', title: 'Arts, Design & Media', badge: 'Creative Expression' },
-        { id: 'CIVICS_SOCIETY', title: 'Law, Policy & Community Impact', badge: 'Society & Justice' },
-        { id: 'ENGINEERING_PHYSICAL', title: 'Engineering & Applied Sciences', badge: 'Physical World' },
-      ],
-    },
-
-    q3: {
-      stepNumber: 3,
-      title: 'What gives you hesitation or worry when thinking about this subject or college in general?',
-      helperText: 'A sentence or two is plenty. We use this to pair you with supportive academic reassurance.',
-      placeholder: 'e.g., I love building things, but advanced calculus stresses me out...',
-      charLimit: 200,
-      charCounter: (current: number, max: number) => `${current}/${max} characters`,
-    },
-
-    q4: {
-      stepNumber: 4,
-      title: 'What day-to-day physical work environment sounds most comfortable for you?',
-      helperText: 'Think about where your body feels calm and relaxed, rather than what sounds most impressive.',
-      options: [
-        {
-          id: 'REMOTE_DIGITAL',
-          title: 'Quiet Digital Desk',
-          badge: 'Flexible & Focused',
-          description: 'Working primarily from a laptop with quiet focus, flexible hours, and collaboration through digital tools.',
-        },
-        {
-          id: 'COLLABORATIVE_STUDIO',
-          title: 'Active Team Studio or Office',
-          badge: 'Interactive & Social',
-          description: 'Working around energetic teammates, whiteboard sessions, group discussions, and shared creative energy.',
-        },
-        {
-          id: 'ACTIVE_FIELD_LAB',
-          title: 'Hands-On Lab, Workshop, or Field',
-          badge: 'Movement & Tangible',
-          description: 'On-your-feet movement, scientific equipment, outdoor fieldwork, or working directly with tools and materials.',
-        },
-        {
-          id: 'HEALTHCARE_COMMUNITY',
-          title: 'Community or Healthcare Setting',
-          badge: 'Human-Centered',
-          description: 'Direct in-person interaction supporting patients, clients, students, or community members in dynamic settings.',
-        },
-      ],
-    },
-
-    q5: {
-      stepNumber: 5,
-      title: 'When faced with a tough, unfamiliar problem, how do you instinctively begin?',
-      helperText: 'Choose the problem-solving style that feels like your default mindset.',
-      options: [
-        {
-          id: 'SYSTEMATIC_LOGIC',
-          title: 'Step-by-Step Logic',
-          description: 'Breaking the problem down into orderly, manageable components and testing solutions methodically.',
-        },
-        {
-          id: 'CREATIVE_EXPLORATION',
-          title: 'Open Brainstorming',
-          description: 'Sketching out wild ideas, looking for unconventional angles, and trying unexpected combinations.',
-        },
-        {
-          id: 'PEOPLE_RELATIONAL',
-          title: 'Talking It Through',
-          description: 'Asking people about their experiences, listening to different perspectives, and collaborating on answers.',
-        },
-        {
-          id: 'PRACTICAL_HANDS_ON',
-          title: 'Tinkering by Doing',
-          description: 'Jumping straight in, building a quick rough draft or prototype, and learning from immediate trial and error.',
-        },
-      ],
-    },
-
-    q6: {
-      stepNumber: 6,
-      title: 'How does social interaction affect your energy across a typical day?',
-      helperText: 'Be honest about your social battery—sustainable careers align with your natural rhythm.',
-      options: [
-        {
-          id: 'INDEPENDENT_DEEP_FOCUS',
-          title: 'Mostly Independent Focus',
-          description: 'You recharge with solo deep work and prefer having just a few scheduled meetings a week.',
-        },
-        {
-          id: 'BALANCED_TEAM',
-          title: 'A Healthy Mix of Both',
-          description: 'You like checking in with a close team, collaborating on projects, but still having quiet hours to yourself.',
-        },
-        {
-          id: 'HIGH_CONTACT_PEOPLE',
-          title: 'People-First & Energetic',
-          description: 'Being around people energizes you; you enjoy meeting new faces, presenting, and constant conversation.',
-        },
-      ],
-    },
-
-    q7: {
-      stepNumber: 7,
-      title: 'What level of day-to-day structure helps you feel at your best?',
-      helperText: 'Think about whether uncertainty excites you or stresses you out.',
-      options: [
-        {
-          id: 'HIGH_STRUCTURE_CLEAR_RULES',
-          title: 'Clear Expectations & Defined Guidelines',
-          description: 'You thrive when goals, workflows, and deliverables are clearly outlined with reliable consistency.',
-        },
-        {
-          id: 'BALANCED_MILESTONES',
-          title: 'Defined Goals with Freedom in How You Work',
-          description: 'You like having clear milestones, but prefer choosing your own path and schedule to reach them.',
-        },
-        {
-          id: 'HIGH_AUTONOMY_AMBIGUITY',
-          title: 'Open-Ended Freedom & Fast Changes',
-          description: 'You get bored by repetition and love charting your own course through unpredictable challenges.',
-        },
-      ],
-    },
-
-    q8: {
-      stepNumber: 8,
-      title: 'Which academic demand tends to create the most stress or friction for you?',
-      helperText: 'We will ensure your pathway recommendations include strategies and courses that respect this boundary.',
-      options: [
-        {
-          id: 'ADVANCED_MATH',
-          title: 'High-Level Theoretical Mathematics',
-          badge: 'Heavy Formulas',
-          description: 'Calculus proofs, abstract algebra, and heavy numerical theory cause acute frustration.',
-        },
-        {
-          id: 'PUBLIC_SPEAKING',
-          title: 'High-Stakes Public Presentations',
-          badge: 'Stage Anxiety',
-          description: 'Speaking in front of large auditoriums, formal debates, or cold-calling unfamiliar crowds.',
-        },
-        {
-          id: 'HEAVY_MEMORIZATION',
-          title: 'Massive Rote Memorization',
-          badge: 'Flashcards & Anatomy',
-          description: 'Memorizing hundreds of Latin terms, formulas, or historical dates under timed exam conditions.',
-        },
-        {
-          id: 'INTENSIVE_WRITING',
-          title: 'Lengthy Abstract Academic Essays',
-          badge: '30-Page Research',
-          description: 'Drafting extensive theoretical dissertations, dense citations, and endless literary analyses.',
-        },
-        {
-          id: 'ISOLATED_THEORY',
-          title: 'Hyper-Isolated Solitary Theory',
-          badge: 'No Real-World Context',
-          description: 'Spending months studying pure theory without any tangible, real-world practical application.',
-        },
-      ],
-    },
-
-    q9: {
-      stepNumber: 9,
-      title: 'Looking at your future, what matters most for your peace of mind?',
-      helperText: 'Your core priority helps us weight pathways that align with your personal definition of success.',
-      options: [
-        {
-          id: 'FINANCIAL_STABILITY',
-          title: 'Financial Stability & High Security',
-          description: 'A reliable, predictable paycheck, strong health benefits, and high job security.',
-        },
-        {
-          id: 'PURPOSE_IMPACT',
-          title: 'Purpose & Meaningful Contribution',
-          description: 'Knowing your daily work directly improves other people’s lives or protects the planet.',
-        },
-        {
-          id: 'CREATIVE_AUTONOMY',
-          title: 'Creative Freedom & Expression',
-          description: 'Having the autonomy to make original work, experiment, and bring your unique voice to life.',
-        },
-        {
-          id: 'INTELLECTUAL_DEPTH',
-          title: 'Mastery & Intellectual Challenge',
-          description: 'Diving deep into complex domains, becoming a genuine expert, and continuous lifelong learning.',
-        },
-        {
-          id: 'WORK_LIFE_BALANCE',
-          title: 'Sustainable Work-Life Harmony',
-          description: 'Strict 40-hour weeks that leave plenty of time and emotional energy for family, hobbies, and rest.',
-        },
-      ],
-    },
-
-    q10: {
-      stepNumber: 10,
-      title: 'Looking immediately past college, what timeline feels right for your next chapter?',
-      helperText: 'Remember: your choice is never permanent. Choose what fits your peace of mind today.',
-      options: [
-        {
-          id: 'WORKFORCE_DIRECT',
-          title: 'Direct Career Entry (2 to 4-Year Horizon)',
-          badge: 'Independence First',
-          description: 'Step directly into professional employment soon after graduation to earn an income and learn on the job.',
-        },
-        {
-          id: 'GRADUATE_STUDY',
-          title: 'Graduate or Professional School',
-          badge: 'Advanced Specialization',
-          description: 'Continue into master’s degrees, medical or law school, or specialized clinical training.',
-        },
-        {
-          id: 'FLEXIBLE_ENTREPRENEURSHIP',
-          title: 'Entrepreneurship or Exploratory Projects',
-          badge: 'Self-Directed',
-          description: 'Launch a project, join an early-stage startup, or take a flexible gap year to build your own path.',
-        },
-      ],
-    },
-  },
+  questions: INTAKE_QUESTIONS,
 
   navigation: {
     previous: 'Previous',
@@ -376,6 +162,9 @@ export const RESULTS_COPY = {
     personalizedTitle: (name: string) => `${name}'s Recommended Pathways`,
     subtitle:
       'College major choice is a flexible springboard, not a permanent trap. Here are 4 distinct pathways aligned with what naturally energizes you.',
+    advisoryNoteTitle: 'Suggestions, Not Decisions',
+    advisoryNoteBody:
+      'These recommendations are starting points for conversation and personal discovery, not permanent life decisions. We encourage you to share and discuss these pathways with your school advisor, mentor, or trusted guide.',
     disclaimerTitle: 'Advisory Guide Notice',
     disclaimerBody:
       'These recommendations are starting points for conversation and discovery, not permanent life decisions. We encourage you to share and discuss these pathways with your school advisor, mentor, or trusted guide.',
@@ -384,6 +173,10 @@ export const RESULTS_COPY = {
     advisorReminder:
       'We encourage you to share and discuss these pathways with your school advisor, mentor, or trusted guide.',
     archetypeLabel: 'Your Discovery Profile',
+    defaultArchetype: 'The Thoughtful Explorer',
+    defaultNarrative: 'Here are 4 distinct, supportive pathways designed around what naturally energizes you.',
+    sampleDataNotice: 'Sample Exploration Data • Showing representative pathways',
+    pathwaysSectionLabel: 'Recommended Career Pathways',
     demoModeNotice:
       'Sample pathways are shown for demonstration. Take your time exploring each option.',
   },
@@ -399,14 +192,47 @@ export const RESULTS_COPY = {
       badge: 'Explore Also',
       description: 'Adjacent pathways that broaden your options across related fields.',
     },
+    topMatch: {
+      label: 'Top Match',
+      badge: 'Top Match',
+      description: 'Closest alignment with your natural problem-solving interests and preferred environment.',
+    },
+    exploreAlso: {
+      label: 'Explore Also',
+      badge: 'Explore Also',
+      description: 'Adjacent pathways that broaden your options across related fields.',
+    },
+  },
+
+  tiers: {
+    'Primary Direct Match': {
+      label: 'Primary Direct Match',
+      badge: 'Top Match',
+      description: 'Closest immediate alignment with your task interests and comfort zone.',
+    },
+    'High-Growth Pathway': {
+      label: 'High-Growth Pathway',
+      badge: 'Top Match',
+      description: 'Expanding fields with strong emerging demand and practical applications.',
+    },
+    'Interdisciplinary Pivot': {
+      label: 'Interdisciplinary Pivot',
+      badge: 'Explore Also',
+      description: 'Combines multiple subjects for versatile, creative problem solvers.',
+    },
+    'Moonshot Trajectory': {
+      label: 'Moonshot Trajectory',
+      badge: 'Explore Also',
+      description: 'An ambitious stretch pathway with high creative or technical upside.',
+    },
   },
 
   milestones: {
     heading: 'Career Progression Milestones',
     subheading: 'A realistic 3-stage journey from university study to professional growth in Thailand',
-    stage1Label: '1. Education & Degree',
-    stage2Label: '2. Entry-Level Role',
-    stage3Label: '3. Long-Term Growth',
+    stage1Label: '1. College Major',
+    stage2Label: '2. First Job',
+    stage3Label: '3. Growth Role',
   },
 
   printHeader: {
@@ -415,6 +241,9 @@ export const RESULTS_COPY = {
     nameLabel: 'Student Name',
     gradeLabel: 'Grade / Year',
     dateLabel: 'Date Generated',
+    defaultStudentName: 'Student',
+    defaultGrade: 'Secondary Education',
+    defaultDate: 'Current Session',
     advisorNoteTitle: 'Advisor & Student Discussion Note',
     advisorNoteBody:
       'These career and major pathways are starting points for conversation and discovery, not permanent decisions. Discuss these options with your school advisor, teacher, or family mentor.',
@@ -436,6 +265,9 @@ export const RESULTS_COPY = {
     reassuranceSublabel: 'How to navigate friction and feel supported',
     majorsLabel: 'Related College Majors',
     minorsLabel: 'Complementary Minors',
+    minorPrefix: 'Minor: ',
+    defaultRoleTitle: 'Specialist Concentration',
+    defaultBroadField: 'Applied Discipline',
     trialCoursesLabel: 'Free Ways to Try This Out',
     trialCoursesSublabel: 'Low-pressure, zero-cost introductory courses from trusted platforms',
     hoursEstimated: (hours: number) => `~${hours} hrs to complete`,
@@ -443,39 +275,15 @@ export const RESULTS_COPY = {
     overviewLabel: 'Overview',
   },
 
-  tiers: {
-    'Primary Direct Match': {
-      label: 'Primary Direct Match',
-      badge: 'Immediate Fit',
-      description: 'Closest immediate alignment with your task interests and comfort zone.',
-    },
-    'High-Growth Pathway': {
-      label: 'High-Growth Pathway',
-      badge: 'Emerging Field',
-      description: 'Expanding fields with strong emerging demand and practical applications.',
-    },
-    'Interdisciplinary Pivot': {
-      label: 'Interdisciplinary Pivot',
-      badge: 'Hybrid Focus',
-      description: 'Combines multiple subjects for versatile, creative problem solvers.',
-    },
-    'Moonshot Trajectory': {
-      label: 'Moonshot Trajectory',
-      badge: 'Bold Ambition',
-      description: 'An ambitious stretch pathway with high creative or technical upside.',
-    },
-  },
-
   whereToStudy: {
     title: 'Where to Study',
-    badge: 'Regional Pathways Coming Soon',
     verifiedRegistryBadge: 'Verified Institution Directory',
-    needsCheckingBadge: 'Needs Checking',
-    verifiedBadge: 'Verified Entry',
     description:
       'Explore standard undergraduate degree programs at verified universities across Thailand. Pathways are human-curated to help you and your advisor discover genuine academic environments.',
     publicAutonomousLabel: 'Public / Autonomous',
     privateLabel: 'Private University',
+    needsCheckingBadge: 'Needs Checking',
+    verifiedBadge: 'Verified',
     lastCheckedLabel: 'Last checked',
     targetMajorsLabel: 'Target Fields',
     visitOfficialProgramCta: 'Visit official department page',
@@ -484,13 +292,16 @@ export const RESULTS_COPY = {
     admissionsNoticeTitle: 'Official Admissions Advisory',
     admissionsNoticeBody:
       'Admission requirements, portfolio guidelines, and annual seat allocations are determined independently by each university and change each academic cycle. We strongly encourage you to consult the official university admissions office and discuss requirements with your school advisor.',
+    curationNoticeTitle: 'Curating Pathways for This Major',
+    curationNoticeDescription: (major: string) =>
+      `Verified institutional degree mappings for ${major} are currently being audited by regional advisors. We recommend exploring general university catalog listings or discussing options with your mentor.`,
     fallbackTitle: 'Curating Pathways for This Major',
     fallbackDescription: (major: string) =>
       `Verified institutional degree mappings for ${major} are currently being audited by regional advisors. We recommend exploring general university catalog listings or discussing options with your mentor.`,
+    advisorVerificationNote:
+      'Zero unverified admissions claims. All university pathway data is verified by academic advisors.',
     zeroHallucinationNote:
       'Zero unverified admissions claims. All university pathway data is verified by academic advisors.',
-    comingSoonNotice:
-      'Verified regional university connections and department pathways are being prepared for your area.',
   },
 
   actions: {

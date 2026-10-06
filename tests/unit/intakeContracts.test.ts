@@ -204,10 +204,10 @@ describe('Feature 7: Intake Contracts & Terminology Purge Unit Tests', () => {
     it('verifies all 10 questions are present with titles and helper text', () => {
       const questions = GUIDE_COPY.questions;
       assert.equal(questions.q1.stepNumber, 1);
-      assert.ok(questions.q1.options.length >= 4);
+      assert.ok((questions.q1.options?.length ?? 0) >= 4);
 
       assert.equal(questions.q2.stepNumber, 2);
-      assert.ok(questions.q2.options.length >= 4);
+      assert.ok((questions.q2.options?.length ?? 0) >= 4);
 
       assert.equal(questions.q3.stepNumber, 3);
       assert.equal(questions.q3.charLimit, 200);

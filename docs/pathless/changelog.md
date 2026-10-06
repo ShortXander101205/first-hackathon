@@ -9,3 +9,17 @@ Feature 14: Simpler Suggestions and Clean PDF. Refines results cards by removing
 - Added static Thai university program registry and deterministic matcher mapped to catalog majors.
 - Integrated verified bilingual university cards with official source links into the results view and print stylesheet.
 - Features affected: Feature 10 (Advisor review portal).
+
+### Feature 10: Advisor Dashboard and Database Persistence
+
+- Added Prisma schema and PostgreSQL models for student submissions, intake answers, synthesis cards, and advisor notes.
+- Built passcode-gated advisor portal at `/advisor` with search, filtering, detailed student review, and private notes.
+- Added automated/administrative annual July 1 data retention purge routine.
+- Features affected: Feature 11 (UX copy and simplification).
+
+### Feature 11: UX Copy and Simplification
+
+- Centralized all user-facing strings across student intake, results cards, print views, and advisor dashboard into single-source copy dictionaries.
+- Fully purged legacy naming (`dossier`, `PathwayAI`, `Triage`, `Counselor`) and developer jargon.
+- Standardized form guidance and error messaging to a supportive 8th-to-12th grade reading level.
+- Features affected: Feature 12 (Safety hardening and input guardrails).

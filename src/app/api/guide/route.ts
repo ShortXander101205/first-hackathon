@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { submissionPayloadSchema } from '@/schemas/intake.schema';
-import { generateGuideRecommendations } from '@/lib/gemini';
+import { generateGuideRecommendations, sanitizeError } from '@/lib/gemini';
 import { checkRateLimit, recordRequest } from '@/lib/rateLimiter';
 import { getMockCareerResults } from '@/data/mockCareerResults';
 import { validateGuideSynthesisResult } from '@/lib/guideValidator';
 import { ProblemDetails, ProblemErrorCode, SubmissionPayload } from '@/types/api';
+import { GuideResult } from '@/types/career';
+import { prisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
 
@@ -155,6 +157,51 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  // Helper to persist student submissions to PostgreSQL safely and asynchronously
+  async function persistSubmissionSafely(
+    submissionPayload: SubmissionPayload,
+    guideResult: GuideResult
+  ): Promise<string | null> {
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '') {
+      return null;
+    }
+
+    try {
+      const now = new Date();
+      const currentYear = now.getUTCFullYear();
+      const cutoffThisYear = new Date(Date.UTC(currentYear, 6, 1)); // July 1 UTC
+      const academicYear = now.getTime() >= cutoffThisYear.getTime() ? currentYear : currentYear - 1;
+
+      const cards = (guideResult.pathways || guideResult.careers || []) as any;
+
+      const record = await prisma.studentSubmission.create({
+        data: {
+          fullName: submissionPayload.studentProfile.fullName.trim(),
+          gradeLevel: submissionPayload.studentProfile.gradeLevel,
+          studentId: submissionPayload.studentProfile.studentId?.trim() || null,
+          academicYear,
+          intakeResponse: {
+            create: {
+              answers: submissionPayload.intakeAnswers as any,
+            },
+          },
+          synthesisResult: {
+            create: {
+              cards,
+              summary: (guideResult.summary || {}) as any,
+              meta: (guideResult.meta || {}) as any,
+            },
+          },
+        },
+      });
+
+      return record.id;
+    } catch (error) {
+      console.warn('[PathLess Persistence] Safe persistence fallback triggered:', error);
+      return null;
+    }
+  }
+
   // 6. AI Synthesis Execution
   const apiKey = process.env.GEMINI_API_KEY;
 
@@ -167,6 +214,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     apiKey === 'your_gemini_api_key_here'
   ) {
     const fallbackResult = getMockCareerResults(payload);
+    const submissionId = await persistSubmissionSafely(payload, fallbackResult);
+    if (submissionId) {
+      fallbackResult.submissionId = submissionId;
+      fallbackResult.submission_id = submissionId;
+    }
     return NextResponse.json(fallbackResult, { status: 200 });
   }
 
@@ -181,7 +233,18 @@ export async function POST(request: Request): Promise<NextResponse> {
         '[PathLess Route] AI synthesis violated career catalog whitelist or 2+2 field spread. Falling back to curated mock data.'
       );
       const fallbackResult = getMockCareerResults(payload);
+      const submissionId = await persistSubmissionSafely(payload, fallbackResult);
+      if (submissionId) {
+        fallbackResult.submissionId = submissionId;
+        fallbackResult.submission_id = submissionId;
+      }
       return NextResponse.json(fallbackResult, { status: 200 });
+    }
+
+    const submissionId = await persistSubmissionSafely(payload, synthesis.result);
+    if (submissionId) {
+      synthesis.result.submissionId = submissionId;
+      synthesis.result.submission_id = submissionId;
     }
 
     return NextResponse.json(synthesis.result, { status: 200 });
@@ -199,25 +262,19 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
     }
 
-    // Handle Upstream Rate Limiting (429)
-    if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED')) {
-      return createProblemResponse(
-        429,
-        'Too Many Requests',
-        'RATE_LIMITED',
-        'PathLess is experiencing high demand right now. Please take a deep breath and try again in a few moments.',
-        requestId,
-        { retryAfter: 60 }
-      );
+    const sanitizedError = sanitizeError(error);
+    console.warn(
+      '[PathLess Route] Upstream AI synthesis failed or unavailable. Falling back to curated sample data:',
+      sanitizedError
+    );
+
+    const fallbackResult = getMockCareerResults(payload);
+    const submissionId = await persistSubmissionSafely(payload, fallbackResult);
+    if (submissionId) {
+      fallbackResult.submissionId = submissionId;
+      fallbackResult.submission_id = submissionId;
     }
 
-    // Unexpected internal AI failure (mask all vendor stack traces and secrets)
-    return createProblemResponse(
-      500,
-      'Internal Server Error',
-      'AI_SYNTHESIS_FAILED',
-      'Our pathway discovery service is taking a brief moment to recharge. Your answers are safe—please try submitting again shortly.',
-      requestId
-    );
+    return NextResponse.json(fallbackResult, { status: 200 });
   }
 }

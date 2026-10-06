@@ -12,19 +12,7 @@ import { RESULTS_COPY } from '@/content/guideCopy';
 import type { WizardStep } from '@/types/intake';
 import type { SubmissionPayload } from '@/types/api';
 
-const STEP_TITLES: Record<WizardStep, string> = {
-  0: 'Welcome and Student Profile',
-  1: 'Daily Focus & Task Energy',
-  2: 'Academic Curiosity',
-  3: 'Academic Dread & Hesitation',
-  4: 'Physical Work Environment',
-  5: 'Problem-Solving Instinct',
-  6: 'Social Energy & Collaboration',
-  7: 'Structure vs. Ambiguity',
-  8: 'Academic Stress Minimization',
-  9: 'Core Life & Career Horizon',
-  10: 'Post-College Next Chapter',
-};
+
 
 export function IntakeWizardContainer() {
   const {
@@ -75,7 +63,7 @@ export function IntakeWizardContainer() {
     }
   }, [isResetDialogOpen]);
 
-  const stepTitle = STEP_TITLES[currentStep] || 'Intake Step';
+  const stepTitle = GUIDE_COPY.stepTitles[currentStep] || GUIDE_COPY.shell.welcomeStepLabel;
   const progressPercent = currentStep === 0 ? 0 : Math.round((currentStep / 10) * 100);
 
   // Error message for active question
@@ -218,7 +206,7 @@ export function IntakeWizardContainer() {
             PL
           </div>
           <span className="font-bold text-base sm:text-lg text-edu-slate-900 tracking-tight">
-            {GUIDE_COPY.brand.name} <span className="font-normal text-edu-slate-500 text-sm">Guide</span>
+            {GUIDE_COPY.brand.name} <span className="font-normal text-edu-slate-500 text-sm">{GUIDE_COPY.shell.brandSuffix}</span>
           </span>
         </div>
 
@@ -243,7 +231,7 @@ export function IntakeWizardContainer() {
         >
           <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-edu-slate-600">
             <span>{GUIDE_COPY.shell.stepProgressLabel(currentStep, 10)}: <strong className="text-edu-slate-900">{stepTitle}</strong></span>
-            <span>{progressPercent}% Complete</span>
+            <span>{GUIDE_COPY.shell.stepPercentLabel(progressPercent)}</span>
           </div>
 
           <div
@@ -309,10 +297,10 @@ export function IntakeWizardContainer() {
               <Icons.check className="w-6 h-6" />
             </div>
             <h2 className="text-2xl font-bold text-edu-slate-900">
-              You Have Completed the PathLess Guide!
+              {GUIDE_COPY.shell.completionTitle}
             </h2>
             <p className="text-sm text-edu-slate-600 max-w-md mx-auto">
-              Your 10 responses have been validated and saved for personal synthesis.
+              {GUIDE_COPY.shell.completionMessage}
             </p>
             <div className="pt-4 flex justify-center gap-4">
               <button
@@ -320,14 +308,14 @@ export function IntakeWizardContainer() {
                 onClick={previousStep}
                 className="min-h-[44px] px-5 py-2.5 rounded-xl border border-edu-border-subtle bg-white text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-50 transition-colors focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:outline-none"
               >
-                Review Answers
+                {GUIDE_COPY.shell.reviewAnswersButton}
               </button>
               <button
                 type="button"
                 onClick={openResetDialog}
                 className="min-h-[44px] px-5 py-2.5 rounded-xl bg-edu-slate-100 text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-200 transition-colors focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:outline-none"
               >
-                Start Over
+                {GUIDE_COPY.resetDialog.triggerButton}
               </button>
             </div>
           </div>

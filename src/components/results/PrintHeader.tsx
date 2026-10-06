@@ -39,7 +39,7 @@ export function PrintHeader({
 
   const formattedGrade = gradeLevel
     ? gradeLevel.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-    : 'Secondary Education';
+    : copy.defaultGrade;
 
   return (
     <header className="hidden print:block mb-8 pb-6 border-b-2 border-slate-300 text-slate-900">
@@ -63,7 +63,7 @@ export function PrintHeader({
         <div>
           <span className="font-semibold text-slate-600 block">{copy.nameLabel}</span>
           <span className="text-sm font-bold text-slate-900">
-            {studentName?.trim() || 'Student'}
+            {studentName?.trim() || copy.defaultStudentName}
           </span>
         </div>
         <div>
@@ -75,7 +75,7 @@ export function PrintHeader({
         <div>
           <span className="font-semibold text-slate-600 block">{copy.dateLabel}</span>
           <span className="text-sm font-medium text-slate-900">
-            {mountedDate || 'Current Session'}
+            {mountedDate || copy.defaultDate}
           </span>
         </div>
       </div>

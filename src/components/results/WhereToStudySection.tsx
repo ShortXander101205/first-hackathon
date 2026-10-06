@@ -110,15 +110,15 @@ export const WhereToStudySection = memo(function WhereToStudySection({
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span>{copy.fallbackTitle}</span>
+            <span>{copy.curationNoticeTitle}</span>
           </div>
           <p className="leading-relaxed">
-            {copy.fallbackDescription(majors[0] || 'this field')}
+            {copy.curationNoticeDescription(majors[0] || 'this field')}
           </p>
         </div>
       )}
 
-      {/* Zero AI Hallucination & Advisor Guarantee Footer */}
+      {/* Verified Regional Curation & Advisor Guarantee Footer */}
       <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-200/80">
         <svg
           className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0"
@@ -130,7 +130,7 @@ export const WhereToStudySection = memo(function WhereToStudySection({
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
-        <span>{copy.zeroHallucinationNote}</span>
+        <span>{copy.advisorVerificationNote}</span>
       </div>
     </section>
   );

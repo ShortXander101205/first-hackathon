@@ -23,12 +23,12 @@ export function ResultsHeader({
   const copy = RESULTS_COPY.header;
   const firstName = studentName?.trim() ? studentName.trim().split(/\s+/)[0] : '';
   const title = firstName ? copy.personalizedTitle(firstName) : copy.defaultTitle;
-  const archetype = summary?.studentArchetype || summary?.student_archetype || 'The Thoughtful Explorer';
+  const archetype = summary?.studentArchetype || summary?.student_archetype || copy.defaultArchetype;
   const narrative =
     summary?.narrativeSummary ||
     summary?.narrative_summary ||
     summary?.triage_narrative ||
-    'Here are 4 distinct, supportive pathways designed around what naturally energizes you.';
+    copy.defaultNarrative;
 
   return (
     <header className="mb-8 space-y-6">

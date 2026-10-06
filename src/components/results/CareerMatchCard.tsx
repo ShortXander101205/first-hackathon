@@ -15,8 +15,8 @@ export function CareerMatchCard({ card, isExpanded, onToggle }: CareerMatchCardP
   const copy = RESULTS_COPY.card;
   const milestonesCopy = RESULTS_COPY.milestones;
 
-  const roleTitle = card.roleTitle || card.role_title || 'Specialist Concentration';
-  const broadField = card.broadField || card.broad_field || 'Applied Discipline';
+  const roleTitle = card.roleTitle || card.role_title || copy.defaultRoleTitle;
+  const broadField = card.broadField || card.broad_field || copy.defaultBroadField;
 
   // Feature 14: Locked qualitative badges (Top Match or Explore Also)
   const qualitativeBadge =
@@ -268,7 +268,7 @@ export function CareerMatchCard({ card, isExpanded, onToggle }: CareerMatchCardP
                   key={`minor-${idx}`}
                   className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 border border-slate-200/60"
                 >
-                  Minor: {minor}
+                  {copy.minorPrefix}{minor}
                 </span>
               ))}
             </div>
@@ -315,7 +315,7 @@ export function CareerMatchCard({ card, isExpanded, onToggle }: CareerMatchCardP
                       {course.description}
                     </p>
 
-                    <div className="pt-1 text-[11px] text-slate-400 no-print">
+                    <div className="pt-1 text-[11px] text-slate-500 no-print">
                       <span>💡 {copy.courseSearchHint}</span>
                     </div>
                   </div>

@@ -61,7 +61,7 @@ export function ResultsContainer({ result, onClear, onPrint }: ResultsContainerP
       />
 
       {/* 4 Progressive Disclosure Career Concentration Cards */}
-      <main className="space-y-6" aria-label="Career concentration pathways">
+      <main className="space-y-6" aria-label={RESULTS_COPY.header.pathwaysSectionLabel}>
         {pathways.map((card) => {
           const isExpanded = expandedCardIds.has(card.id);
           return (

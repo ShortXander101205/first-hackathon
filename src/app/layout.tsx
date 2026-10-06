@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { GUIDE_COPY } from '@/content/guideCopy';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -13,35 +14,25 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   title: {
-    default: 'PathwayAI — College Major & Career Triage for Stressed Students',
-    template: '%s | PathwayAI',
+    default: GUIDE_COPY.meta.title,
+    template: GUIDE_COPY.meta.template,
   },
-  description:
-    'An empathetic 4-question AI triage platform helping high school and early college students overcome academic anxiety and discover 4 actionable career trajectories.',
-  keywords: [
-    'college major triage',
-    'career pathway',
-    'academic anxiety reduction',
-    'educational AI',
-    'gemini 1.5 flash',
-    'high school counselor triage',
-  ],
-  authors: [{ name: 'PathwayAI Team' }],
-  creator: 'PathwayAI',
+  description: GUIDE_COPY.meta.description,
+  keywords: [...GUIDE_COPY.meta.keywords],
+  authors: [{ name: GUIDE_COPY.brand.name }],
+  creator: GUIDE_COPY.brand.name,
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'http://localhost:3000',
-    title: 'PathwayAI — College Major & Career Triage',
-    description:
-      'Turn academic dread into clear career trajectories with 4 high-yield questions, empathetic reassurance, and zero-risk trial courses.',
-    siteName: 'PathwayAI',
+    title: GUIDE_COPY.meta.title,
+    description: GUIDE_COPY.meta.description,
+    siteName: GUIDE_COPY.meta.siteName,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PathwayAI — College Major & Career Triage',
-    description:
-      'Empathetic college major and career triage powered by Gemini 1.5 Flash.',
+    title: GUIDE_COPY.meta.title,
+    description: GUIDE_COPY.meta.description,
   },
   icons: {
     icon: '/logo.svg',

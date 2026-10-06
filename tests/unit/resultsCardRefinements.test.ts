@@ -114,9 +114,19 @@ describe('Feature 14: Simpler Suggestions and Clean PDF Unit Tests', () => {
       assert.ok(html.includes('Bachelor of Science in Computer Science'));
       assert.ok(html.includes('Junior Software Engineer or Front-End Developer'));
       assert.ok(html.includes('Lead Software Architect or Engineering Team Lead'));
-      assert.ok(html.includes('1. Education &amp; Degree') || html.includes('1. Education & Degree'));
-      assert.ok(html.includes('2. Entry-Level Role'));
-      assert.ok(html.includes('3. Long-Term Growth'));
+      assert.ok(
+        html.includes('1. College Major') ||
+        html.includes('1. Education &amp; Degree') ||
+        html.includes('1. Education & Degree')
+      );
+      assert.ok(
+        html.includes('2. First Job') ||
+        html.includes('2. Entry-Level Role')
+      );
+      assert.ok(
+        html.includes('3. Growth Role') ||
+        html.includes('3. Long-Term Growth')
+      );
     });
 
     it('renders grounded rationale connecting daily tasks to student preferences', () => {

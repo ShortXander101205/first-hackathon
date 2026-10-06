@@ -4,6 +4,7 @@ import { POST } from '@/app/api/guide/route';
 import { setMockGenAiClient } from '@/lib/gemini';
 import { resetRateLimits } from '@/lib/rateLimiter';
 import { wordCount } from '@/schemas/career.schema';
+import { validateGuideSynthesisResult } from '@/lib/guideValidator';
 
 describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
   const originalApiKey = process.env.GEMINI_API_KEY;
@@ -394,8 +395,8 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
     assert.strictEqual(problem.code, 'GATEWAY_TIMEOUT');
   });
 
-  // IT-GUIDE-07: 500 Sanitization on upstream failure without secret leakage
-  it('IT-GUIDE-07: sanitizes upstream errors and masks sensitive credentials', async () => {
+  // IT-GUIDE-07: Resilient fallback to curated sample data on upstream AI failure without secret leakage
+  it('IT-GUIDE-07: falls back to sample data on upstream AI failure and passes catalog check', async () => {
     const secretKey = 'super_secret_ai_key_999';
     process.env.GEMINI_API_KEY = secretKey;
 
@@ -418,11 +419,21 @@ describe('Feature 8: POST /api/guide Route Handler Integration Tests', () => {
     });
 
     const res = await POST(req);
-    assert.strictEqual(res.status, 500);
+    assert.strictEqual(res.status, 200, 'Upstream failure must gracefully fall back to 200 OK');
 
-    const problem: any = await res.json();
-    assert.strictEqual(problem.code, 'AI_SYNTHESIS_FAILED');
-    assert.ok(!JSON.stringify(problem).includes(secretKey));
+    const data: any = await res.json();
+    assert.strictEqual(data.success, true);
+    assert.strictEqual(data.meta.fallbackUsed, true, 'Sample data notice flag must be active');
+    assert.strictEqual(data.pathways.length, 4, 'Must return exactly 4 sample career cards');
+    assert.ok(!JSON.stringify(data).includes(secretKey), 'Secrets must never be leaked to client');
+
+    // Catalog check verification: sample fallback must always pass Feature 14 catalog whitelist check
+    const isCatalogCompliant = validateGuideSynthesisResult(data);
+    assert.strictEqual(
+      isCatalogCompliant,
+      true,
+      'Sample data served by fallback must strictly pass career catalog check'
+    );
   });
 
   // IT-GUIDE-08: Curated mock fallback returns 200 OK when GEMINI_API_KEY is omitted

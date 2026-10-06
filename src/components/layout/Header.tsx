@@ -2,8 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { Container } from './Container';
 import { Icons } from '@/components/ui/icons';
+import { GUIDE_COPY } from '@/content/guideCopy';
 
 export function Header() {
+  const nav = GUIDE_COPY.nav;
+
   return (
     <header
       role="banner"
@@ -20,39 +23,30 @@ export function Header() {
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-base sm:text-lg leading-tight tracking-tight text-edu-slate-900">
-              Pathway<span className="text-edu-interactive">AI</span>
+              {nav.brandName}
             </span>
             <span className="hidden sm:inline text-[11px] font-medium text-edu-slate-500 leading-none">
-              Major & Career Triage
+              {nav.brandTagline}
             </span>
           </div>
         </Link>
 
-        {/* Primary Navigation & Rate Guard Pill */}
+        {/* Primary Navigation */}
         <div className="flex items-center gap-2 sm:gap-6">
           <nav aria-label="Main Navigation" className="flex items-center gap-1 sm:gap-2">
             <Link
               href="/"
               className="px-2.5 py-1.5 sm:px-3 rounded-md text-xs sm:text-sm font-medium text-edu-slate-700 hover:text-edu-primary hover:bg-edu-slate-100 transition-colors whitespace-nowrap"
             >
-              <span className="hidden sm:inline">Student </span>Triage
+              {nav.studentGuideLink}
             </Link>
             <Link
-              href="/counselor"
+              href="/advisor"
               className="px-2.5 py-1.5 sm:px-3 rounded-md text-xs sm:text-sm font-medium text-edu-slate-700 hover:text-edu-primary hover:bg-edu-slate-100 transition-colors whitespace-nowrap"
             >
-              <span className="hidden sm:inline">Counselor </span>Dashboard
+              {nav.advisorPortalLink}
             </Link>
           </nav>
-
-          {/* Zero-Cost Rate Guard Indicator */}
-          <div
-            className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-edu-slate-100 border border-edu-slate-200 text-xs text-edu-slate-600 font-medium"
-            title="Operating under Google Gemini 1.5 Flash zero-cost free-tier quota"
-          >
-            <span className="w-2 h-2 rounded-full bg-growth-500 animate-pulse" aria-hidden="true" />
-            <span className="hidden md:inline">Gemini 1.5 Flash • </span>15 RPM Guard
-          </div>
         </div>
       </Container>
     </header>

@@ -22,3 +22,19 @@ Open questions: The exact list of titles and majors in the curated catalog has n
 - Coverage: Seeded 17 confirmed institutions across Bangkok, Central, and regional flagships, mapped strictly to the 8 career catalog fields.
 - UI Integration: Updated `WhereToStudySection` inside expanded career cards with bilingual labels, verified source links (`rel="noopener noreferrer"`), and last-checked timestamps.
 - Fallback: Non-breaking calm curation placeholder rendered when a recommended major has no active regional entries.
+
+## Feature 10: Advisor Dashboard and Database Persistence (Completed: October 6, 2026)
+
+- Database Layer: Configured Prisma with serverless PostgreSQL; asynchronously persists StudentSubmission, IntakeResponse, SynthesisResult (4 match cards JSON), and AdvisorNote.
+- Gatekeeping: Advisor authentication implemented using shared passcode (`TEACHER2026` via `ADVISOR_PASSCODE` env) and signed httpOnly session cookies; zero individual user credentials or account tables.
+- Advisor Tools: Implemented `/advisor` directory with student search by name/grade, chronological sorting, full card/study inspection, and private timestamped session notes.
+- Data Privacy & Retention: Enforced required Name and Grade, optional opaque Student ID; created annual purge utility (`POST /api/admin/purge`) purging records prior to July 1 cut-off.
+- Language: Completely avoided raw SQL, database column names, and system terms in advisor UI.
+
+## Feature 11: UX Copy and Simplification (Completed: October 6, 2026)
+
+- Centralized Strings: Extracted 100% of student- and advisor-facing copy into centralized dictionaries (`src/content/guideCopy.ts`, `src/content/advisorCopy.ts`, `src/content/intakeQuestions.ts`).
+- Terminology Purge: Eradicated prohibited legacy and technical terms (`dossier`, `PathwayAI`, `Triage`, `Counselor`, `algorithm`, `AI engine`, `synthesis`, `database`) across all components, contracts, and rendered views.
+- Reading Level & Tone: Standardized intake questions, helper hints, error notices, and results milestones to a calm, supportive 8th-to-12th grade reading comprehension level.
+- Educator Interface: Refactored `/advisor` dashboard labels, empty states, and action buttons to intuitive educational terminology.
+- Accessibility & Styling: Verified WCAG 2.1 AA text contrast and smooth responsive text reflow across mobile, desktop, print views, and 200% zoom.
