@@ -1,0 +1,65 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model StudentSubmission {
+  id           String           @id @default(cuid())
+  fullName     String
+  gradeLevel   String
+  studentId    String?          // Strictly optional, opaque student code
+  academicYear Int              // e.g., 2026
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  intakeResponse  IntakeResponse?
+  synthesisResult SynthesisResult?
+  advisorNotes    AdvisorNote[]
+
+  @@index([createdAt])
+  @@index([gradeLevel])
+  @@index([academicYear])
+  @@index([studentId])
+  @@map("student_submissions")
+}
+
+model IntakeResponse {
+  id           String            @id @default(cuid())
+  submissionId String            @unique
+  submission   StudentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  answers      Json              // Stores IntakeAnswers
+  createdAt    DateTime          @default(now())
+
+  @@map("intake_responses")
+}
+
+model SynthesisResult {
+  id           String            @id @default(cuid())
+  submissionId String            @unique
+  submission   StudentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  cards        Json              // Array of 4 PathwayCards with milestones & unis
+  summary      Json?             // GuideSummary narrative
+  meta         Json?             // GuideMeta (engine, latency, fallbackUsed)
+  createdAt    DateTime          @default(now())
+
+  @@map("synthesis_results")
+}
+
+model AdvisorNote {
+  id           String            @id @default(cuid())
+  submissionId String
+  submission   StudentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  authorName   String            @default("Advisor")
+  content      String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([submissionId])
+  @@index([createdAt])
+  @@map("advisor_notes")
+}
