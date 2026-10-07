@@ -1,4 +1,4 @@
----
+﻿---
 doc: contract
 feature: 10-advisor-dashboard-db
 project: PathLess - Framework v2
@@ -14,7 +14,7 @@ This specification establishes the technical, architectural, behavioral, and acc
 
 In prior releases (Features 1 through 9 and Feature 14), PathLess established a zero-pressure student intake flow, defensive AI synthesis with catalog whitelisting, locked qualitative badges, and a curated Thai university scaffold. However, all student submissions and pathway recommendations existed transiently in browser session memory. Once a student closed their browser tab, their personalized exploration was lost unless printed, and school guidance advisors had no collaborative visibility into student interests, academic hesitations, or recommended degrees.
 
-Feature 10 implements **database persistence** and **educator review tools** for PathLess using a zero-cost serverless PostgreSQL database (via Prisma ORM) and lightweight passcode gatekeeping (`TEACHER2026`).
+Feature 10 implements **database persistence** and **educator review tools** for PathLess using a zero-cost serverless PostgreSQL database (via Prisma ORM) and lightweight passcode gatekeeping (`<ADVISOR_PASSCODE>`).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -41,7 +41,7 @@ Feature 10 implements **database persistence** and **educator review tools** for
 2. **Asynchronous Submission Persistence (`src/app/api/guide/route.ts`)**:
    Automatically record student intake answers and generated pathway recommendations in the database upon intake completion. Guarantee that database latency or temporary connection dips never block or fail the student's synthesis response.
 3. **Passcode-Gated Educator Authentication (`src/lib/auth.ts`, `src/app/api/advisor/login/route.ts`)**:
-   Implement friction-free educator access using a shared passcode (`TEACHER2026` / `ADVISOR_PASSCODE`). Authenticate advisors via cryptographically signed `httpOnly` session cookies without requiring complex user account creation, forgotten-password loops, or student tracking accounts.
+   Implement friction-free educator access using a shared passcode (`<ADVISOR_PASSCODE>` / `ADVISOR_PASSCODE`). Authenticate advisors via cryptographically signed `httpOnly` session cookies without requiring complex user account creation, forgotten-password loops, or student tracking accounts.
 4. **Advisor Dashboard Portal (`src/app/advisor/page.tsx`, `src/components/advisor/*`)**:
    Deliver a responsive, educator-friendly portal featuring passcode login gating, searchable student directory (by student name or grade), submission date filtering, full pathway inspection modal/drawer, and a private advisor note editor.
 5. **Annual Data Purge Utility (`src/lib/purge.ts`, `src/app/api/admin/purge/route.ts`)**:
@@ -71,7 +71,7 @@ Feature 10 implements **database persistence** and **educator review tools** for
 │ • Asynchronous database persistence  │   --> Deferred to feature/12-safety-and-guardrails        │
 │   hook in POST /api/guide            │ • Multi-tenant school domain partitioning or SAML/SSO     │
 │ • Shared passcode educator auth      │   --> Out of scope (lightweight passcode per spec)        │
-│   (TEACHER2026 -> signed httpOnly)   │ • Real-time WebSocket push updates for advisor table      │
+│   (<ADVISOR_PASSCODE> -> signed httpOnly)   │ • Real-time WebSocket push updates for advisor table      │
 │ • Advisor portal (/advisor) with     │   --> Out of scope (HTTP polling/revalidation is plenty)  │
 │   directory, filters, and notes      │ • Bulk CSV export / import of student records             │
 │ • Annual July 1 data purge utility   │   --> Out of scope for v2 proof-of-concept                │
@@ -231,7 +231,7 @@ sequenceDiagram
 
   Advisor->>Browser: Navigate to /advisor
   Browser->>Browser: Check session (No cookie -> Show PasscodeLogin)
-  Advisor->>Browser: Enter Passcode "TEACHER2026" + Name "Kru Somchai"
+  Advisor->>Browser: Enter Passcode "<ADVISOR_PASSCODE>" + Name "Kru Somchai"
   Browser->>AuthRoute: POST /api/advisor/login { passcode, authorName }
   AuthRoute->>AuthRoute: Timing-safe compare with process.env.ADVISOR_PASSCODE
   AuthRoute-->>Browser: Set-Cookie: pathless_advisor_session (signed, httpOnly, 7d)
@@ -437,7 +437,7 @@ async function persistSubmissionSafely(
 ### Module 3: Advisor Auth Service & Session Middleware
 
 #### 3.1 Security Invariants
-- **Default Passcode**: `TEACHER2026`. Can be overridden via `process.env.ADVISOR_PASSCODE`.
+- **Default Passcode**: `<ADVISOR_PASSCODE>`. Can be overridden via `process.env.ADVISOR_PASSCODE`.
 - **Timing-Safe Evaluation**: Comparison must use `crypto.timingSafeEqual` over SHA-256 digests to prevent timing analysis attacks.
 - **Signed Session Token**:
   Token structure: `<base64UrlPayload>.<base64UrlSignature>`
@@ -631,7 +631,7 @@ export const ADVISOR_COPY = {
     title: 'School Advisor Access',
     subtitle: 'Enter your school passcode to access your students’ pathway reflections and session notes.',
     passcodeLabel: 'Advisor Passcode',
-    passcodePlaceholder: 'e.g., TEACHER2026',
+    passcodePlaceholder: 'e.g., <ADVISOR_PASSCODE>',
     passcodeHelper: 'Ask your school head counselor if you do not know your school passcode.',
     authorNameLabel: 'Your Name or Advisor Title (Optional)',
     authorNamePlaceholder: 'e.g., Kru Nan / Counselor Davis',
@@ -740,8 +740,8 @@ export const ADVISOR_COPY = {
 │          │ record (name, grade, optional studentId) and    │ nested IntakeResponse & SynthesisResult in DB.         │
 │          │ full synthesis cards to the database.           │ Returned payload includes valid submissionId.          │
 ├──────────┼─────────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
-│ AC-DB-03 │ Accessing /advisor requires authentication via  │ POST /api/advisor/login verifies TEACHER2026; sets     │
-│          │ TEACHER2026, granting access via a signed       │ signed httpOnly cookie. Requests lacking cookie are    │
+│ AC-DB-03 │ Accessing /advisor requires authentication via  │ POST /api/advisor/login verifies <ADVISOR_PASSCODE>; sets     │
+│          │ <ADVISOR_PASSCODE>, granting access via a signed       │ signed httpOnly cookie. Requests lacking cookie are    │
 │          │ httpOnly cookie without accounts/passwords.     │ rejected with HTTP 401.                                │
 ├──────────┼─────────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ AC-DB-04 │ Advisor dashboard renders responsive student    │ GET /api/advisor/students returns directory items;     │
@@ -763,7 +763,7 @@ export const ADVISOR_COPY = {
 ## 9. Comprehensive Test Plan
 
 ### 9.1 Unit Test Suite: `tests/unit/auth.test.ts`
-- **`UT-AUTH-01`**: Validates correct default passcode (`TEACHER2026`) and respects custom `ADVISOR_PASSCODE` env var.
+- **`UT-AUTH-01`**: Validates correct default passcode (`<ADVISOR_PASSCODE>`) and respects custom `ADVISOR_PASSCODE` env var.
 - **`UT-AUTH-02`**: Rejects incorrect, empty, or whitespace-only passcodes.
 - **`UT-AUTH-03`**: Enforces timing-safe passcode evaluation using cryptographic digest comparison.
 - **`UT-AUTH-04`**: Generates HMAC-SHA256 signed session token with valid 7-day expiration timestamp.
@@ -780,7 +780,7 @@ export const ADVISOR_COPY = {
 - **`UT-PURGE-05`**: Correctly filters simulated submissions into retain vs. purge buckets based on `createdAt`.
 
 ### 9.3 Integration Test Suite: `tests/integration/advisorRoutes.test.ts`
-- **`IT-ADV-01`**: `POST /api/advisor/login` with `TEACHER2026` returns 200 and sets `pathless_advisor_session` cookie.
+- **`IT-ADV-01`**: `POST /api/advisor/login` with `<ADVISOR_PASSCODE>` returns 200 and sets `pathless_advisor_session` cookie.
 - **`IT-ADV-02`**: `POST /api/advisor/login` with invalid passcode returns 401 with educator problem details.
 - **`IT-ADV-03`**: `POST /api/advisor/logout` returns 200 and expires the session cookie.
 - **`IT-ADV-04`**: `GET /api/advisor/students` rejects unauthenticated request with 401.
@@ -828,7 +828,7 @@ export const ADVISOR_COPY = {
 ## 11. Architectural Sign-Off & Invariant Confirmation
 
 - [x] **Zero-Cost PostgreSQL**: Designed for standard serverless PostgreSQL tiers (Neon, Supabase, etc.) via Prisma ORM.
-- [x] **Passcode Simplicity**: Eliminates user accounts, reset tokens, and passwords in favor of shared educator passcode `TEACHER2026`.
+- [x] **Passcode Simplicity**: Eliminates user accounts, reset tokens, and passwords in favor of shared educator passcode `<ADVISOR_PASSCODE>`.
 - [x] **Non-Blocking Resilience**: Student intake experience remains resilient if database dips or latency spikes occur.
 - [x] **Privacy & Minimization**: Student ID is strictly optional and opaque; annual July 1 purge automatically drops stale records.
 - [x] **Zero Database Jargon**: 100% of educator-facing strings use clear counseling terms; raw technical database terms are strictly forbidden.

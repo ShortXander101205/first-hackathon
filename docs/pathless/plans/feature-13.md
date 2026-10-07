@@ -1,4 +1,4 @@
----
+﻿---
 doc: implementation-plan
 feature: 13-deployment-and-e2e
 project: PathLess - Framework v2
@@ -25,7 +25,7 @@ Feature 13 delivers production readiness, zero-cost continuous integration, and 
    Install `@playwright/test` and `@axe-core/playwright`. Configure Playwright test runners to orchestrate local Next.js instances with mock fallback environment variables, headless Chromium execution, failure trace/screenshot capture, and fast execution.
 4. **Automated Playwright E2E Regression Suites (`tests/e2e/*`)**:
    - **Student Flow (`tests/e2e/student-flow.spec.ts`)**: Automates Step 0 intake through Step 10 questionnaire, synthesis transition, 4-card progressive disclosure, milestone progression inspection, regional Thai university link checks, `@media print` layout emulation, and automated WCAG 2.1 AA accessibility audits via Axe.
-   - **Advisor Flow (`tests/e2e/advisor-flow.spec.ts`)**: Automates passcode gating (`TEACHER2026`), invalid code rejection, directory searching, student detail modal inspection, private note authoring and saving, session sign out, and drawer accessibility audits.
+   - **Advisor Flow (`tests/e2e/advisor-flow.spec.ts`)**: Automates passcode gating (`<ADVISOR_PASSCODE>`), invalid code rejection, directory searching, student detail modal inspection, private note authoring and saving, session sign out, and drawer accessibility audits.
    - **Guardrails Flow (`tests/e2e/guardrails.spec.ts`)**: Automates sliding-window rate limit triggers (HTTP 429 calm response and `Retry-After`), HTML/script tag stripping during intake, React error boundary fallback recovery, and isolated IP execution to prevent cross-test contamination.
 5. **Zero-Cost GitHub Actions CI Pipeline (`.github/workflows/ci.yml`)**:
    Construct an automated continuous integration pipeline running static analysis (ESLint, TypeScript `tsc --noEmit`), unit/integration tests (`npm test`), production Next.js build verification, Playwright browser test execution, and Docker container verification with Buildx layer caching.
@@ -54,7 +54,7 @@ Feature 13 delivers production readiness, zero-cost continuous integration, and 
 │                                    ↓                                                             │
 │ Phase 4: Playwright End-to-End Regression Test Suites & Axe WCAG Audits                          │
 │          • Create tests/e2e/student-flow.spec.ts (Step 0-10, 4 cards, milestones, unis, print)   │
-│          • Create tests/e2e/advisor-flow.spec.ts (TEACHER2026 auth, directory, drawer, notes)   │
+│          • Create tests/e2e/advisor-flow.spec.ts (<ADVISOR_PASSCODE> auth, directory, drawer, notes)   │
 │          • Create tests/e2e/guardrails.spec.ts (rate limiting 429, XSS strip, error fallback)    │
 │                                    ↓                                                             │
 │ Phase 5: GitHub Actions CI Workflow Setup                                                        │
@@ -222,7 +222,7 @@ Feature 13 delivers production readiness, zero-cost continuous integration, and 
     - `url: 'http://127.0.0.1:3000'`
     - `reuseExistingServer: !process.env.CI`
     - `timeout: 60 * 1000`
-    - `env`: `NODE_ENV: 'production'`, `PORT: '3000'`, `ADVISOR_PASSCODE: 'TEACHER2026'`, `GEMINI_API_KEY: ''` (triggers deterministic mock fallback).
+    - `env`: `NODE_ENV: 'production'`, `PORT: '3000'`, `ADVISOR_PASSCODE: '<ADVISOR_PASSCODE>'`, `GEMINI_API_KEY: ''` (triggers deterministic mock fallback).
 
 ---
 
@@ -269,7 +269,7 @@ Feature 13 delivers production readiness, zero-cost continuous integration, and 
      - Clicks `button:has-text("Open Advisor Directory")`.
      - Asserts error message appears: `"The passcode entered does not match our school records"`.
   2. **Successful Educator Authentication**:
-     - Enters valid passcode `"TEACHER2026"` into `input#advisor-passcode`.
+     - Enters valid passcode `"<ADVISOR_PASSCODE>"` into `input#advisor-passcode`.
      - Enters author name `"Kru Somchai"` into `input#advisor-author-name`.
      - Clicks `button:has-text("Open Advisor Directory")`.
      - Asserts dashboard loads: `"School Advisor & Mentor Directory"` is visible.
@@ -351,7 +351,7 @@ Feature 13 delivers production readiness, zero-cost continuous integration, and 
      - `DIRECT_URL` (Direct migration connection string).
      - `GEMINI_API_KEY` (Google AI Studio API key).
      - `GEMINI_MODEL` (`gemini-2.5-flash`).
-     - `ADVISOR_PASSCODE` (Defaults to `TEACHER2026`).
+     - `ADVISOR_PASSCODE` (Defaults to `<ADVISOR_PASSCODE>`).
      - `SESSION_SECRET` (HMAC cookie signing salt).
      - `ADMIN_SECRET` (Authorization key for data archive endpoint).
      - `NODE_ENV` (`production`).
@@ -399,7 +399,7 @@ Feature 13 delivers production readiness, zero-cost continuous integration, and 
 │           │ (Step 0 to 10, 4 cards, milestones, unis, print). │             │ passes with 0 critical WCAG violations.  │
 ├───────────┼───────────────────────────────────────────────────┼─────────────┼──────────────────────────────────────────┤
 │ AC-DEP-04 │ Playwright E2E tests verify advisor portal        │ Phase 3, 4  │ npx playwright test advisor-flow.spec.ts │
-│           │ (TEACHER2026 login, search, drawer, note save).  │             │ passes with 0 critical WCAG violations.  │
+│           │ (<ADVISOR_PASSCODE> login, search, drawer, note save).  │             │ passes with 0 critical WCAG violations.  │
 ├───────────┼───────────────────────────────────────────────────┼─────────────┼──────────────────────────────────────────┤
 │ AC-DEP-05 │ Playwright E2E tests assert rate-limit triggers   │ Phase 3, 4  │ npx playwright test guardrails.spec.ts   │
 │           │ and input sanitization neutralizes HTML tags.     │             │ passes with isolated synthetic IP.       │

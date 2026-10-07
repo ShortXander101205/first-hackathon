@@ -1,4 +1,4 @@
-# PathLess Framework v2: Zero-Cost Production Deployment Runbook
+﻿# PathLess Framework v2: Zero-Cost Production Deployment Runbook
 
 This operational runbook provides step-by-step instructions for deploying and running **PathLess Framework v2** in production at **$0/month** total cost.
 
@@ -40,7 +40,7 @@ Configure these environment variables in your deployment dashboard or local `.en
 | `DIRECT_URL` | Optional | `postgres://user:pass@ep.neon.tech/pathless?sslmode=require` | Direct connection string for schema migrations. |
 | `GEMINI_API_KEY` | **Yes** | `AIzaSyD...` | Google AI Studio Gemini API key. If omitted, uses deterministic mock data. |
 | `GEMINI_MODEL` | Optional | `gemini-2.5-flash` | Gemini model name (defaults to `gemini-2.5-flash`). |
-| `ADVISOR_PASSCODE` | Optional | `TEACHER2026` | School advisor passcode gate (defaults to `TEACHER2026`). |
+| `ADVISOR_PASSCODE` | Optional | `<ADVISOR_PASSCODE>` | School advisor passcode gate (defaults to `<ADVISOR_PASSCODE>`). |
 | `SESSION_SECRET` | Optional | `super-secret-salt-2026-xyz` | HMAC-SHA256 signature key for advisor session cookies. |
 | `ADMIN_SECRET` | Optional | `admin-purge-key-2026` | Authorization key for calling annual purge endpoint `/api/admin/purge`. |
 | `NODE_ENV` | **Yes** | `production` | Enforces optimized React and Next.js execution. |
@@ -73,7 +73,7 @@ Configure these environment variables in your deployment dashboard or local `.en
      - `DATABASE_URL`: Your Neon pooled connection string.
      - `DIRECT_URL`: Your Neon direct connection string.
      - `GEMINI_API_KEY`: Your Google AI Studio API key.
-     - `ADVISOR_PASSCODE`: Your school passcode (e.g., `TEACHER2026`).
+     - `ADVISOR_PASSCODE`: Your school passcode (e.g., `<ADVISOR_PASSCODE>`).
      - `NODE_ENV`: `production`
    - Click **Deploy**. Vercel will build the Next.js application and deploy it globally.
 
@@ -94,7 +94,7 @@ Configure these environment variables in your deployment dashboard or local `.en
    PORT=3000
    DATABASE_URL=postgres://user:password@db.example.com/pathless?sslmode=require
    GEMINI_API_KEY=AIzaSy...
-   ADVISOR_PASSCODE=TEACHER2026
+   ADVISOR_PASSCODE=<ADVISOR_PASSCODE>
    SESSION_SECRET=a_very_long_random_hex_string_2026
    EOF
    ```

@@ -1,4 +1,4 @@
----
+﻿---
 doc: contract
 feature: 11-ux-copy-and-simplification
 project: PathLess - Framework v2
@@ -768,7 +768,7 @@ export const ADVISOR_COPY = {
     title: 'School Advisor Access',
     subtitle: 'Enter your school passcode to access your students’ pathway reflections and session notes.',
     passcodeLabel: 'School Passcode',
-    passcodePlaceholder: 'e.g., TEACHER2026',
+    passcodePlaceholder: 'e.g., <ADVISOR_PASSCODE>',
     passcodeHelper: 'Ask your school guidance lead or principal if you do not know your school passcode.',
     authorNameLabel: 'Your Name or Advisor Title (Optional)',
     authorNamePlaceholder: 'e.g., Kru Nan / Advisor Davis',

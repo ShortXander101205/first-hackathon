@@ -1,4 +1,4 @@
----
+﻿---
 doc: implementation-plan
 feature: 10-advisor-dashboard-db
 project: PathLess - Framework v2
@@ -19,7 +19,7 @@ Feature 10 transitions PathLess from transient in-memory discovery into a persis
 
 1. **Prisma PostgreSQL Persistence**: Models student submissions, intake answers, complete 4-card synthesis results (with 3-stage milestones and verified Thai university programs), and private advisor notes with cascading referential integrity.
 2. **Asynchronous Non-Blocking Hook**: Extends `POST /api/guide` to record completed submissions without blocking or delaying student synthesis responses during network dips.
-3. **Friction-Free Educator Gatekeeping**: Authenticates educators using a shared passcode (`TEACHER2026`) and signed, `httpOnly`, 7-day session cookies (`pathless_advisor_session`), completely eliminating user account registration hurdles.
+3. **Friction-Free Educator Gatekeeping**: Authenticates educators using a shared passcode (`<ADVISOR_PASSCODE>`) and signed, `httpOnly`, 7-day session cookies (`pathless_advisor_session`), completely eliminating user account registration hurdles.
 4. **Accessible Advisor Dashboard**: Renders a searchable, filterable directory of student submissions at `/advisor`, detailed inspection drawers, and a private notes editor with zero technical database jargon.
 5. **Annual Academic Data Purge**: Calculates the preceding July 1 academic turnover date and purges stale records from prior school years to safeguard student privacy.
 6. **Strict Scope Discipline**:
@@ -46,7 +46,7 @@ Feature 10 transitions PathLess from transient in-memory discovery into a persis
 │                                    ↓                                                             │
 │ Phase 3: Advisor Auth Service, Session Middleware & Auth Routes                                  │
 │          • Create src/lib/auth.ts: timingSafeEqual passcode verify & HMAC session tokens         │
-│          • Implement POST /api/advisor/login (validates TEACHER2026, sets signed httpOnly cookie)│
+│          • Implement POST /api/advisor/login (validates <ADVISOR_PASSCODE>, sets signed httpOnly cookie)│
 │          • Implement POST /api/advisor/logout (clears session cookie)                            │
 │                                    ↓                                                             │
 │ Phase 4: Centralized Copy Dictionary & Advisor Data API Routes                                   │
@@ -183,12 +183,12 @@ Feature 10 transitions PathLess from transient in-memory discovery into a persis
 ---
 
 ### Phase 3: Advisor Auth Service, Session Middleware & Auth Routes
-**Goal**: Implement friction-free shared passcode authentication (`TEACHER2026`) via signed `httpOnly` cookies.  
+**Goal**: Implement friction-free shared passcode authentication (`<ADVISOR_PASSCODE>`) via signed `httpOnly` cookies.  
 **Acceptance Criteria Mapped**: `AC-DB-03`
 
 #### 3.1 Authentication Utilities ([src/lib/auth.ts](file:///d:/Hackathon/Beta_Folder/src/lib/auth.ts))
 - **Passcode Verification**:
-  - Compare submitted passcode to `process.env.ADVISOR_PASSCODE ?? 'TEACHER2026'`.
+  - Compare submitted passcode to `process.env.ADVISOR_PASSCODE ?? '<ADVISOR_PASSCODE>'`.
   - Use `crypto.timingSafeEqual` with SHA-256 digests.
 - **Session Token Mechanics**:
   - Structure: `<base64UrlPayload>.<base64UrlSignature>`
@@ -311,7 +311,7 @@ src/app/advisor/page.tsx (Page Shell & Auth Gate)
 
 #### 7.1 Test Suites to Create
 1. **`tests/unit/auth.test.ts`**:
-   - `UT-AUTH-01`: Validates `TEACHER2026` default and `ADVISOR_PASSCODE` override.
+   - `UT-AUTH-01`: Validates `<ADVISOR_PASSCODE>` default and `ADVISOR_PASSCODE` override.
    - `UT-AUTH-02`: Rejects invalid, empty, or whitespace passcodes.
    - `UT-AUTH-03`: Verifies timing-safe evaluation using SHA-256 digests.
    - `UT-AUTH-04`: Validates HMAC-SHA256 signature and 7-day expiration.
@@ -324,7 +324,7 @@ src/app/advisor/page.tsx (Page Shell & Auth Gate)
    - `UT-PURGE-04`: Handles leap year dates correctly (e.g. Feb 29, 2028).
    - `UT-PURGE-05`: Correctly partitions records into retained vs. purged buckets.
 3. **`tests/integration/advisorRoutes.test.ts`**:
-   - `IT-ADV-01`: `POST /api/advisor/login` with `TEACHER2026` returns 200 and sets cookie.
+   - `IT-ADV-01`: `POST /api/advisor/login` with `<ADVISOR_PASSCODE>` returns 200 and sets cookie.
    - `IT-ADV-02`: `POST /api/advisor/login` with invalid passcode returns 401.
    - `IT-ADV-03`: `POST /api/advisor/logout` expires cookie.
    - `IT-ADV-04`: `GET /api/advisor/students` rejects unauthenticated calls with 401.
@@ -348,7 +348,7 @@ src/app/advisor/page.tsx (Page Shell & Auth Gate)
 │ AC-DB-02 │ Completing intake automatically persists student       │ Phase 2       │ tests/integration/advisor    │
 │          │ record and full synthesis cards to the database.       │               │ Routes.test.ts (IT-ADV-08)   │
 ├──────────┼────────────────────────────────────────────────────────┼───────────────┼──────────────────────────────┤
-│ AC-DB-03 │ Accessing /advisor requires TEACHER2026 authentication │ Phase 3, 5    │ tests/unit/auth.test.ts,     │
+│ AC-DB-03 │ Accessing /advisor requires <ADVISOR_PASSCODE> authentication │ Phase 3, 5    │ tests/unit/auth.test.ts,     │
 │          │ granting access via signed httpOnly cookie.            │               │ IT-ADV-01, IT-ADV-04         │
 ├──────────┼────────────────────────────────────────────────────────┼───────────────┼──────────────────────────────┤
 │ AC-DB-04 │ Advisor dashboard renders responsive student directory │ Phase 4, 5    │ IT-ADV-05, IT-ADV-06,        │

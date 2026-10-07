@@ -1,4 +1,4 @@
----
+﻿---
 doc: contract
 feature: 13-deployment-and-e2e
 project: PathLess - Framework v2
@@ -12,7 +12,7 @@ gate: PASS
 
 This specification establishes the technical, architectural, behavioral, and accessibility contract for **Feature 13: Deployment and E2E** of the **PathLess Framework v2** on branch `feature/13-deployment-and-e2e`.
 
-Across Features 1 through 12 and Feature 14, PathLess developed into a complete, hardened educational discovery application. It features a calm 10-step intake wizard, defensible career synthesis restricted to a 48-profession catalog whitelist, deterministic Thai university program matching, passcode-gated advisor tools (`TEACHER2026`), centralized plain-language copy, and robust safety guardrails (sliding-window rate limiting, input sanitization, prompt injection screening, and error boundaries).
+Across Features 1 through 12 and Feature 14, PathLess developed into a complete, hardened educational discovery application. It features a calm 10-step intake wizard, defensible career synthesis restricted to a 48-profession catalog whitelist, deterministic Thai university program matching, passcode-gated advisor tools (`<ADVISOR_PASSCODE>`), centralized plain-language copy, and robust safety guardrails (sliding-window rate limiting, input sanitization, prompt injection screening, and error boundaries).
 
 However, PathLess currently lacks **containerized production packaging**, **automated multi-stage CI workflows**, and **automated browser-level end-to-end (E2E) regression tests**. Verifications are limited to Node.js unit and integration tests (`tests/unit`, `tests/integration`), leaving critical user journeys (multi-step form navigation, modal drawers, print stylesheets, rate-limit UI fallbacks, and real browser DOM accessibility) susceptible to regressions prior to deployment.
 
@@ -50,7 +50,7 @@ Feature 13 introduces **production containerization**, a **zero-cost continuous 
 3. **Playwright Browser E2E Test Suite (`playwright.config.ts`, `tests/e2e/*`)**:
    Establish automated, resilient browser test suites covering:
    - **Student Intake & Synthesis Journey (`tests/e2e/student-flow.spec.ts`)**: Intake Step 0 welcome, 10 questionnaire steps, synthesis transition, 4-card progressive disclosure, milestone timeline inspection, verified Thai university links, and print stylesheet activation.
-   - **Advisor Portal Workflow (`tests/e2e/advisor-flow.spec.ts`)**: Passcode gatekeeping (`TEACHER2026`), wrong passcode handling, student directory searching, detail modal inspection, private note saving, and session sign-out.
+   - **Advisor Portal Workflow (`tests/e2e/advisor-flow.spec.ts`)**: Passcode gatekeeping (`<ADVISOR_PASSCODE>`), wrong passcode handling, student directory searching, detail modal inspection, private note saving, and session sign-out.
    - **Guardrails & Security Flow (`tests/e2e/guardrails.spec.ts`)**: Sliding-window rate limit triggers (HTTP 429 with calm user copy), input sanitization (stripping HTML and script tags), and React error boundary fallback resilience.
 4. **Automated WCAG 2.1 AA Accessibility Audits (`@axe-core/playwright`)**:
    Embed automated accessibility audits directly into Playwright tests. Assert zero critical or serious WCAG 2.1 AA violations across the student intake form, synthesized results view, advisor dashboard, and error fallback states.
@@ -94,7 +94,7 @@ Feature 13 introduces **production containerization**, a **zero-cost continuous 
 - **Automated E2E Test Automation**:
   - `playwright.config.ts`: Playwright configuration specifying webServer lifecycle, timeout thresholds, headless execution, and artifact retention on failure.
   - `tests/e2e/student-flow.spec.ts`: Full student lifecycle test from intake Step 0 through card toggle, milestone inspection, university link verification, print CSS check, and axe accessibility audit.
-  - `tests/e2e/advisor-flow.spec.ts`: Full advisor portal lifecycle test covering passcode login (`TEACHER2026`), directory search/filter, detail modal review, note saving, logout, and axe accessibility audit.
+  - `tests/e2e/advisor-flow.spec.ts`: Full advisor portal lifecycle test covering passcode login (`<ADVISOR_PASSCODE>`), directory search/filter, detail modal review, note saving, logout, and axe accessibility audit.
   - `tests/e2e/guardrails.spec.ts`: Security and resilience test verifying rate-limit triggering (429 calm message), HTML/XSS input sanitization, and axe accessibility audit.
 - **Operational Documentation**:
   - `docs/pathless/runbooks/deployment.md`: Complete zero-cost deployment guide for Vercel, Neon PostgreSQL, Google Gemini API, and self-hosted Docker on a VPS.
@@ -226,7 +226,7 @@ flowchart LR
 
     Student -->|HTTP /| Router
     Student -->|POST Intake| API_Guide
-    Advisor -->|POST TEACHER2026| API_Login
+    Advisor -->|POST <ADVISOR_PASSCODE>| API_Login
     Security -->|Excessive Calls| RateLimiter
 
     API_Guide -->|GEMINI_API_KEY omitted| MockGemini
@@ -437,7 +437,7 @@ jobs:
     env:
       NODE_ENV: test
       GEMINI_API_KEY: dummy_ci_key
-      ADVISOR_PASSCODE: TEACHER2026
+      ADVISOR_PASSCODE: <ADVISOR_PASSCODE>
 
     steps:
       - name: Checkout Code
@@ -475,7 +475,7 @@ jobs:
     env:
       NODE_ENV: production
       GEMINI_API_KEY: dummy_ci_key
-      ADVISOR_PASSCODE: TEACHER2026
+      ADVISOR_PASSCODE: <ADVISOR_PASSCODE>
       NEXT_TELEMETRY_DISABLED: 1
 
     steps:
@@ -613,7 +613,7 @@ export default defineConfig({
     env: {
       NODE_ENV: 'production',
       PORT: '3000',
-      ADVISOR_PASSCODE: 'TEACHER2026',
+      ADVISOR_PASSCODE: '<ADVISOR_PASSCODE>',
       GEMINI_API_KEY: '', // Triggers deterministic mock fallback
     },
   },
@@ -755,7 +755,7 @@ test.describe('Student Intake to Results E2E Journey', () => {
 This suite verifies the educator portal:
 1. **Passcode Protection**: Unauthenticated visit to `/advisor` presents the passcode login modal.
 2. **Invalid Passcode Rejection**: Entering an incorrect code displays the calm, non-technical error message (`ADVISOR_COPY.login.errorMessage`).
-3. **Successful Authentication**: Submitting `TEACHER2026` and advisor name logs in and loads the student directory.
+3. **Successful Authentication**: Submitting `<ADVISOR_PASSCODE>` and advisor name logs in and loads the student directory.
 4. **Student Directory & Filtering**: Directory search by student name and grade level filters rows reactively.
 5. **Student Detail Modal**: Clicking a student row opens the detail modal displaying intake answers, 4 pathway cards, and university matches.
 6. **Advisor Note Authoring**: Authoring and saving a note immediately appends it to the student record history.
@@ -767,7 +767,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('Advisor Portal E2E Workflow', () => {
-  test('rejects incorrect passcode, logs in with TEACHER2026, searches students, inspects details, saves note, and logs out', async ({ page }) => {
+  test('rejects incorrect passcode, logs in with <ADVISOR_PASSCODE>, searches students, inspects details, saves note, and logs out', async ({ page }) => {
     // 1. Visit Advisor Portal
     await page.goto('/advisor');
 
@@ -785,8 +785,8 @@ test.describe('Advisor Portal E2E Workflow', () => {
     await page.click('button:has-text("Open Advisor Directory")');
     await expect(page.locator('text=The passcode entered does not match our school records')).toBeVisible();
 
-    // 4. Authenticate with valid passcode TEACHER2026
-    await page.fill('input#advisor-passcode', 'TEACHER2026');
+    // 4. Authenticate with valid passcode <ADVISOR_PASSCODE>
+    await page.fill('input#advisor-passcode', '<ADVISOR_PASSCODE>');
     await page.fill('input#advisor-name', 'Kru Somchai');
     await page.click('button:has-text("Open Advisor Directory")');
 
@@ -921,7 +921,7 @@ The deployment runbook details how school mentors and organizers can host PathLe
 | `DIRECT_URL` | Optional | `postgres://user:pass@ep.neon.tech/pathless?sslmode=require` | Direct database connection string for Prisma migrations. |
 | `GEMINI_API_KEY` | **Yes** | `AIzaSyD...` | Google AI Studio API key. If omitted, uses deterministic mock data. |
 | `GEMINI_MODEL` | Optional | `gemini-2.5-flash` | Target model name (default: `gemini-2.5-flash`). |
-| `ADVISOR_PASSCODE` | Optional | `TEACHER2026` | Shared school mentor passcode (default: `TEACHER2026`). |
+| `ADVISOR_PASSCODE` | Optional | `<ADVISOR_PASSCODE>` | Shared school mentor passcode (default: `<ADVISOR_PASSCODE>`). |
 | `SESSION_SECRET` | Optional | `super-secret-salt-2026-xyz` | HMAC-SHA256 signature key for advisor session cookies. |
 | `ADMIN_SECRET` | Optional | `admin-purge-key-2026` | Authorization key for calling annual purge endpoint `/api/admin/purge`. |
 | `NODE_ENV` | **Yes** | `production` | Ensures React and Next.js execute in optimized production mode. |
@@ -954,7 +954,7 @@ The deployment runbook details how school mentors and organizers can host PathLe
    ```env
    DATABASE_URL=postgres://...
    GEMINI_API_KEY=AIzaSy...
-   ADVISOR_PASSCODE=TEACHER2026
+   ADVISOR_PASSCODE=<ADVISOR_PASSCODE>
    SESSION_SECRET=my-random-secret
    ```
 3. **Build and Run Docker Container**:
@@ -1043,7 +1043,7 @@ export async function GET(): Promise<NextResponse> {
 │           │ milestones inspection, verified Thai unis, print).│ university link checked, axe audit 0 critical issues.  │
 ├───────────┼───────────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ AC-DEP-04 │ Playwright E2E tests verify the advisor workflow  │ npx playwright test tests/e2e/advisor-flow.spec.ts     │
-│           │ (TEACHER2026 login, wrong code error, directory   │ passes: login succeeds, directory searches, detail     │
+│           │ (<ADVISOR_PASSCODE> login, wrong code error, directory   │ passes: login succeeds, directory searches, detail     │
 │           │ search, detail modal review, note saving, logout).│ modal opens, note saves, axe audit 0 critical issues.  │
 ├───────────┼───────────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
 │ AC-DEP-05 │ Playwright E2E tests assert rate-limit triggers   │ npx playwright test tests/e2e/guardrails.spec.ts       │
