@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "tsx --test tests/**/*.test.ts"
+    "test": "tsx --test tests/**/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:ci": "npm run lint && npm run type-check && npm test && npm run test:e2e"
   },
   "dependencies": {
     "@google/genai": "^2.26.0",
@@ -26,6 +29,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.47.0",
     "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.8",

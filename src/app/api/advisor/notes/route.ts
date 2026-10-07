@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdvisorSessionFromRequest } from '@/lib/auth';
-import { MOCK_ADVISOR_SUBMISSIONS } from '@/data/mockAdvisorSubmissions';
+import { findMockAdvisorSubmission } from '@/data/mockAdvisorSubmissions';
 import { advisorNotesRateLimiter, getClientIp } from '@/lib/rateLimit';
 import { sanitizeString } from '@/lib/sanitize';
 import { createProblemResponse, handleServerError, generateRequestId } from '@/lib/apiErrors';
@@ -119,7 +119,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   } catch (error) {
     // If DB is offline or mock submission is being edited in local demo
-    const mockSub = MOCK_ADVISOR_SUBMISSIONS.find((m) => m.id === sanitizedSubmissionId);
+    const mockSub = findMockAdvisorSubmission(sanitizedSubmissionId);
     if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '' || mockSub) {
       const mockNote = {
         id: `note_${Date.now()}`,

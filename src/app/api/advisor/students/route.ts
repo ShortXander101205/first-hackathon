@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdvisorSessionFromRequest } from '@/lib/auth';
 import { getPrecedingJuly1Cutoff } from '@/lib/purge';
-import { MOCK_ADVISOR_SUBMISSIONS } from '@/data/mockAdvisorSubmissions';
+import { getMockAdvisorSubmissions } from '@/data/mockAdvisorSubmissions';
 
 export const runtime = 'nodejs';
 
@@ -23,7 +23,7 @@ function getMockDirectoryItems(
   grade: string,
   dateRange: string
 ): StudentDirectoryItem[] {
-  let list = MOCK_ADVISOR_SUBMISSIONS;
+  let list = getMockAdvisorSubmissions();
 
   if (search) {
     const s = search.toLowerCase();
@@ -154,13 +154,9 @@ export async function GET(request: Request): Promise<NextResponse> {
       return NextResponse.json({ success: true, students: items }, { status: 200 });
     }
 
-    // If database returned 0 records and no specific search was requested, provide sample records
-    if (!search && (grade === 'all' || !grade) && dateRange === 'all') {
-      const mockItems = getMockDirectoryItems(search, grade, dateRange);
-      return NextResponse.json({ success: true, students: mockItems }, { status: 200 });
-    }
-
-    return NextResponse.json({ success: true, students: [] }, { status: 200 });
+    // If database returned 0 records, provide matching mock/in-memory records
+    const mockItems = getMockDirectoryItems(search, grade, dateRange);
+    return NextResponse.json({ success: true, students: mockItems }, { status: 200 });
   } catch (error) {
     // Graceful fallback to mock demo records when database is unavailable or not configured
     console.warn('[PathLess Advisor API] Database query fallback to mock sample records:', error);

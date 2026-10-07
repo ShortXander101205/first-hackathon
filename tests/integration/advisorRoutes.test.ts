@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { POST as loginPost } from '@/app/api/advisor/login/route';
 import { POST as logoutPost } from '@/app/api/advisor/logout/route';
 import { GET as studentsGet } from '@/app/api/advisor/students/route';
+import { GET as studentDetailGet } from '@/app/api/advisor/students/[id]/route';
+import { POST as guidePost } from '@/app/api/guide/route';
 import { POST as notesPost } from '@/app/api/advisor/notes/route';
 import { POST as purgePost } from '@/app/api/admin/purge/route';
 import { createAdvisorSessionToken, ADVISOR_COOKIE_NAME } from '@/lib/auth';
@@ -213,5 +215,70 @@ describe('Feature 10: Advisor API Routes Integration Tests', () => {
     assert.equal(data.success, true);
     assert.equal(data.dryRun, true);
     assert.equal(data.purgedCount, 5);
+  });
+
+  // IT-ADV-09: Quiz completion to Advisor view end-to-end in mock/fallback mode
+  it('IT-ADV-09: POST /api/guide saves new student and makes it visible in GET /api/advisor/students', async () => {
+    // 1. Submit quiz as a unique test student
+    const testStudentName = `Test Student ${Date.now()}`;
+    const guideReq = new Request('http://localhost:3000/api/guide', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentProfile: {
+          fullName: testStudentName,
+          gradeLevel: 'grade_11',
+          studentId: 'STU-TEST-001',
+        },
+        intakeAnswers: {
+          q1TaskIds: ['BUILD_SYSTEMS'],
+          q2SubjectId: 'TECH_COMPUTING',
+          q3AcademicHesitation: 'Math test anxiety.',
+          q4Environment: 'REMOTE_DIGITAL',
+          q5ProblemSolving: 'SYSTEMATIC_LOGIC',
+          q6SocialEnergy: 'INDEPENDENT_DEEP_FOCUS',
+          q7StructureTolerance: 'BALANCED_MILESTONES',
+          q8AcademicFriction: 'ADVANCED_MATH',
+          q9HorizonPriority: 'FINANCIAL_STABILITY',
+          q10PostCollegeAmbition: 'WORKFORCE_DIRECT',
+        },
+      }),
+    });
+
+    const guideRes = await guidePost(guideReq);
+    assert.equal(guideRes.status, 200);
+    const guideData = await guideRes.json();
+    assert.ok(guideData.submissionId, 'Expected a submissionId returned');
+
+    // 2. Query advisor students list with search
+    const token = createAdvisorSessionToken('Lead Advisor');
+    const advisorListReq = new Request(
+      `http://localhost:3000/api/advisor/students?search=${encodeURIComponent(testStudentName)}`,
+      {
+        headers: { cookie: `${ADVISOR_COOKIE_NAME}=${token}` },
+      }
+    );
+
+    const listRes = await studentsGet(advisorListReq);
+    assert.equal(listRes.status, 200);
+    const listData = await listRes.json();
+    assert.equal(listData.success, true);
+    assert.ok(Array.isArray(listData.students));
+
+    const found = listData.students.find((s: any) => s.fullName === testStudentName);
+    assert.ok(found, `Expected to find newly submitted student "${testStudentName}" in advisor list`);
+    assert.equal(found.gradeLevel, 'grade_11');
+    assert.equal(found.studentId, 'STU-TEST-001');
+
+    // 3. Query student detail route
+    const detailReq = new Request(`http://localhost:3000/api/advisor/students/${guideData.submissionId}`, {
+      headers: { cookie: `${ADVISOR_COOKIE_NAME}=${token}` },
+    });
+    const detailRes = await studentDetailGet(detailReq, { params: { id: guideData.submissionId } });
+    assert.equal(detailRes.status, 200);
+    const detailData = await detailRes.json();
+    assert.equal(detailData.success, true);
+    assert.equal(detailData.submission.fullName, testStudentName);
+    assert.ok(detailData.submission.synthesisResult);
   });
 });

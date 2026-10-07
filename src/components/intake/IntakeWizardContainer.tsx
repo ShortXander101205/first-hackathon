@@ -235,6 +235,7 @@ export function IntakeWizardContainer() {
 
           <div
             role="progressbar"
+            aria-label={GUIDE_COPY.a11y.progressNav}
             aria-valuenow={currentStep}
             aria-valuemin={0}
             aria-valuemax={10}

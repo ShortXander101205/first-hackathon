@@ -14,6 +14,7 @@ import { SubmissionPayload } from '@/types/api';
 import { GuideResult } from '@/types/career';
 import { prisma } from '@/lib/prisma';
 import { createProblemResponse, generateRequestId } from '@/lib/apiErrors';
+import { addMockAdvisorSubmission, MockAdvisorSubmission } from '@/data/mockAdvisorSubmissions';
 
 export const runtime = 'nodejs';
 
@@ -149,23 +150,41 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const payload: SubmissionPayload = validationResult.data as SubmissionPayload;
 
-  // Helper to persist student submissions to PostgreSQL safely and asynchronously
+  // Helper to persist student submissions to PostgreSQL or in-memory fallback safely
   async function persistSubmissionSafely(
     submissionPayload: SubmissionPayload,
     guideResult: GuideResult
   ): Promise<string | null> {
+    const now = new Date();
+    const currentYear = now.getUTCFullYear();
+    const cutoffThisYear = new Date(Date.UTC(currentYear, 6, 1)); // July 1 UTC
+    const academicYear = now.getTime() >= cutoffThisYear.getTime() ? currentYear : currentYear - 1;
+
+    const cards = (guideResult.pathways || guideResult.careers || []) as any;
+
+    const fallbackSubmissionId = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    const inMemoryRecord: MockAdvisorSubmission = {
+      id: fallbackSubmissionId,
+      fullName: submissionPayload.studentProfile.fullName.trim(),
+      gradeLevel: submissionPayload.studentProfile.gradeLevel,
+      studentId: submissionPayload.studentProfile.studentId?.trim() || null,
+      academicYear,
+      createdAt: now.toISOString(),
+      intakeAnswers: submissionPayload.intakeAnswers as any,
+      synthesisResult: {
+        cards,
+        summary: (guideResult.summary || {}) as any,
+        meta: (guideResult.meta || {}) as any,
+      },
+      notes: [],
+    };
+
     if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '') {
-      return null;
+      addMockAdvisorSubmission(inMemoryRecord);
+      return inMemoryRecord.id;
     }
 
     try {
-      const now = new Date();
-      const currentYear = now.getUTCFullYear();
-      const cutoffThisYear = new Date(Date.UTC(currentYear, 6, 1)); // July 1 UTC
-      const academicYear = now.getTime() >= cutoffThisYear.getTime() ? currentYear : currentYear - 1;
-
-      const cards = (guideResult.pathways || guideResult.careers || []) as any;
-
       const record = await prisma.studentSubmission.create({
         data: {
           fullName: submissionPayload.studentProfile.fullName.trim(),
@@ -187,10 +206,13 @@ export async function POST(request: Request): Promise<NextResponse> {
         },
       });
 
+      inMemoryRecord.id = record.id;
+      addMockAdvisorSubmission(inMemoryRecord);
       return record.id;
     } catch (error) {
       console.warn('[PathLess Persistence] Safe persistence fallback triggered:', error);
-      return null;
+      addMockAdvisorSubmission(inMemoryRecord);
+      return inMemoryRecord.id;
     }
   }
 

@@ -35,3 +35,8 @@ next-env.d.ts
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Test outputs
+/test-results/
+/playwright-report/
+/blob-report/

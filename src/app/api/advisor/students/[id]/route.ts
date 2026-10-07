@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdvisorSessionFromRequest } from '@/lib/auth';
-import { MOCK_ADVISOR_SUBMISSIONS } from '@/data/mockAdvisorSubmissions';
+import { findMockAdvisorSubmission } from '@/data/mockAdvisorSubmissions';
 
 export const runtime = 'nodejs';
 
@@ -35,8 +35,8 @@ export async function GET(
     );
   }
 
-  // Check mock sample submissions first if matching ID
-  const mockSub = MOCK_ADVISOR_SUBMISSIONS.find((m) => m.id === id);
+  // Check mock/in-memory sample submissions first if matching ID
+  const mockSub = findMockAdvisorSubmission(id);
 
   if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '') {
     if (mockSub) {

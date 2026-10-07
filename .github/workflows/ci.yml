@@ -1,0 +1,149 @@
+name: PathLess CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*'
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Job 1: Quality Gate & Unit/Integration Tests
+  # ---------------------------------------------------------------------------
+  quality-and-unit:
+    name: Code Quality & Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      NODE_ENV: test
+      GEMINI_API_KEY: dummy_ci_key
+      ADVISOR_PASSCODE: TEACHER2026
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run TypeScript Type Check
+        run: npm run type-check
+
+      - name: Run Unit & Integration Tests
+        run: npm test
+
+  # ---------------------------------------------------------------------------
+  # Job 2: Build & Playwright End-to-End Tests
+  # ---------------------------------------------------------------------------
+  build-and-e2e:
+    name: Next.js Build & Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      NODE_ENV: production
+      GEMINI_API_KEY: dummy_ci_key
+      ADVISOR_PASSCODE: TEACHER2026
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Cache Playwright Browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Browsers (Chromium)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright OS Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Build Production Next.js Application
+        run: npm run build
+
+      - name: Run Playwright E2E Test Suite
+        run: npx playwright test
+        env:
+          CI: true
+
+      - name: Upload Playwright Test Report on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # Job 3: Docker Container Build Verification
+  # ---------------------------------------------------------------------------
+  docker-verification:
+    name: Dockerfile Build Verification
+    needs: [quality-and-unit, build-and-e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Multi-Stage Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: pathless:ci
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify Container Unprivileged Execution
+        run: |
+          USER_ID=$(docker run --rm pathless:ci id -u)
+          echo "Container runtime user ID: $USER_ID"
+          if [ "$USER_ID" -ne 1001 ]; then
+            echo "ERROR: Container is not running as unprivileged user 1001!"
+            exit 1
+          fi

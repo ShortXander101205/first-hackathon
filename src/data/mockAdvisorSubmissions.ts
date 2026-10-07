@@ -243,3 +243,31 @@ export const MOCK_ADVISOR_SUBMISSIONS: MockAdvisorSubmission[] = [
     notes: [],
   },
 ];
+
+const globalForSubmissions = globalThis as unknown as {
+  inMemoryAdvisorSubmissions?: MockAdvisorSubmission[];
+};
+
+if (!globalForSubmissions.inMemoryAdvisorSubmissions) {
+  globalForSubmissions.inMemoryAdvisorSubmissions = [...MOCK_ADVISOR_SUBMISSIONS];
+}
+
+export function getMockAdvisorSubmissions(): MockAdvisorSubmission[] {
+  if (!globalForSubmissions.inMemoryAdvisorSubmissions) {
+    globalForSubmissions.inMemoryAdvisorSubmissions = [...MOCK_ADVISOR_SUBMISSIONS];
+  }
+  return globalForSubmissions.inMemoryAdvisorSubmissions;
+}
+
+export function addMockAdvisorSubmission(submission: MockAdvisorSubmission): void {
+  const current = getMockAdvisorSubmissions();
+  // Prepend so newest is at the top; filter out any duplicate by ID; cap at 50 records
+  globalForSubmissions.inMemoryAdvisorSubmissions = [
+    submission,
+    ...current.filter((s) => s.id !== submission.id),
+  ].slice(0, 50);
+}
+
+export function findMockAdvisorSubmission(id: string): MockAdvisorSubmission | undefined {
+  return getMockAdvisorSubmissions().find((s) => s.id === id);
+}
