@@ -50,15 +50,15 @@ export const GUIDE_COPY = {
 
   shell: {
     badge: 'Zero-Pressure Exploration',
-    subBadge: '10 Questions • Takes ~3 minutes • No test scores or grades required',
+    subBadge: '12 Questions • Takes ~3–4 minutes • No test scores or grades required',
     reassuranceNote:
       'There are no right or wrong answers. Choose what feels natural to you right now—your pathways are built to fit your comfort, not test your knowledge.',
-    stepProgressLabel: (current: number, total: number) => `Question ${current} of ${total}`,
+    stepProgressLabel: (current: number, total: number = 12) => `Question ${current} of ${total}`,
     stepPercentLabel: (percent: number) => `${percent}% Complete`,
     welcomeStepLabel: 'Welcome & Profile',
     brandSuffix: 'Guide',
     completionTitle: 'You Have Completed the PathLess Guide!',
-    completionMessage: 'Your 10 responses have been validated and saved for personal synthesis.',
+    completionMessage: 'Your 12 responses have been validated and saved for personal synthesis.',
     reviewAnswersButton: 'Review Answers',
   },
 
@@ -66,14 +66,16 @@ export const GUIDE_COPY = {
     0: 'Welcome and Student Profile',
     1: 'Daily Focus & Task Energy',
     2: 'Academic Curiosity',
-    3: 'Academic Hesitation & Worry',
-    4: 'Physical Work Environment',
-    5: 'Problem-Solving Instinct',
+    3: 'High School Study Track',
+    4: 'Academic Hesitation & Worry',
+    5: 'Physical Work Environment',
     6: 'Social Energy & Collaboration',
-    7: 'Structure vs. Ambiguity',
-    8: 'Academic Stress Minimization',
-    9: 'Core Life & Career Horizon',
-    10: 'Post-College Next Chapter',
+    7: 'Problem-Solving Instinct',
+    8: 'Structure vs. Ambiguity',
+    9: 'Practical Work Context',
+    10: 'Academic Stress Minimization',
+    11: 'Core Life & Career Horizon',
+    12: 'Post-College Next Chapter',
   },
 
   welcome: {
@@ -123,15 +125,27 @@ export const GUIDE_COPY = {
     studentIdMaxLength: 'Student ID must be 64 characters or fewer.',
     q1Required: 'Please select 1 or 2 tasks that feel natural to you.',
     q2SubjectRequired: 'Please choose a subject area that sparks your curiosity.',
+    q3TrackRequired: 'Please choose your high school study track or stream.',
     q3HesitationRequired: 'Please share a quick thought (at least 1 character) about what worries or excites you.',
     q3HesitationMaxLength: 'Please keep your thought within 200 characters.',
+    q4HesitationRequired: 'Please share a quick thought (at least 1 character) about what worries or excites you.',
+    q4HesitationMaxLength: 'Please keep your thought within 200 characters.',
     q4EnvironmentRequired: 'Please select the physical work setting where you feel most comfortable.',
+    q5EnvironmentRequired: 'Please select the physical work setting where you feel most comfortable.',
     q5ProblemSolvingRequired: 'Please select how you instinctively approach tough problems.',
     q6SocialEnergyRequired: 'Please select how social interaction affects your energy.',
+    q6CollaborationRequired: 'Please select how you prefer collaborating on a daily basis.',
+    q7ProblemSolvingRequired: 'Please select how you instinctively approach tough problems.',
     q7StructureRequired: 'Please choose the level of day-to-day structure you prefer.',
+    q8StructureRequired: 'Please choose the level of day-to-day structure you prefer.',
     q8FrictionRequired: 'Please select the academic demand that causes you the most stress.',
+    q9WorkContextRequired: 'Please choose a real-world work context that sounds engaging.',
     q9PriorityRequired: 'Please choose what matters most for your future peace of mind.',
+    q10AcademicFrictionRequired: 'Please select the academic demand that causes you the most stress.',
+    q10FrictionRequired: 'Please select the academic demand that causes you the most stress.',
     q10AmbitionRequired: 'Please select the timeline that feels right for your next chapter.',
+    q11PriorityRequired: 'Please choose what matters most for your future peace of mind.',
+    q12AmbitionRequired: 'Please select the timeline that feels right for your next chapter.',
     navigationBlocked: 'Please complete the current question before moving forward. Take all the time you need.',
   },
 
@@ -358,6 +372,29 @@ export const RESULTS_COPY = {
       'Zero unverified admissions claims. All university pathway data is verified by academic advisors.',
   },
 
+  exploreMore: {
+    heading: 'Curious About Other Directions?',
+    badge: 'Complementary Directions',
+    description:
+      'Curious about other directions? These complementary pathways from our curated catalog share similar strengths, without any pressure to decide right now.',
+    majorsLabel: 'Key College Majors',
+  },
+
+  admissions: {
+    badge: 'Admission Track Guidance',
+    needsCheckingBadge: 'Needs Checking • Annual Audit',
+    checklistHeading: 'Student Verification Checklist',
+    officialPortalButton: 'Visit Official Admissions Portal',
+    openPortalAria: (university: string) =>
+      `Visit official admissions portal for ${university} (opens in new tab)`,
+    annualDisclaimerTitle: 'Annual TCAS Admissions Advisory',
+    annualDisclaimerBody:
+      'Admission criteria, required minimum science credits, and portfolio guidelines are determined independently by each university and change each TCAS round (Rounds 1–4). Always confirm current requirements directly on the university\'s official admissions portal.',
+    trackEligibilityLabel: 'High School Track Eligibility',
+    zeroScoreGuaranty:
+      'Zero exam score or GPA cutoffs collected. All requirements are verified through official portals.',
+  },
+
   actions: {
     printButton: 'Print or Save as PDF',
     printButtonAriaLabel: 'Print or save these 4 career pathway recommendations as a PDF document',
@@ -384,7 +421,7 @@ export const RESULTS_COPY = {
   error: {
     title: 'We hit a temporary bump',
     description:
-      'We were unable to assemble your pathways right now. Please try again in a few moments, or review your answers.',
+      'We were unable to assemble your pathways right now. Your answers are completely safe. Please try again in a few moments, or review your answers.',
     retryButton: 'Try Again',
     editAnswersButton: 'Review My Answers',
     startOverButton: 'Start Over',

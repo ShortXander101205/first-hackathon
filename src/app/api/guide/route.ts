@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { safeRevalidateAdvisorCache } from '@/lib/advisorCache';
 import { submissionPayloadSchema } from '@/schemas/intake.schema';
 import { generateGuideRecommendations, sanitizeError } from '@/lib/gemini';
 import {
@@ -181,6 +182,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '') {
       addMockAdvisorSubmission(inMemoryRecord);
+      safeRevalidateAdvisorCache();
       return inMemoryRecord.id;
     }
 
@@ -208,10 +210,12 @@ export async function POST(request: Request): Promise<NextResponse> {
 
       inMemoryRecord.id = record.id;
       addMockAdvisorSubmission(inMemoryRecord);
+      safeRevalidateAdvisorCache();
       return record.id;
     } catch (error) {
       console.warn('[PathLess Persistence] Safe persistence fallback triggered:', error);
       addMockAdvisorSubmission(inMemoryRecord);
+      safeRevalidateAdvisorCache();
       return inMemoryRecord.id;
     }
   }

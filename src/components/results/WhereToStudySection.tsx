@@ -4,6 +4,8 @@ import React, { memo, useMemo } from 'react';
 import { RESULTS_COPY } from '@/content/guideCopy';
 import { matchProgramsForCard } from '@/lib/universityMatcher';
 import { UniversityProgramBadge } from './UniversityProgramBadge';
+import { AdmissionTrackChecklist } from './AdmissionTrackChecklist';
+import { getAdmissionRequirementsByUniversityId } from '@/data/admissionRequirements';
 import { ApprovedField } from '@/data/careerCatalog';
 
 export interface WhereToStudySectionProps {
@@ -81,9 +83,17 @@ export const WhereToStudySection = memo(function WhereToStudySection({
       {!fallbackNoticeRequired && matchedPrograms.length > 0 ? (
         <div className="space-y-3">
           <div className="grid grid-cols-1 gap-2.5">
-            {matchedPrograms.map((program) => (
-              <UniversityProgramBadge key={program.programId} program={program} />
-            ))}
+            {matchedPrograms.map((program) => {
+              const admissionEntry = getAdmissionRequirementsByUniversityId(program.universityId);
+              return (
+                <div key={program.programId} className="space-y-2">
+                  <UniversityProgramBadge program={program} />
+                  {admissionEntry && (
+                    <AdmissionTrackChecklist admissionEntry={admissionEntry} />
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Official Admissions Office Disclaimer */}

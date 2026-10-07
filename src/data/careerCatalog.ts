@@ -908,3 +908,41 @@ export function getAllWhitelistedMajors(): string[] {
   CAREER_CATALOG.forEach((entry) => entry.standardMajors.forEach((m) => majorsSet.add(m)));
   return Array.from(majorsSet).sort();
 }
+
+export interface RelatedRoleItem {
+  id: string;
+  roleTitle: string;
+  field: ApprovedField;
+  summary: string;
+  standardMajors: string[];
+}
+
+/**
+ * Pure deterministic selector for supplementary career recommendations.
+ * Selects 2-4 roles from the static catalog that are not in the primary recommendations.
+ */
+export function getRelatedCatalogRoles(
+  primaryRoleTitles: string[] = [],
+  preferredFields: ApprovedField[] = [],
+  count: number = 3
+): RelatedRoleItem[] {
+  const primarySet = new Set(primaryRoleTitles.map((t) => t.toLowerCase().trim()));
+  const available = CAREER_CATALOG.filter(
+    (entry) => !primarySet.has(entry.roleTitle.toLowerCase().trim())
+  );
+
+  // Prioritize roles matching preferred or adjacent fields
+  const sorted = [...available].sort((a, b) => {
+    const aPref = preferredFields.includes(a.field) ? 1 : 0;
+    const bPref = preferredFields.includes(b.field) ? 1 : 0;
+    return bPref - aPref;
+  });
+
+  return sorted.slice(0, Math.min(Math.max(count, 2), 4)).map((entry) => ({
+    id: entry.id,
+    roleTitle: entry.roleTitle,
+    field: entry.field,
+    summary: entry.dayInTheLifeSummary,
+    standardMajors: entry.standardMajors.slice(0, 2),
+  }));
+}

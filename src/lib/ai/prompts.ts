@@ -114,21 +114,58 @@ export function buildGuideUserPrompt(payload: {
   intakeAnswers: {
     q1TaskIds?: string[];
     q2SubjectId?: string;
+    q3HighSchoolTrack?: string;
     q3AcademicHesitation?: string;
+    q4AcademicHesitation?: string;
     q4Environment?: string;
+    q5Environment?: string;
     q5ProblemSolving?: string;
     q6SocialEnergy?: string;
+    q6CollaborationStyle?: string;
+    q7ProblemSolving?: string;
     q7StructureTolerance?: string;
+    q8StructureTolerance?: string;
     q8AcademicFriction?: string;
+    q9WorkContext?: string;
     q9HorizonPriority?: string;
+    q10AcademicFriction?: string;
     q10PostCollegeAmbition?: string;
+    q11HorizonPriority?: string;
+    q12PostCollegeAmbition?: string;
   };
 }): string {
   const profile = payload.studentProfile;
   const answers = payload.intakeAnswers;
   const name = sanitizePromptText(profile?.fullName || 'The student', 100);
   const grade = sanitizePromptText(profile?.gradeLevel || 'high_school_senior', 50);
-  const studentThoughts = sanitizePromptText(answers.q3AcademicHesitation || 'None shared', 200);
+  const studentThoughts = sanitizePromptText(
+    answers.q4AcademicHesitation || answers.q3AcademicHesitation || 'None shared',
+    200
+  );
+
+  const isExploratory =
+    answers.q2SubjectId === 'EXPLORATORY_OPEN' ||
+    answers.q3HighSchoolTrack === 'TRACK_EXPLORING';
+
+  const explorationDirective = isExploratory
+    ? `
+<student_exploration_signal>
+The student has expressed openness and uncertainty ('Not Sure Yet').
+DO NOT default arbitrarily to a single technical field.
+Treat uncertainty as an openness signal: synthesize pathways spanning at least 3 distinct broad fields across the 8-field catalog (e.g., Design, Humanities, Healthcare, Business). Highlight versatile degree majors that keep options flexible and foster cross-disciplinary skills.
+</student_exploration_signal>
+`
+    : '';
+
+  const track = answers.q3HighSchoolTrack || 'General High School Track';
+  const environment = answers.q5Environment || answers.q4Environment || 'Flexible';
+  const collaboration = answers.q6CollaborationStyle || answers.q6SocialEnergy || 'Balanced';
+  const problemSolving = answers.q7ProblemSolving || answers.q5ProblemSolving || 'Exploratory';
+  const structure = answers.q8StructureTolerance || answers.q7StructureTolerance || 'Balanced';
+  const workContext = answers.q9WorkContext || 'General Professional Context';
+  const friction = answers.q10AcademicFriction || answers.q8AcademicFriction || 'None';
+  const priority = answers.q11HorizonPriority || answers.q9HorizonPriority || 'Stability';
+  const ambition = answers.q12PostCollegeAmbition || answers.q10PostCollegeAmbition || 'Workforce direct';
 
   return `
 STUDENT INTAKE PROFILE:
@@ -138,18 +175,20 @@ STUDENT INTAKE PROFILE:
 QUESTIONNAIRE RESPONSES:
 - Q1 (Natural Task Interests): ${answers.q1TaskIds?.join(', ') || 'General exploration'}
 - Q2 (Primary Academic Curiosity): ${answers.q2SubjectId || 'Interdisciplinary'}
-- Q3 (Academic Hesitation & Worry):
+- Q3 (High School Study Stream): ${track}
+- Q4 (Academic Hesitation & Worry):
 <student_thoughts>
 ${studentThoughts}
 </student_thoughts>
-- Q4 (Preferred Physical Environment): ${answers.q4Environment || 'Flexible'}
-- Q5 (Problem-Solving Approach): ${answers.q5ProblemSolving || 'Exploratory'}
-- Q6 (Social Energy & Collaboration): ${answers.q6SocialEnergy || 'Balanced'}
-- Q7 (Structure & Ambiguity Tolerance): ${answers.q7StructureTolerance || 'Balanced'}
-- Q8 (Academic Stress Trigger to Minimize): ${answers.q8AcademicFriction || 'None'}
-- Q9 (Core Future Peace of Mind Priority): ${answers.q9HorizonPriority || 'Stability'}
-- Q10 (Immediate Post-College Horizon): ${answers.q10PostCollegeAmbition || 'Workforce direct'}
-
+- Q5 (Preferred Physical Environment): ${environment}
+- Q6 (Collaboration & Social Rhythm): ${collaboration}
+- Q7 (Problem-Solving Approach): ${problemSolving}
+- Q8 (Structure & Ambiguity Tolerance): ${structure}
+- Q9 (Practical Work Context): ${workContext}
+- Q10 (Academic Stress Trigger to Minimize): ${friction}
+- Q11 (Core Future Peace of Mind Priority): ${priority}
+- Q12 (Immediate Post-College Horizon): ${ambition}
+${explorationDirective}
 DIRECTIVE:
 Synthesize this student profile into an encouraging summary (archetype and narrative) and exactly 4 distinct career pathway cards adhering strictly to the catalog whitelist:
 - Card 1: Top Match (primary curiosity domain)

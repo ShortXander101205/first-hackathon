@@ -151,16 +151,43 @@ export async function GET(request: Request): Promise<NextResponse> {
         };
       });
 
-      return NextResponse.json({ success: true, students: items }, { status: 200 });
+      return NextResponse.json(
+        { success: true, students: items },
+        {
+          status: 200,
+          headers: {
+            'Cache-Control': 'no-store, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+          },
+        }
+      );
     }
 
     // If database returned 0 records, provide matching mock/in-memory records
     const mockItems = getMockDirectoryItems(search, grade, dateRange);
-    return NextResponse.json({ success: true, students: mockItems }, { status: 200 });
+    return NextResponse.json(
+      { success: true, students: mockItems },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, must-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+        },
+      }
+    );
   } catch (error) {
     // Graceful fallback to mock demo records when database is unavailable or not configured
     console.warn('[PathLess Advisor API] Database query fallback to mock sample records:', error);
     const mockItems = getMockDirectoryItems(search, grade, dateRange);
-    return NextResponse.json({ success: true, students: mockItems }, { status: 200 });
+    return NextResponse.json(
+      { success: true, students: mockItems },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, must-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+        },
+      }
+    );
   }
 }

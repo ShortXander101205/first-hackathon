@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { RESULTS_COPY } from '@/content/guideCopy';
 import { GuideResult } from '@/types/career';
+import { ApprovedField, getRelatedCatalogRoles } from '@/data/careerCatalog';
 import { ResultsHeader } from './ResultsHeader';
 import { PrintHeader } from './PrintHeader';
 import { CareerMatchCard } from './CareerMatchCard';
+import { ExploreMorePaths } from './ExploreMorePaths';
 import { ResultsFooter } from './ResultsFooter';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
@@ -36,10 +38,35 @@ export function ResultsContainer({ result, onClear, onPrint }: ResultsContainerP
     });
   }, []);
 
-  const pathways = result.pathways || result.careers || [];
+  const pathways = useMemo(
+    () => result.pathways || result.careers || [],
+    [result.pathways, result.careers]
+  );
   const studentName = result.studentProfile?.fullName;
   const summary = result.summary;
   const fallbackUsed = result.meta?.fallbackUsed ?? false;
+
+  const primaryTitles = useMemo(
+    () =>
+      pathways
+        .map((c) => c.roleTitle)
+        .filter((t): t is string => typeof t === 'string' && t.length > 0),
+    [pathways]
+  );
+  const preferredFields = useMemo(
+    () =>
+      pathways
+        .map((c) => {
+          const field = 'broadField' in c ? c.broadField : (c as unknown as { field?: string }).field;
+          return field as ApprovedField;
+        })
+        .filter((f): f is ApprovedField => Boolean(f)),
+    [pathways]
+  );
+  const relatedRoles = useMemo(
+    () => getRelatedCatalogRoles(primaryTitles, preferredFields, 3),
+    [primaryTitles, preferredFields]
+  );
 
   return (
     <div
@@ -77,6 +104,9 @@ export function ResultsContainer({ result, onClear, onPrint }: ResultsContainerP
           })}
         </main>
       </ErrorBoundary>
+
+      {/* Complementary Exploration Paths (AC-FIX-05) */}
+      <ExploreMorePaths relatedRoles={relatedRoles} />
 
       {/* Native Print & Reset Footer Actions */}
       <ResultsFooter onClear={onClear} onPrint={onPrint} />
