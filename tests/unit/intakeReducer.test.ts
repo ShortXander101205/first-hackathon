@@ -217,7 +217,7 @@ describe('Intake Reducer Unit Tests (intakeReducer)', () => {
     });
 
     it('is a safe no-op on Step 1', () => {
-      const state = intakeReducer(INITIAL_INTAKE_STATE, { type: 'PREVIOUS_STEP' });
+      const state = intakeReducer({ ...INITIAL_INTAKE_STATE, currentStep: 1 }, { type: 'PREVIOUS_STEP' });
       assert.equal(state.currentStep, 1);
     });
 
@@ -303,7 +303,7 @@ describe('Intake Reducer Unit Tests (intakeReducer)', () => {
     });
 
     it('blocks jumping to Step 3 when Step 1 is incomplete', () => {
-      const state = intakeReducer(INITIAL_INTAKE_STATE, {
+      const state = intakeReducer({ ...INITIAL_INTAKE_STATE, currentStep: 1 }, {
         type: 'GO_TO_STEP',
         payload: 3,
       });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container } from './Container';
 import { Icons } from '@/components/ui/icons';
+import { GUIDE_COPY } from '@/content/guideCopy';
 
 export function Footer() {
   return (
@@ -13,22 +14,22 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
           <div className="flex items-center gap-2 font-semibold text-edu-slate-800">
             <Icons.academic className="w-4 h-4 text-edu-primary" aria-hidden="true" />
-            <span>PathwayAI</span>
+            <span>{GUIDE_COPY.footer.brandName}</span>
           </div>
-          <span className="hidden sm:inline text-edu-slate-300">•</span>
-          <p className="text-xs text-edu-slate-500">
-            Turning college major dread into structured, confident exploration.
+          <span className="hidden sm:inline text-edu-slate-400" aria-hidden="true">•</span>
+          <p className="text-xs text-edu-slate-600">
+            {GUIDE_COPY.footer.tagline}
           </p>
         </div>
 
-        {/* Architecture & Zero-Cost Transparency */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-edu-slate-500 text-center sm:text-right">
+        {/* Framework & Version Details */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-edu-slate-600 text-center sm:text-right">
           <div className="flex items-center gap-1.5">
             <Icons.shield className="w-3.5 h-3.5 text-growth-700" aria-hidden="true" />
-            <span>Zero-Cost Gemini 1.5 Flash &amp; Local SQLite</span>
+            <span>{GUIDE_COPY.footer.frameworkBadge}</span>
           </div>
-          <span className="hidden sm:inline text-edu-slate-300">•</span>
-          <span className="text-edu-slate-400 font-mono">v0.1.0-mvp</span>
+          <span className="hidden sm:inline text-edu-slate-400" aria-hidden="true">•</span>
+          <span className="text-edu-slate-600 font-mono">{GUIDE_COPY.footer.versionBadge}</span>
         </div>
       </Container>
     </footer>

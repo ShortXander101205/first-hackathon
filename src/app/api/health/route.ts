@@ -1,16 +1,28 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
-const startTime = Date.now();
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
-export async function GET() {
-  const uptimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+export async function GET(): Promise<NextResponse> {
+  let dbStatus = 'unconfigured_or_fallback';
 
-  return NextResponse.json({
-    status: 'healthy',
-    database: 'sqlite_ready',
-    gemini_mode: 'live_or_mock',
-    zero_cost_free_tier: true,
-    rate_limit_rpm_ceiling: 15,
-    uptime_seconds: uptimeSeconds,
-  });
+  if (process.env.DATABASE_URL) {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      dbStatus = 'connected';
+    } catch {
+      dbStatus = 'disconnected';
+    }
+  }
+
+  return NextResponse.json(
+    {
+      status: 'healthy',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      database: dbStatus,
+    },
+    { status: 200 }
+  );
 }

@@ -1,9 +1,9 @@
 /**
- * PathwayAI: Type Definitions Barrel Export
+ * PathLess: Type Definitions Barrel Export
  */
 
 export * from './intake';
 export * from './career';
-export * from './counselor';
 export * from './database';
 export * from './api';
+export * from './university';

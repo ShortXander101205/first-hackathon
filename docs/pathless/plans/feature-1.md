@@ -211,13 +211,13 @@ Beta_Folder/
 | Acceptance Criterion | Description | Primary Implementing Artifacts |
 |---|---|---|
 | **AC-01** | 4-Question Intake Schema & Validation | `src/types/intake.ts`<br>`src/schemas/intake.schema.ts`<br>`src/fixtures/intake-submissions.json` |
-| **AC-02** | Zero-Cost Gemini 1.5 Flash Prompt & Structured Output | `src/ai/system-prompt.txt`<br>`src/ai/response-schema.json`<br>`docs/pathway/api-spec.md` |
+| **AC-02** | Zero-Cost Gemini 1.5 Flash Prompt & Structured Output | `src/ai/system-prompt.txt`<br>`src/ai/response-schema.json`<br>`docs/pathless/archive/api-spec-v1.md` |
 | **AC-03** | Strict 4-Career Recommendation Card Structure | `src/types/career.ts`<br>`src/schemas/career.schema.ts`<br>`src/fixtures/career-dossiers.json` |
 | **AC-04** | Student Submission Database Persistence | `src/db/schema.sql`<br>`src/types/database.ts` |
-| **AC-05** | Counselor Dashboard Triage Table & Metrics | `src/types/counselor.ts`<br>`src/fixtures/counselor-reviews.json`<br>`docs/pathway/spec.md` |
+| **AC-05** | Counselor Dashboard Triage Table & Metrics | `src/types/counselor.ts`<br>`src/fixtures/counselor-reviews.json`<br>`docs/pathless/archive/spec-v1.md` |
 | **AC-06** | Counselor Deep Inspection & Review Workflow | `src/types/counselor.ts`<br>`src/schemas/counselor.schema.ts`<br>`src/fixtures/counselor-reviews.json` |
-| **AC-07** | 15 RPM Rate Limiting & Offline Mock Fallback Engine | `src/fixtures/fallback-careers.json`<br>`docs/pathway/api-spec.md` |
-| **AC-08** | Zero-Cost Environment Architecture & Local Demo Readiness | `src/db/schema.sql`<br>`src/fixtures/*`<br>`docs/pathway/spec.md` |
+| **AC-07** | 15 RPM Rate Limiting & Offline Mock Fallback Engine | `src/fixtures/fallback-careers.json`<br>`docs/pathless/archive/api-spec-v1.md` |
+| **AC-08** | Zero-Cost Environment Architecture & Local Demo Readiness | `src/db/schema.sql`<br>`src/fixtures/*`<br>`docs/pathless/archive/spec-v1.md` |
 
 ---
 

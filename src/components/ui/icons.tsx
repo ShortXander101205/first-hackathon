@@ -43,7 +43,7 @@ export const Icons = {
   interdisciplinary: GitFork,
   moonshot: Rocket,
 
-  // Triage & Anxiety Diagnostics
+  // Exploration & Discovery
   frictionAlert: AlertCircle,
   verifiedCourse: CheckCircle2,
   duration: Clock,
@@ -60,7 +60,7 @@ export const Icons = {
   reset: RotateCcw,
 
 
-  // Counselor Dashboard
+  // Advisor Dashboard
   shield: ShieldCheck,
   search: Search,
   filter: Filter,

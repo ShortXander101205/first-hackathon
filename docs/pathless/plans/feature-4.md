@@ -9,7 +9,7 @@ gate: PASS
 # Feature 4: Step-by-Step Implementation Plan
 ## Intake State Machine, Step Guards, and Transient Session Storage
 
-This implementation plan defines the sequential phases required to execute **Feature 4: Intake State Machine** on branch `feature/4-intake-state-machine` in accordance with the technical contract ([docs/pathway/contracts/feature-4.md](file:///d:/Hackathon/Beta_Folder/docs/pathway/contracts/feature-4.md)).
+This implementation plan defines the sequential phases required to execute **Feature 4: Intake State Machine** on branch `feature/4-intake-state-machine` in accordance with the technical contract ([docs/pathless/contracts/feature-4.md](file:///d:/Hackathon/Beta_Folder/docs/pathless/contracts/feature-4.md)).
 
 ---
 

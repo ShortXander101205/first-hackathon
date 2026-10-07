@@ -1,124 +1,134 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "PathwayAITriageResponseSchema",
+  "title": "PathLessGuideSynthesisResponse",
   "type": "object",
   "properties": {
     "summary": {
       "type": "object",
       "properties": {
-        "student_archetype": {
+        "studentArchetype": {
           "type": "string",
-          "description": "A resonant 3-5 word archetype capturing the student's natural cognitive profile."
+          "description": "An encouraging 3 to 5 word archetype capturing natural strengths."
         },
-        "triage_narrative": {
+        "narrativeSummary": {
           "type": "string",
-          "description": "An empathetic 2-3 sentence synthesis explaining how their energy aligns with these trajectories while mitigating their anxiety."
+          "description": "A calm 2 to 3 sentence synthesis connecting preferences to pathways."
         }
       },
-      "required": ["student_archetype", "triage_narrative"]
+      "required": ["studentArchetype", "narrativeSummary"]
     },
-    "careers": {
+    "pathways": {
       "type": "array",
-      "description": "An array of exactly 4 career recommendation cards covering the 4 designated tiers.",
       "minItems": 4,
       "maxItems": 4,
+      "description": "Exactly 4 distinct career match cards conforming to catalog whitelist and 2 Top Match + 2 Explore Also.",
       "items": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "Unique card identifier (e.g. career_1, career_2)."
+            "description": "Unique match identifier (e.g. match_1, match_2)."
           },
-          "role_title": {
+          "roleTitle": {
             "type": "string",
-            "description": "Professional job or vocational title."
+            "description": "Common, recognizable career role title selected strictly from the catalog whitelist."
           },
-          "match_tier": {
+          "broadField": {
             "type": "string",
-            "enum": [
-              "Primary Direct Match",
-              "High-Growth Pathway",
-              "Interdisciplinary Pivot",
-              "Moonshot Trajectory"
-            ]
+            "description": "One of the 8 approved fields (Engineering & Technology, Healthcare & Life Sciences, Business & Economics, Design & Creative Arts, Communication & Humanities, Social Sciences & Law, Hospitality & Tourism, Environmental & Agricultural Sciences)."
           },
-          "fit_score": {
-            "type": "integer",
-            "description": "Integer match percentage between 50 and 100."
-          },
-          "fit_rationale": {
+          "badge": {
             "type": "string",
-            "description": "Concise rationale connecting this career to their intake choices."
+            "enum": ["Top Match", "Explore Also"],
+            "description": "Locked qualitative badge: Top Match for the 2 primary matches, Explore Also for the 2 adjacent matches."
           },
-          "majors": {
-            "type": "array",
-            "description": "At least two associated collegiate majors or degree programs.",
-            "items": { "type": "string" }
+          "overview": {
+            "type": "string",
+            "description": "Single sentence summary of 30 words or fewer."
           },
-          "minors": {
-            "type": "array",
-            "description": "At least one complementary college minor or specialization.",
-            "items": { "type": "string" }
+          "groundedRationale": {
+            "type": "string",
+            "description": "Two plain-language sentences directly connecting the role's daily reality to the student's intake answers."
           },
-          "day_in_the_life": {
+          "milestones": {
             "type": "object",
-            "description": "Daily operational reality vs common misconceptions.",
+            "description": "3-stage progression line familiar in Thailand.",
             "properties": {
-              "tasks": {
-                "type": "array",
-                "description": "At least 3 concrete tasks performed on the job.",
-                "items": { "type": "string" }
+              "education": {
+                "type": "string",
+                "description": "Stage 1: What to study in college (Bachelor's major & degree)."
               },
-              "misconceptions": {
-                "type": "array",
-                "description": "At least 1 common misconception vs reality.",
-                "items": { "type": "string" }
+              "entryRole": {
+                "type": "string",
+                "description": "Stage 2: Common first job after graduation (0-2 years)."
+              },
+              "growthRole": {
+                "type": "string",
+                "description": "Stage 3: Later career role (3-5+ years specialization/leadership)."
               }
             },
-            "required": ["tasks", "misconceptions"]
+            "required": ["education", "entryRole", "growthRole"]
           },
-          "daily_tasks": {
+          "dailyTasks": {
             "type": "array",
-            "description": "At least three concrete operational tasks performed on the job.",
-            "items": { "type": "string" }
+            "minItems": 3,
+            "maxItems": 4,
+            "items": { "type": "string" },
+            "description": "3 to 4 concrete operational tasks performed on a typical workday."
           },
-          "course_challenges": {
+          "studyPath": {
             "type": "string",
-            "description": "The specific challenging courses or concepts encountered in this degree."
+            "description": "Foundational study topics and courses of 65 words or fewer."
           },
           "reassurance": {
             "type": "string",
-            "description": "Empathetic cognitive reframing directly addressing their stated Question 2 academic dread and anxiety."
+            "description": "Empathetic reassurance addressing academic hesitation and friction. Strictly 65 words or fewer."
           },
-          "trial_courses": {
+          "majors": {
             "type": "array",
-            "description": "Exactly two zero-cost trial courses or hands-on tutorials.",
+            "minItems": 2,
+            "items": { "type": "string" },
+            "description": "Standard college majors selected strictly from the catalog whitelist."
+          },
+          "minors": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional complementary minors."
+          },
+          "trialCourses": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Exactly 2 zero-cost trial courses from free platforms.",
             "items": {
               "type": "object",
               "properties": {
                 "title": { "type": "string" },
                 "provider": { "type": "string" },
                 "description": { "type": "string" },
-                "estimated_hours": { "type": "integer" }
+                "estimatedHours": { "type": "integer" },
+                "searchQuery": { "type": "string" }
               },
-              "required": ["title", "provider", "description", "estimated_hours"]
+              "required": ["title", "provider", "description", "estimatedHours"]
             }
           }
         },
         "required": [
           "id",
-          "role_title",
-          "match_tier",
-          "fit_score",
-          "fit_rationale",
-          "majors",
-          "daily_tasks",
-          "course_challenges",
+          "roleTitle",
+          "broadField",
+          "badge",
+          "overview",
+          "groundedRationale",
+          "milestones",
+          "dailyTasks",
+          "studyPath",
           "reassurance",
-          "trial_courses"
+          "majors",
+          "trialCourses"
         ]
       }
     }
   },
-  "required": ["summary", "careers"]
+  "required": ["summary", "pathways"]
 }

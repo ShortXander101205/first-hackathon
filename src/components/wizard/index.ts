@@ -1,5 +1,5 @@
 /**
- * PathwayAI: College Major & Career Triage MVP
+ * PathLess: College Major and Career Discovery Guide v2
  * Wizard UI Component Barrel Exports
  */
 

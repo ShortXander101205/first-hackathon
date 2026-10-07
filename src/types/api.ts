@@ -1,10 +1,11 @@
 /**
- * PathwayAI: API & Problem Details TypeScript Contracts
- * RFC 7807 compliant Problem Details and Triage Route Interfaces
+ * PathLess: College Major and Career Discovery Guide v2
+ * API & Problem Details TypeScript Contracts
+ * RFC 7807 compliant Problem Details and Guide Route Interfaces
  */
 
-import { IntakeAnswersState } from './intake';
-import { CareerCard, TriageSummary, TriageGenerationMeta } from './career';
+import { IntakeAnswers, StudentProfile } from './intake';
+import { GuideResult } from './career';
 
 export type ProblemErrorCode =
   | 'VALIDATION_FAILED'
@@ -12,7 +13,9 @@ export type ProblemErrorCode =
   | 'UNSUPPORTED_MEDIA_TYPE'
   | 'RATE_LIMITED'
   | 'AI_SYNTHESIS_FAILED'
-  | 'GATEWAY_TIMEOUT';
+  | 'GATEWAY_TIMEOUT'
+  | 'INTERNAL_ERROR'
+  | 'UNAUTHORIZED';
 
 /**
  * Standard RFC 7807 Problem Details representation.
@@ -36,16 +39,13 @@ export interface ProblemDetails {
   retryAfter?: number;
 }
 
-export interface TriageRequestBody {
-  answers: IntakeAnswersState;
-  studentNickname?: string;
+export interface SubmissionPayload {
+  studentProfile: StudentProfile;
+  intakeAnswers: IntakeAnswers;
+  metadata?: {
+    clientTimestamp: string;
+    schemaVersion: number;
+  };
 }
 
-export interface TriageSuccessResponse {
-  success: true;
-  summary: TriageSummary;
-  careers: [CareerCard, CareerCard, CareerCard, CareerCard];
-  meta: TriageGenerationMeta;
-}
-
-export type TriageApiResponse = TriageSuccessResponse | ProblemDetails;
+export type GuideApiResponse = GuideResult | ProblemDetails;

@@ -7,13 +7,13 @@ import {
   validateStep,
 } from '@/context/IntakeContext';
 import { intakeStoredStateSchema } from '@/schemas/intake.schema';
-import type { IntakeState, IntakeStoredState } from '@/types/intake';
+import type { IntakeState, IntakeStoredState, WizardStep } from '@/types/intake';
 import { INTAKE_STORAGE_VERSION } from '@/hooks/useWizardSession';
 
 describe('Feature 4 End-to-End State Machine Integration Tests', () => {
   // IT-WIZ-01: Full 4-Step Alex Persona Walkthrough
   it('executes full 4-step Alex persona walkthrough, validation blocks, completion, and reset', () => {
-    let state: IntakeState = INITIAL_INTAKE_STATE;
+    let state: IntakeState = { ...INITIAL_INTAKE_STATE, currentStep: 1 };
 
     // 1. Alex inputs nickname
     state = intakeReducer(state, { type: 'SET_NICKNAME', payload: 'Alex Chen' });
@@ -139,7 +139,7 @@ describe('Feature 4 End-to-End State Machine Integration Tests', () => {
 
   // IT-GRD-05: Retroactive Invalidation Guard Flow
   it('prevents forward skipping when an earlier step is retroactively cleared', () => {
-    let state = INITIAL_INTAKE_STATE;
+    let state: IntakeState = { ...INITIAL_INTAKE_STATE, currentStep: 1 as WizardStep };
 
     // Complete Step 1
     state = intakeReducer(state, { type: 'TOGGLE_TASK', payload: 'BUILD_SYSTEMS' });
@@ -162,11 +162,11 @@ describe('Feature 4 End-to-End State Machine Integration Tests', () => {
     assert.deepEqual(state.answers.q1TaskIds, []);
 
     // Now verify that jumping back to Step 2 or 3 is blocked by navigation guards
-    assert.equal(canAccessStep(3, state.currentStep, state.answers), false);
-    assert.equal(canAccessStep(2, state.currentStep, state.answers), false);
+    assert.equal(canAccessStep(3 as WizardStep, state.currentStep, state.answers), false);
+    assert.equal(canAccessStep(2 as WizardStep, state.currentStep, state.answers), false);
 
     // Attempting GO_TO_STEP(3) is rejected by reducer
-    state = intakeReducer(state, { type: 'GO_TO_STEP', payload: 3 });
+    state = intakeReducer(state, { type: 'GO_TO_STEP', payload: 3 as WizardStep });
     assert.equal(state.currentStep, 1);
   });
 });

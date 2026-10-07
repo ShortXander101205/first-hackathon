@@ -35,7 +35,7 @@
   --edu-slate-900: #0f172a;
   --edu-slate-950: #020617;
 
-  /* Triage Diagnostic Semantic Accents */
+  /* Exploration Semantic Accents */
   --reassurance-50: #f0f9ff;
   --reassurance-100: #e0f2fe;
   --reassurance-500: #0ea5e9;
@@ -75,3 +75,54 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Native Print & PDF Export Optimization (Feature 14) */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4 portrait;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  /* Completely suppress interactive and non-printable UI elements */
+  .no-print,
+  button,
+  [role="button"],
+  nav {
+    display: none !important;
+  }
+
+  /* Do not append URLs after links */
+  a[href]::after {
+    content: none !important;
+  }
+
+  /* Clean card layout avoiding awkward page breaks */
+  article {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.75rem !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Force all 4 pathway card details containers visible in print */
+  [id^="pathway-details-"] {
+    display: block !important;
+    border-top: 1px solid #e2e8f0 !important;
+  }
+}
+

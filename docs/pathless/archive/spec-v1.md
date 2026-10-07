@@ -1,3 +1,4 @@
+> **Note:** This specification describes the legacy PathwayAI (v1) architecture and has been replaced by PathLess Framework v2.
 ---
 doc: spec
 feature: 1-contract-and-specs
@@ -542,3 +543,4 @@ CREATE INDEX IF NOT EXISTS idx_submissions_friction ON intake_submissions(q3_aca
 - Zero-cost Gemini 1.5 Flash constraints, rate limits (15 RPM), prompt token budgets, and seamless mock fallbacks are comprehensively addressed.
 - Explicit, verifiable Acceptance Criteria AC-01 through AC-08 are established.
 - Ready for immediate downstream implementation and project scaffolding.
+

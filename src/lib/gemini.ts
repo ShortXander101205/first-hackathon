@@ -11,13 +11,24 @@ try {
   }
 }
 import { GoogleGenAI } from '@google/genai';
-import { ALEX_SYSTEM_PROMPT, buildTriageUserPrompt } from './ai/prompts';
+import { ALEX_SYSTEM_PROMPT, buildTriageUserPrompt, PATHLESS_SYSTEM_PROMPT, buildGuideUserPrompt } from './ai/prompts';
 import { triageResultSchema, TriageResultInput } from '@/schemas/triage.schema';
+import { guideResultSchema } from '@/schemas/career.schema';
 import { IntakeAnswersState } from '@/types/intake';
+import { SubmissionPayload } from '@/types/api';
+import { GuideResult } from '@/types/career';
+import { getCatalogEntryByTitle, isWhitelistedMajor } from '@/data/careerCatalog';
 import responseSchema from '@/ai/response-schema.json';
 
 export interface GeminiSynthesisResult {
   result: TriageResultInput;
+  latencyMs: number;
+  fallbackUsed: boolean;
+  engine: string;
+}
+
+export interface GuideSynthesisResult {
+  result: GuideResult;
   latencyMs: number;
   fallbackUsed: boolean;
   engine: string;
@@ -89,15 +100,16 @@ export async function generateTriageRecommendations(
   try {
     const userPrompt = buildTriageUserPrompt(answers, studentNickname);
 
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     // Call generateContent with timeout race
     const callPromise = client.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: modelName,
       contents: userPrompt,
       config: {
         systemInstruction: ALEX_SYSTEM_PROMPT,
         temperature: 0.2,
         topP: 0.8,
-        maxOutputTokens: 3000,
+        maxOutputTokens: 8192,
         responseMimeType: 'application/json',
         responseSchema: responseSchema as any,
       },
@@ -169,3 +181,123 @@ export async function generateTriageRecommendations(
     throw err;
   }
 }
+
+/**
+ * Executes the PathLess Guide v2 AI synthesis call using Gemini 2.5 Flash with timeout protection.
+ * Returns GuideSynthesisResult with GuideResult conforming to 4-tier taxonomy and word limits.
+ */
+export async function generateGuideRecommendations(
+  payload: SubmissionPayload
+): Promise<GuideSynthesisResult> {
+  const startTime = Date.now();
+  const timeoutMs = parseInt(process.env.GEMINI_TIMEOUT_MS || '15000', 10);
+  const client = getGeminiClient();
+
+  const controller = new AbortController();
+  const timeoutHandle = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  try {
+    const userPrompt = buildGuideUserPrompt(payload);
+    const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+    const callPromise = client.models.generateContent({
+      model: modelName,
+      contents: userPrompt,
+      config: {
+        systemInstruction: PATHLESS_SYSTEM_PROMPT,
+        temperature: 0.2,
+        topP: 0.8,
+        maxOutputTokens: 8192,
+        responseMimeType: 'application/json',
+        responseSchema: responseSchema as any,
+      },
+    });
+
+    const timeoutPromise = new Promise((_, reject) => {
+      controller.signal.addEventListener('abort', () => {
+        const timeoutErr = new Error(`Gemini synthesis timed out after ${timeoutMs}ms`);
+        timeoutErr.name = 'TimeoutError';
+        reject(timeoutErr);
+      });
+    });
+
+    callPromise.catch(() => {});
+
+    const response: any = await Promise.race([callPromise, timeoutPromise]);
+    clearTimeout(timeoutHandle);
+
+    const latencyMs = Date.now() - startTime;
+    const rawText = (response.text || '').trim();
+
+    const cleanJson = rawText
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
+
+    if (!cleanJson) {
+      throw new Error('Gemini returned an empty response payload');
+    }
+
+    const parsedJson = JSON.parse(cleanJson);
+
+    // Support both pathways and careers
+    if (!parsedJson.pathways && parsedJson.careers) {
+      parsedJson.pathways = parsedJson.careers;
+    }
+    if (!parsedJson.careers && parsedJson.pathways) {
+      parsedJson.careers = parsedJson.pathways;
+    }
+
+    const cards = parsedJson.pathways || parsedJson.careers;
+    if (Array.isArray(cards)) {
+      for (const card of cards) {
+        const title = card.roleTitle || card.role_title;
+        const entry = getCatalogEntryByTitle(title);
+        if (entry) {
+          card.roleTitle = entry.roleTitle;
+          card.broadField = entry.field;
+          if (
+            !card.majors ||
+            !Array.isArray(card.majors) ||
+            card.majors.length === 0 ||
+            !card.majors.every((m: string) => isWhitelistedMajor(m))
+          ) {
+            card.majors = entry.standardMajors;
+          }
+        }
+      }
+    }
+
+    // Downstream Zod verification against guideResultSchema
+    const validatedResult = guideResultSchema.parse(parsedJson);
+
+    const guideResult: GuideResult = {
+      success: true,
+      submissionId: `sub_${Date.now()}`,
+      studentProfile: payload.studentProfile,
+      summary: validatedResult.summary,
+      pathways: validatedResult.pathways as any,
+      careers: validatedResult.careers as any,
+      meta: {
+        engine: modelName,
+        generationLatencyMs: latencyMs,
+        fallbackUsed: false,
+      },
+    };
+
+    return {
+      result: guideResult,
+      latencyMs,
+      fallbackUsed: false,
+      engine: modelName,
+    };
+  } catch (err: any) {
+    clearTimeout(timeoutHandle);
+    const sanitized = sanitizeError(err);
+    console.error('[GeminiService] Upstream synthesis error:', sanitized);
+    throw err;
+  }
+}
+
