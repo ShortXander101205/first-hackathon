@@ -5,3 +5,5 @@ export * from './ResultsHeader';
 export * from './ResultsFooter';
 export * from './CareerMatchCard';
 export * from './ResultsContainer';
+export * from './ExploreMorePaths';
+export * from './AdmissionTrackChecklist';

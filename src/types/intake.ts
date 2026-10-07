@@ -80,6 +80,25 @@ export type WorkContext =
   | 'SOCIAL_CIVIC'
   | 'MEDIA_CULTURE';
 
+export type HighSchoolTrack =
+  | 'SCIENCE_MATH'
+  | 'ARTS_MATH'
+  | 'ARTS_LANGUAGE'
+  | 'VOCATIONAL_APPLIED'
+  | 'TRACK_EXPLORING';
+
+export type PracticalWorkContext =
+  | 'DIGITAL_TECH_PRODUCTS'
+  | 'HEALTH_WELLNESS_CARE'
+  | 'ENTERPRISE_GROWTH'
+  | 'CREATIVE_MEDIA_STORYTELLING'
+  | 'PUBLIC_GOOD_COMMUNITY';
+
+export type CollaborationStyle =
+  | 'INDEPENDENT_DEEP_FOCUS'
+  | 'BALANCED_TEAM'
+  | 'HIGH_CONTACT_PEOPLE';
+
 export type AcademicFriction =
   | 'HARD_MATH'
   | 'PUBLIC_SPEAKING'
@@ -90,14 +109,26 @@ export type AcademicFriction =
 export interface IntakeAnswers {
   q1TaskIds: string[];                          // 1 to 2 task identifiers
   q2SubjectId: string;                          // Primary academic subject curiosity
-  q3AcademicHesitation: string;                 // Brief thought on academic dread/worry (1-200 chars)
-  q4Environment: WorkEnvironment;               // Day-to-day physical setting preference
-  q5ProblemSolving: ProblemSolvingStyle;        // Instinctive thinking modality
-  q6SocialEnergy: SocialEnergyStyle;            // Daily social battery & collaboration style
-  q7StructureTolerance: StructureTolerance;      // Comfort level with routine vs. ambiguity
-  q8AcademicFriction: FrictionTolerance;        // Specific academic pressure to minimize/manage
-  q9HorizonPriority: HorizonPriority;            // Core personal/career driver
-  q10PostCollegeAmbition: AmbitionTimeline;      // Immediate horizon after graduation
+  q3HighSchoolTrack?: HighSchoolTrack;          // High school study stream [NEW Q3]
+  q4AcademicHesitation?: string;                // Brief thought on academic dread/worry (1-200 chars) [NEW Q4]
+  q5Environment?: WorkEnvironment;              // Day-to-day physical setting preference [NEW Q5]
+  q6CollaborationStyle?: CollaborationStyle;    // Daily social battery & collaboration style [NEW Q6]
+  q7ProblemSolving?: ProblemSolvingStyle;       // Instinctive thinking modality [NEW Q7]
+  q8StructureTolerance?: StructureTolerance;     // Comfort level with routine vs. ambiguity [NEW Q8]
+  q9WorkContext?: PracticalWorkContext;         // Practical work context [NEW Q9]
+  q10AcademicFriction?: FrictionTolerance;       // Specific academic pressure to minimize/manage [NEW Q10]
+  q11HorizonPriority?: HorizonPriority;         // Core personal/career driver [NEW Q11]
+  q12PostCollegeAmbition?: AmbitionTimeline;     // Immediate horizon after graduation [NEW Q12]
+
+  // Legacy mappings for backwards compatibility:
+  q3AcademicHesitation?: string;
+  q4Environment?: WorkEnvironment;
+  q5ProblemSolving?: ProblemSolvingStyle;
+  q6SocialEnergy?: SocialEnergyStyle;
+  q7StructureTolerance?: StructureTolerance;
+  q8AcademicFriction?: FrictionTolerance;
+  q9HorizonPriority?: HorizonPriority;
+  q10PostCollegeAmbition?: AmbitionTimeline;
 }
 
 export type EnvironmentChoice = 'REMOTE_DESK' | 'ACTIVE_FIELD_LAB';
@@ -109,15 +140,25 @@ export interface IntakeAnswersState {
   q2Rationale: string;
   q3Environment: EnvironmentChoice | null;
   q4Ambition: AmbitionChoice | null;
+  q3HighSchoolTrack?: HighSchoolTrack;
   q3AcademicHesitation?: string;
+  q4AcademicHesitation?: string;
   q4Environment?: WorkEnvironment;
   q4EnvironmentChoice?: WorkEnvironment;
+  q5Environment?: WorkEnvironment;
   q5ProblemSolving?: ProblemSolvingStyle;
   q6SocialEnergy?: SocialEnergyStyle;
+  q6CollaborationStyle?: CollaborationStyle;
+  q7ProblemSolving?: ProblemSolvingStyle;
   q7StructureTolerance?: StructureTolerance;
+  q8StructureTolerance?: StructureTolerance;
   q8AcademicFriction?: FrictionTolerance;
+  q9WorkContext?: PracticalWorkContext;
   q9HorizonPriority?: HorizonPriority;
+  q10AcademicFriction?: FrictionTolerance;
   q10PostCollegeAmbition?: AmbitionTimeline;
+  q11HorizonPriority?: HorizonPriority;
+  q12PostCollegeAmbition?: AmbitionTimeline;
 }
 
 export interface IntakeValidationErrors {
@@ -130,17 +171,28 @@ export interface IntakeValidationErrors {
   q3?: string;
   q4?: string;
   q3Hesitation?: string;
+  q3Track?: string;
   q4Environment?: string;
+  q4Hesitation?: string;
+  q5Environment?: string;
   q5ProblemSolving?: string;
   q6SocialEnergy?: string;
+  q6Collaboration?: string;
   q7Structure?: string;
+  q7ProblemSolving?: string;
   q8Friction?: string;
+  q8Structure?: string;
   q9Priority?: string;
+  q9WorkContext?: string;
   q10Ambition?: string;
+  q10Friction?: string;
+  q10AcademicFriction?: string;
+  q11Priority?: string;
+  q12Ambition?: string;
   general?: string;
 }
 
-export type WizardStep = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+export type WizardStep = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export interface IntakeState {
   currentStep: WizardStep;
@@ -173,16 +225,26 @@ export type IntakeAction =
   | { type: 'SET_SUBJECT'; payload: string }
   | { type: 'SET_Q2_SUBJECT'; payload: string }
   | { type: 'SET_RATIONALE'; payload: string }
+  | { type: 'SET_Q3_TRACK'; payload: HighSchoolTrack }
   | { type: 'SET_Q3_HESITATION'; payload: string }
+  | { type: 'SET_Q4_HESITATION'; payload: string }
   | { type: 'SET_ENVIRONMENT'; payload: EnvironmentChoice }
   | { type: 'SET_Q4_ENVIRONMENT'; payload: WorkEnvironment }
+  | { type: 'SET_Q5_ENVIRONMENT'; payload: WorkEnvironment }
   | { type: 'SET_Q5_PROBLEM_SOLVING'; payload: ProblemSolvingStyle }
+  | { type: 'SET_Q6_COLLABORATION'; payload: CollaborationStyle }
   | { type: 'SET_Q6_SOCIAL_ENERGY'; payload: SocialEnergyStyle }
+  | { type: 'SET_Q7_PROBLEM_SOLVING'; payload: ProblemSolvingStyle }
   | { type: 'SET_Q7_STRUCTURE'; payload: StructureTolerance }
+  | { type: 'SET_Q8_STRUCTURE'; payload: StructureTolerance }
   | { type: 'SET_Q8_ACADEMIC_FRICTION'; payload: FrictionTolerance }
+  | { type: 'SET_Q9_WORK_CONTEXT'; payload: PracticalWorkContext }
   | { type: 'SET_Q9_HORIZON_PRIORITY'; payload: HorizonPriority }
+  | { type: 'SET_Q10_ACADEMIC_FRICTION'; payload: FrictionTolerance }
   | { type: 'SET_AMBITION'; payload: AmbitionChoice }
   | { type: 'SET_Q10_AMBITION'; payload: AmbitionTimeline }
+  | { type: 'SET_Q11_HORIZON_PRIORITY'; payload: HorizonPriority }
+  | { type: 'SET_Q12_AMBITION'; payload: AmbitionTimeline }
   | { type: 'GO_TO_STEP'; payload: WizardStep }
   | { type: 'NEXT_STEP' }
   | { type: 'PREVIOUS_STEP' }
@@ -208,16 +270,26 @@ export interface IntakeContextValue {
   setSubject: (subjectId: string) => void;
   setQ2Subject?: (subjectId: string) => void;
   setRationale: (rationale: string) => void;
+  setQ3Track?: (track: HighSchoolTrack) => void;
   setQ3Hesitation?: (hesitation: string) => void;
+  setQ4Hesitation?: (hesitation: string) => void;
   setEnvironment: (env: EnvironmentChoice) => void;
   setQ4Environment?: (env: WorkEnvironment) => void;
+  setQ5Environment?: (env: WorkEnvironment) => void;
   setQ5ProblemSolving?: (style: ProblemSolvingStyle) => void;
+  setQ6Collaboration?: (collab: CollaborationStyle) => void;
   setQ6SocialEnergy?: (social: SocialEnergyStyle) => void;
+  setQ7ProblemSolving?: (style: ProblemSolvingStyle) => void;
   setQ7Structure?: (structure: StructureTolerance) => void;
+  setQ8Structure?: (structure: StructureTolerance) => void;
   setQ8AcademicFriction?: (friction: FrictionTolerance) => void;
+  setQ9WorkContext?: (context: PracticalWorkContext) => void;
   setQ9HorizonPriority?: (priority: HorizonPriority) => void;
+  setQ10AcademicFriction?: (friction: FrictionTolerance) => void;
   setAmbition: (ambition: AmbitionChoice) => void;
   setQ10Ambition?: (ambition: AmbitionTimeline) => void;
+  setQ11HorizonPriority?: (priority: HorizonPriority) => void;
+  setQ12Ambition?: (ambition: AmbitionTimeline) => void;
   goToStep: (step: WizardStep) => void;
   nextStep: () => void;
   previousStep: () => void;

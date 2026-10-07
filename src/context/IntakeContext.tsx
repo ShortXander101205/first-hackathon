@@ -19,6 +19,9 @@ import type {
   EnvironmentChoice,
   AmbitionChoice,
   WizardStep,
+  HighSchoolTrack,
+  PracticalWorkContext,
+  CollaborationStyle,
 } from '@/types/intake';
 import { GUIDE_COPY } from '@/content/guideCopy';
 import { INTAKE_COPY } from '@/constants/intakeCopy';
@@ -122,6 +125,11 @@ export function isStep2Valid(answers: any): boolean {
 
 export function isStep3Valid(answers: any): boolean {
   if (!answers) return false;
+  // v2.1: High School Track
+  const validTracks = ['SCIENCE_MATH', 'ARTS_MATH', 'ARTS_LANGUAGE', 'VOCATIONAL_APPLIED', 'TRACK_EXPLORING'];
+  if (answers.q3HighSchoolTrack && validTracks.includes(answers.q3HighSchoolTrack)) {
+    return true;
+  }
   // If v2 hesitation text is present
   if (typeof answers.q3AcademicHesitation === 'string') {
     const trimmed = answers.q3AcademicHesitation.trim();
@@ -138,6 +146,20 @@ export function isStep3Valid(answers: any): boolean {
 
 export function isStep4Valid(answers: any): boolean {
   if (!answers) return false;
+  // v2.1: Academic Hesitation (Q4)
+  if (typeof answers.q4AcademicHesitation === 'string') {
+    const trimmed = answers.q4AcademicHesitation.trim();
+    if (trimmed.length >= 1 && answers.q4AcademicHesitation.length <= 200) {
+      return true;
+    }
+  }
+  // If v2 hesitation was stored in q3AcademicHesitation
+  if (typeof answers.q3AcademicHesitation === 'string') {
+    const trimmed = answers.q3AcademicHesitation.trim();
+    if (trimmed.length >= 1 && answers.q3AcademicHesitation.length <= 200) {
+      return true;
+    }
+  }
   // v2 environment
   const validEnvs: WorkEnvironment[] = [
     'REMOTE_DIGITAL',
@@ -156,6 +178,19 @@ export function isStep4Valid(answers: any): boolean {
 }
 
 export function isStep5Valid(answers: any): boolean {
+  if (!answers) return false;
+  const validEnvs: WorkEnvironment[] = [
+    'REMOTE_DIGITAL',
+    'COLLABORATIVE_STUDIO',
+    'ACTIVE_FIELD_LAB',
+    'HEALTHCARE_COMMUNITY',
+  ];
+  if (answers.q5Environment && validEnvs.includes(answers.q5Environment)) {
+    return true;
+  }
+  if (answers.q4Environment && validEnvs.includes(answers.q4Environment)) {
+    return true;
+  }
   const valid: ProblemSolvingStyle[] = [
     'SYSTEMATIC_LOGIC',
     'CREATIVE_EXPLORATION',
@@ -171,10 +206,25 @@ export function isStep6Valid(answers: any): boolean {
     'BALANCED_TEAM',
     'HIGH_CONTACT_PEOPLE',
   ];
-  return Boolean(answers?.q6SocialEnergy && valid.includes(answers.q6SocialEnergy));
+  return Boolean(
+    (answers?.q6CollaborationStyle && valid.includes(answers.q6CollaborationStyle)) ||
+    (answers?.q6SocialEnergy && valid.includes(answers.q6SocialEnergy))
+  );
 }
 
 export function isStep7Valid(answers: any): boolean {
+  const validProb: ProblemSolvingStyle[] = [
+    'SYSTEMATIC_LOGIC',
+    'CREATIVE_EXPLORATION',
+    'PEOPLE_RELATIONAL',
+    'PRACTICAL_HANDS_ON',
+  ];
+  if (answers?.q7ProblemSolving && validProb.includes(answers.q7ProblemSolving)) {
+    return true;
+  }
+  if (answers?.q5ProblemSolving && validProb.includes(answers.q5ProblemSolving)) {
+    return true;
+  }
   const valid: StructureTolerance[] = [
     'HIGH_STRUCTURE_CLEAR_RULES',
     'BALANCED_MILESTONES',
@@ -184,17 +234,38 @@ export function isStep7Valid(answers: any): boolean {
 }
 
 export function isStep8Valid(answers: any): boolean {
-  const valid: FrictionTolerance[] = [
+  const valid: StructureTolerance[] = [
+    'HIGH_STRUCTURE_CLEAR_RULES',
+    'BALANCED_MILESTONES',
+    'HIGH_AUTONOMY_AMBIGUITY',
+  ];
+  if (answers?.q8StructureTolerance && valid.includes(answers.q8StructureTolerance)) {
+    return true;
+  }
+  if (answers?.q7StructureTolerance && valid.includes(answers.q7StructureTolerance)) {
+    return true;
+  }
+  const validFriction: FrictionTolerance[] = [
     'ADVANCED_MATH',
     'PUBLIC_SPEAKING',
     'HEAVY_MEMORIZATION',
     'INTENSIVE_WRITING',
     'ISOLATED_THEORY',
   ];
-  return Boolean(answers?.q8AcademicFriction && valid.includes(answers.q8AcademicFriction));
+  return Boolean(answers?.q8AcademicFriction && validFriction.includes(answers.q8AcademicFriction));
 }
 
 export function isStep9Valid(answers: any): boolean {
+  const validContext = [
+    'DIGITAL_TECH_PRODUCTS',
+    'HEALTH_WELLNESS_CARE',
+    'ENTERPRISE_GROWTH',
+    'CREATIVE_MEDIA_STORYTELLING',
+    'PUBLIC_GOOD_COMMUNITY',
+  ];
+  if (answers?.q9WorkContext && validContext.includes(answers.q9WorkContext)) {
+    return true;
+  }
   const valid: HorizonPriority[] = [
     'FINANCIAL_STABILITY',
     'PURPOSE_IMPACT',
@@ -207,12 +278,52 @@ export function isStep9Valid(answers: any): boolean {
 }
 
 export function isStep10Valid(answers: any): boolean {
+  const validFriction: FrictionTolerance[] = [
+    'ADVANCED_MATH',
+    'PUBLIC_SPEAKING',
+    'HEAVY_MEMORIZATION',
+    'INTENSIVE_WRITING',
+    'ISOLATED_THEORY',
+  ];
+  if (answers?.q10AcademicFriction && validFriction.includes(answers.q10AcademicFriction)) {
+    return true;
+  }
+  if (answers?.q8AcademicFriction && validFriction.includes(answers.q8AcademicFriction)) {
+    return true;
+  }
   const valid: AmbitionTimeline[] = [
     'WORKFORCE_DIRECT',
     'GRADUATE_STUDY',
     'FLEXIBLE_ENTREPRENEURSHIP',
   ];
   return Boolean(answers?.q10PostCollegeAmbition && valid.includes(answers.q10PostCollegeAmbition));
+}
+
+export function isStep11Valid(answers: any): boolean {
+  const valid: HorizonPriority[] = [
+    'FINANCIAL_STABILITY',
+    'PURPOSE_IMPACT',
+    'CREATIVE_AUTONOMY',
+    'INTELLECTUAL_DEPTH',
+    'WORK_LIFE_BALANCE',
+    'HIGH_EARNING_SECURITY',
+  ];
+  return Boolean(
+    (answers?.q11HorizonPriority && valid.includes(answers.q11HorizonPriority)) ||
+    (answers?.q9HorizonPriority && valid.includes(answers.q9HorizonPriority))
+  );
+}
+
+export function isStep12Valid(answers: any): boolean {
+  const valid: AmbitionTimeline[] = [
+    'WORKFORCE_DIRECT',
+    'GRADUATE_STUDY',
+    'FLEXIBLE_ENTREPRENEURSHIP',
+  ];
+  return Boolean(
+    (answers?.q12PostCollegeAmbition && valid.includes(answers.q12PostCollegeAmbition)) ||
+    (answers?.q10PostCollegeAmbition && valid.includes(answers.q10PostCollegeAmbition))
+  );
 }
 
 export function validateStep(
@@ -246,6 +357,10 @@ export function validateStep(
       return isStep9Valid(answers);
     case 10:
       return isStep10Valid(answers);
+    case 11:
+      return isStep11Valid(answers);
+    case 12:
+      return isStep12Valid(answers);
     default:
       return false;
   }
@@ -556,6 +671,169 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
       };
     }
 
+    case 'SET_Q3_TRACK': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q3HighSchoolTrack: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q3Track: undefined,
+          q3: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q4_HESITATION': {
+      const sliced = action.payload.slice(0, 200);
+      const isNowValid = sliced.trim().length >= 1;
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q4AcademicHesitation: sliced,
+          q3AcademicHesitation: sliced,
+          q2Rationale: sliced,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q4Hesitation: isNowValid ? undefined : state.validationErrors.q4Hesitation,
+          q3Hesitation: isNowValid ? undefined : state.validationErrors.q3Hesitation,
+        },
+      };
+    }
+
+    case 'SET_Q5_ENVIRONMENT': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q5Environment: action.payload,
+          q4Environment: action.payload,
+          q3Environment: (action.payload === 'ACTIVE_FIELD_LAB' ? 'ACTIVE_FIELD_LAB' : 'REMOTE_DESK') as EnvironmentChoice,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q5Environment: undefined,
+          q4Environment: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q6_COLLABORATION': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q6CollaborationStyle: action.payload,
+          q6SocialEnergy: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q6Collaboration: undefined,
+          q6SocialEnergy: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q7_PROBLEM_SOLVING': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q7ProblemSolving: action.payload,
+          q5ProblemSolving: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q7ProblemSolving: undefined,
+          q5ProblemSolving: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q8_STRUCTURE': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q8StructureTolerance: action.payload,
+          q7StructureTolerance: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q8Structure: undefined,
+          q7Structure: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q9_WORK_CONTEXT': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q9WorkContext: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q9WorkContext: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q10_ACADEMIC_FRICTION': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q10AcademicFriction: action.payload,
+          q8AcademicFriction: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q10Friction: undefined,
+          q10AcademicFriction: undefined,
+          q8Friction: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q11_HORIZON_PRIORITY': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q11HorizonPriority: action.payload,
+          q9HorizonPriority: action.payload,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q11Priority: undefined,
+          q9Priority: undefined,
+        },
+      };
+    }
+
+    case 'SET_Q12_AMBITION': {
+      return {
+        ...state,
+        answers: {
+          ...state.answers,
+          q12PostCollegeAmbition: action.payload,
+          q10PostCollegeAmbition: action.payload,
+          q4Ambition: (action.payload === 'GRADUATE_STUDY' ? 'GRADUATE_STUDY' : 'WORKFORCE_DIRECT') as AmbitionChoice,
+        },
+        validationErrors: {
+          ...state.validationErrors,
+          q12Ambition: undefined,
+          q10Ambition: undefined,
+        },
+      };
+    }
+
     case 'GO_TO_STEP': {
       const targetStep = action.payload;
       if (canAccessStep(targetStep, state.currentStep, currentProfile, state.answers)) {
@@ -581,7 +859,8 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
 
       if (isValid) {
         if (
-          state.currentStep === 10 ||
+          state.currentStep === 12 ||
+          (state.currentStep === 10 && !state.answers.q3HighSchoolTrack) ||
           (state.currentStep === 4 && state.answers.q4Ambition && !state.answers.q4Environment)
         ) {
           return {
@@ -618,23 +897,36 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
           newErrors.q2Rationale = 'Please keep your thought within 150 characters.';
         }
       } else if (state.currentStep === 3) {
+        newErrors.q3Track = GUIDE_COPY.validation.q3TrackRequired;
         newErrors.q3Hesitation = GUIDE_COPY.validation.q3HesitationRequired;
         newErrors.q3 = GUIDE_COPY.validation.q4EnvironmentRequired;
       } else if (state.currentStep === 4) {
+        newErrors.q4Hesitation = GUIDE_COPY.validation.q4HesitationRequired;
         newErrors.q4Environment = GUIDE_COPY.validation.q4EnvironmentRequired;
         newErrors.q4 = GUIDE_COPY.validation.q10AmbitionRequired;
       } else if (state.currentStep === 5) {
+        newErrors.q5Environment = GUIDE_COPY.validation.q5EnvironmentRequired;
         newErrors.q5ProblemSolving = GUIDE_COPY.validation.q5ProblemSolvingRequired;
       } else if (state.currentStep === 6) {
+        newErrors.q6Collaboration = GUIDE_COPY.validation.q6CollaborationRequired;
         newErrors.q6SocialEnergy = GUIDE_COPY.validation.q6SocialEnergyRequired;
       } else if (state.currentStep === 7) {
+        newErrors.q7ProblemSolving = GUIDE_COPY.validation.q7ProblemSolvingRequired;
         newErrors.q7Structure = GUIDE_COPY.validation.q7StructureRequired;
       } else if (state.currentStep === 8) {
+        newErrors.q8Structure = GUIDE_COPY.validation.q8StructureRequired;
         newErrors.q8Friction = GUIDE_COPY.validation.q8FrictionRequired;
       } else if (state.currentStep === 9) {
+        newErrors.q9WorkContext = GUIDE_COPY.validation.q9WorkContextRequired;
         newErrors.q9Priority = GUIDE_COPY.validation.q9PriorityRequired;
       } else if (state.currentStep === 10) {
+        newErrors.q10Friction = GUIDE_COPY.validation.q10FrictionRequired;
+        newErrors.q10AcademicFriction = GUIDE_COPY.validation.q10AcademicFrictionRequired;
         newErrors.q10Ambition = GUIDE_COPY.validation.q10AmbitionRequired;
+      } else if (state.currentStep === 11) {
+        newErrors.q11Priority = GUIDE_COPY.validation.q11PriorityRequired;
+      } else if (state.currentStep === 12) {
+        newErrors.q12Ambition = GUIDE_COPY.validation.q12AmbitionRequired;
       }
 
       return {
@@ -648,7 +940,7 @@ export function intakeReducer(state: IntakeState, action: IntakeAction): IntakeS
         return {
           ...state,
           isCompleted: false,
-          currentStep: (state.answers.q10PostCollegeAmbition ? 10 : 4) as WizardStep,
+          currentStep: (state.answers.q12PostCollegeAmbition ? 12 : state.answers.q10PostCollegeAmbition ? 10 : 4) as WizardStep,
           validationErrors: {},
         };
       }
@@ -804,6 +1096,14 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
     dispatch({ type: 'SET_Q3_HESITATION', payload: hesitation });
   }, []);
 
+  const setQ3Track = useCallback((track: HighSchoolTrack) => {
+    dispatch({ type: 'SET_Q3_TRACK', payload: track });
+  }, []);
+
+  const setQ4Hesitation = useCallback((hesitation: string) => {
+    dispatch({ type: 'SET_Q4_HESITATION', payload: hesitation });
+  }, []);
+
   const setEnvironment = useCallback((env: EnvironmentChoice) => {
     dispatch({ type: 'SET_ENVIRONMENT', payload: env });
   }, []);
@@ -812,24 +1112,48 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
     dispatch({ type: 'SET_Q4_ENVIRONMENT', payload: env });
   }, []);
 
+  const setQ5Environment = useCallback((env: WorkEnvironment) => {
+    dispatch({ type: 'SET_Q5_ENVIRONMENT', payload: env });
+  }, []);
+
   const setQ5ProblemSolving = useCallback((style: ProblemSolvingStyle) => {
     dispatch({ type: 'SET_Q5_PROBLEM_SOLVING', payload: style });
+  }, []);
+
+  const setQ6Collaboration = useCallback((collab: CollaborationStyle) => {
+    dispatch({ type: 'SET_Q6_COLLABORATION', payload: collab });
   }, []);
 
   const setQ6SocialEnergy = useCallback((social: SocialEnergyStyle) => {
     dispatch({ type: 'SET_Q6_SOCIAL_ENERGY', payload: social });
   }, []);
 
+  const setQ7ProblemSolving = useCallback((style: ProblemSolvingStyle) => {
+    dispatch({ type: 'SET_Q7_PROBLEM_SOLVING', payload: style });
+  }, []);
+
   const setQ7Structure = useCallback((structure: StructureTolerance) => {
     dispatch({ type: 'SET_Q7_STRUCTURE', payload: structure });
+  }, []);
+
+  const setQ8Structure = useCallback((structure: StructureTolerance) => {
+    dispatch({ type: 'SET_Q8_STRUCTURE', payload: structure });
   }, []);
 
   const setQ8AcademicFriction = useCallback((friction: FrictionTolerance) => {
     dispatch({ type: 'SET_Q8_ACADEMIC_FRICTION', payload: friction });
   }, []);
 
+  const setQ9WorkContext = useCallback((context: PracticalWorkContext) => {
+    dispatch({ type: 'SET_Q9_WORK_CONTEXT', payload: context });
+  }, []);
+
   const setQ9HorizonPriority = useCallback((priority: HorizonPriority) => {
     dispatch({ type: 'SET_Q9_HORIZON_PRIORITY', payload: priority });
+  }, []);
+
+  const setQ10AcademicFriction = useCallback((friction: FrictionTolerance) => {
+    dispatch({ type: 'SET_Q10_ACADEMIC_FRICTION', payload: friction });
   }, []);
 
   const setAmbition = useCallback((ambition: AmbitionChoice) => {
@@ -838,6 +1162,14 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
 
   const setQ10Ambition = useCallback((ambition: AmbitionTimeline) => {
     dispatch({ type: 'SET_Q10_AMBITION', payload: ambition });
+  }, []);
+
+  const setQ11HorizonPriority = useCallback((priority: HorizonPriority) => {
+    dispatch({ type: 'SET_Q11_HORIZON_PRIORITY', payload: priority });
+  }, []);
+
+  const setQ12Ambition = useCallback((ambition: AmbitionTimeline) => {
+    dispatch({ type: 'SET_Q12_AMBITION', payload: ambition });
   }, []);
 
   const goToStep = useCallback((step: WizardStep) => {
@@ -882,16 +1214,26 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
       setSubject,
       setQ2Subject,
       setRationale,
+      setQ3Track,
       setQ3Hesitation,
+      setQ4Hesitation,
       setEnvironment,
       setQ4Environment,
+      setQ5Environment,
       setQ5ProblemSolving,
+      setQ6Collaboration,
       setQ6SocialEnergy,
+      setQ7ProblemSolving,
       setQ7Structure,
+      setQ8Structure,
       setQ8AcademicFriction,
+      setQ9WorkContext,
       setQ9HorizonPriority,
+      setQ10AcademicFriction,
       setAmbition,
       setQ10Ambition,
+      setQ11HorizonPriority,
+      setQ12Ambition,
       goToStep,
       nextStep,
       previousStep,
@@ -914,16 +1256,26 @@ export function IntakeProvider({ children }: IntakeProviderProps) {
       setSubject,
       setQ2Subject,
       setRationale,
+      setQ3Track,
       setQ3Hesitation,
+      setQ4Hesitation,
       setEnvironment,
       setQ4Environment,
+      setQ5Environment,
       setQ5ProblemSolving,
+      setQ6Collaboration,
       setQ6SocialEnergy,
+      setQ7ProblemSolving,
       setQ7Structure,
+      setQ8Structure,
       setQ8AcademicFriction,
+      setQ9WorkContext,
       setQ9HorizonPriority,
+      setQ10AcademicFriction,
       setAmbition,
       setQ10Ambition,
+      setQ11HorizonPriority,
+      setQ12Ambition,
       goToStep,
       nextStep,
       previousStep,

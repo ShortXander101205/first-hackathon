@@ -79,11 +79,51 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
       { id: 'ARTS_MEDIA', title: 'Arts, Design & Media', badge: 'Creative Media' },
       { id: 'CIVICS_SOCIETY', title: 'Law, Policy & Community Impact', badge: 'Community & Society' },
       { id: 'ENGINEERING_PHYSICAL', title: 'Engineering & Applied Sciences', badge: 'Physical Sciences' },
+      { id: 'EXPLORATORY_OPEN', title: 'Not Sure Yet — Open to Exploring', badge: 'Exploratory' },
     ],
   },
 
   q3: {
     stepNumber: 3,
+    title: 'Which study track or academic stream are you pursuing in high school?',
+    helperText: 'Your high school stream helps us suggest realistic university degree routes without closing any doors.',
+    charLimit: 200,
+    options: [
+      {
+        id: 'SCIENCE_MATH',
+        title: 'Science-Math Track (วิทย์-คณิต)',
+        badge: 'STEM Focus',
+        description: 'Focused on physics, chemistry, biology, and advanced mathematics.',
+      },
+      {
+        id: 'ARTS_MATH',
+        title: 'Arts-Math Track (ศิลป์-คำนวณ)',
+        badge: 'Business & Applied',
+        description: 'Focused on mathematics, business foundations, economics, and modern languages.',
+      },
+      {
+        id: 'ARTS_LANGUAGE',
+        title: 'Arts-Language Track (ศิลป์-ภาษา)',
+        badge: 'Languages & Humanities',
+        description: 'Focused on world languages, social studies, communication, and cultural arts.',
+      },
+      {
+        id: 'VOCATIONAL_APPLIED',
+        title: 'Vocational or Applied Technology Track',
+        badge: 'Hands-on Technical',
+        description: 'Hands-on training in technical trades, digital media, business operations, or hospitality.',
+      },
+      {
+        id: 'TRACK_EXPLORING',
+        title: 'Exploring / Not Yet Decided / International',
+        badge: 'Open Curriculum',
+        description: 'Flexible general curriculum, international diploma (IB/IGCSE), or still exploring your options.',
+      },
+    ],
+  },
+
+  q4: {
+    stepNumber: 4,
     title: 'What feels most challenging or stressful when you think about college classes?',
     helperText: 'A sentence or two is plenty. We use this to make sure your pathways feel manageable and supportive.',
     placeholder: 'e.g., I love science, but high-level math tests make me nervous...',
@@ -92,8 +132,8 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
     reassuranceHint: 'Take all the time you need.',
   },
 
-  q4: {
-    stepNumber: 4,
+  q5: {
+    stepNumber: 5,
     title: 'Where would you feel most comfortable working every day?',
     helperText: 'Think about where your body feels calm and relaxed, rather than what sounds most impressive.',
     options: [
@@ -124,8 +164,31 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
     ],
   },
 
-  q5: {
-    stepNumber: 5,
+  q6: {
+    stepNumber: 6,
+    title: 'How do you feel about working with people during a typical day?',
+    helperText: 'Be honest about your social battery—sustainable careers match your natural rhythm.',
+    options: [
+      {
+        id: 'INDEPENDENT_DEEP_FOCUS',
+        title: 'Mostly Independent Focus',
+        description: 'You recharge with solo deep work and prefer having just a few scheduled meetings each week.',
+      },
+      {
+        id: 'BALANCED_TEAM',
+        title: 'A Healthy Mix of Both',
+        description: 'You like checking in with a close team, collaborating on projects, but still having quiet hours to yourself.',
+      },
+      {
+        id: 'HIGH_CONTACT_PEOPLE',
+        title: 'People-First & Energetic',
+        description: 'Being around people energizes you; you enjoy meeting new faces, presenting, and constant conversation.',
+      },
+    ],
+  },
+
+  q7: {
+    stepNumber: 7,
     title: 'When you face a new, tricky problem, how do you like to start?',
     helperText: 'Choose the problem-solving style that feels most natural to you.',
     options: [
@@ -152,31 +215,8 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
     ],
   },
 
-  q6: {
-    stepNumber: 6,
-    title: 'How do you feel about working with people during a typical day?',
-    helperText: 'Be honest about your social battery—sustainable careers match your natural rhythm.',
-    options: [
-      {
-        id: 'INDEPENDENT_DEEP_FOCUS',
-        title: 'Mostly Independent Focus',
-        description: 'You recharge with solo deep work and prefer having just a few scheduled meetings each week.',
-      },
-      {
-        id: 'BALANCED_TEAM',
-        title: 'A Healthy Mix of Both',
-        description: 'You like checking in with a close team, collaborating on projects, but still having quiet hours to yourself.',
-      },
-      {
-        id: 'HIGH_CONTACT_PEOPLE',
-        title: 'People-First & Energetic',
-        description: 'Being around people energizes you; you enjoy meeting new faces, presenting, and constant conversation.',
-      },
-    ],
-  },
-
-  q7: {
-    stepNumber: 7,
+  q8: {
+    stepNumber: 8,
     title: 'What daily routine helps you do your best work?',
     helperText: 'Think about whether unexpected changes excite you or stress you out.',
     options: [
@@ -198,8 +238,46 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
     ],
   },
 
-  q8: {
-    stepNumber: 8,
+  q9: {
+    stepNumber: 9,
+    title: 'Which real-world work context sounds most engaging to contribute to?',
+    helperText: 'Think about the broad area where you would feel energized applying your talents every week.',
+    options: [
+      {
+        id: 'DIGITAL_TECH_PRODUCTS',
+        title: 'Digital Systems, Apps & Technology',
+        badge: 'Tech & Systems',
+        description: 'Developing software, analyzing data, designing apps, and safeguarding digital tools.',
+      },
+      {
+        id: 'HEALTH_WELLNESS_CARE',
+        title: 'Health, Medicine & Human Well-being',
+        badge: 'Life & Care',
+        description: 'Improving public health, wellness therapy, nutrition, and compassionate community care.',
+      },
+      {
+        id: 'ENTERPRISE_GROWTH',
+        title: 'Business Strategy, Finance & Enterprise Growth',
+        badge: 'Enterprise & Growth',
+        description: 'Managing operations, financial planning, marketing growth, and organizational leadership.',
+      },
+      {
+        id: 'CREATIVE_MEDIA_STORYTELLING',
+        title: 'Creative Media, Design & Cultural Storytelling',
+        badge: 'Creative & Arts',
+        description: 'Visual communication, interactive digital media, storytelling, and creative direction.',
+      },
+      {
+        id: 'PUBLIC_GOOD_COMMUNITY',
+        title: 'Public Service, Law & Community Action',
+        badge: 'Society & Policy',
+        description: 'Community development, policy research, advocacy, and social impact for the common good.',
+      },
+    ],
+  },
+
+  q10: {
+    stepNumber: 10,
     title: 'Which type of schoolwork stresses you out the most?',
     helperText: 'We will ensure your pathway recommendations include strategies that respect this comfort boundary.',
     options: [
@@ -236,8 +314,8 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
     ],
   },
 
-  q9: {
-    stepNumber: 9,
+  q11: {
+    stepNumber: 11,
     title: 'Looking ahead, what matters most for your happiness and peace of mind?',
     helperText: 'Your core priority helps us highlight pathways that match your personal definition of success.',
     options: [
@@ -269,8 +347,8 @@ export const INTAKE_QUESTIONS: Record<string, IntakeQuestionDefinition> = {
     ],
   },
 
-  q10: {
-    stepNumber: 10,
+  q12: {
+    stepNumber: 12,
     title: 'When you finish college, what path sounds best for your next chapter?',
     helperText: 'Remember: your choice is never permanent. Choose what fits your peace of mind today.',
     options: [

@@ -22,16 +22,26 @@ export function IntakeWizardContainer() {
     toggleTask,
     setQ2Subject,
     setSubject,
+    setQ3Track,
     setQ3Hesitation,
+    setQ4Hesitation,
     setRationale,
     setQ4Environment,
+    setQ5Environment,
     setEnvironment,
     setQ5ProblemSolving,
+    setQ6Collaboration,
     setQ6SocialEnergy,
+    setQ7ProblemSolving,
     setQ7Structure,
+    setQ8Structure,
     setQ8AcademicFriction,
+    setQ9WorkContext,
     setQ9HorizonPriority,
+    setQ10AcademicFriction,
     setQ10Ambition,
+    setQ11HorizonPriority,
+    setQ12Ambition,
     setAmbition,
     nextStep,
     previousStep,
@@ -63,7 +73,7 @@ export function IntakeWizardContainer() {
   }, [isResetDialogOpen]);
 
   const stepTitle = GUIDE_COPY.stepTitles[currentStep] || GUIDE_COPY.shell.welcomeStepLabel;
-  const progressPercent = currentStep === 0 ? 0 : Math.round((currentStep / 10) * 100);
+  const progressPercent = currentStep === 0 ? 0 : Math.round((currentStep / 12) * 100);
 
   // Error message for active question
   const activeQuestionError =
@@ -72,21 +82,25 @@ export function IntakeWizardContainer() {
       : currentStep === 2
       ? validationErrors.q2Subject
       : currentStep === 3
-      ? validationErrors.q3Hesitation || validationErrors.q2Rationale
+      ? validationErrors.q3Track || validationErrors.q3Hesitation || validationErrors.q3
       : currentStep === 4
-      ? validationErrors.q4Environment || validationErrors.q3
+      ? validationErrors.q4Hesitation || validationErrors.q4Environment || validationErrors.q4
       : currentStep === 5
-      ? validationErrors.q5ProblemSolving
+      ? validationErrors.q5Environment || validationErrors.q5ProblemSolving
       : currentStep === 6
-      ? validationErrors.q6SocialEnergy
+      ? validationErrors.q6Collaboration || validationErrors.q6SocialEnergy
       : currentStep === 7
-      ? validationErrors.q7Structure
+      ? validationErrors.q7ProblemSolving || validationErrors.q7Structure
       : currentStep === 8
-      ? validationErrors.q8Friction
+      ? validationErrors.q8Structure || validationErrors.q8Friction
       : currentStep === 9
-      ? validationErrors.q9Priority
+      ? validationErrors.q9WorkContext || validationErrors.q9Priority
       : currentStep === 10
-      ? validationErrors.q10Ambition || validationErrors.q4
+      ? validationErrors.q10Friction || validationErrors.q10AcademicFriction || validationErrors.q10Ambition
+      : currentStep === 11
+      ? validationErrors.q11Priority || validationErrors.q9Priority
+      : currentStep === 12
+      ? validationErrors.q12Ambition || validationErrors.q10Ambition
       : undefined;
 
   const { isLoading, guideResult, error, fetchGuide, resetGuide } = useGuideSynthesis();
@@ -101,14 +115,26 @@ export function IntakeWizardContainer() {
       intakeAnswers: {
         q1TaskIds: answers.q1TaskIds && answers.q1TaskIds.length > 0 ? answers.q1TaskIds : ['BUILD_SYSTEMS'],
         q2SubjectId: answers.q2SubjectId || 'TECH_COMPUTING',
-        q3AcademicHesitation: answers.q3AcademicHesitation || answers.q2Rationale || 'None shared',
-        q4Environment: (answers.q4Environment || answers.q3Environment || 'REMOTE_DIGITAL') as any,
-        q5ProblemSolving: answers.q5ProblemSolving || 'SYSTEMATIC_LOGIC',
-        q6SocialEnergy: answers.q6SocialEnergy || 'BALANCED_TEAM',
-        q7StructureTolerance: answers.q7StructureTolerance || 'BALANCED_MILESTONES',
-        q8AcademicFriction: answers.q8AcademicFriction || 'ADVANCED_MATH',
-        q9HorizonPriority: answers.q9HorizonPriority || 'FINANCIAL_STABILITY',
-        q10PostCollegeAmbition: (answers.q10PostCollegeAmbition || answers.q4Ambition || 'WORKFORCE_DIRECT') as any,
+        q3HighSchoolTrack: answers.q3HighSchoolTrack || 'TRACK_EXPLORING',
+        q4AcademicHesitation: answers.q4AcademicHesitation || answers.q3AcademicHesitation || answers.q2Rationale || 'None shared',
+        q5Environment: (answers.q5Environment || answers.q4Environment || answers.q3Environment || 'REMOTE_DIGITAL') as any,
+        q6CollaborationStyle: (answers.q6CollaborationStyle || answers.q6SocialEnergy || 'BALANCED_TEAM') as any,
+        q7ProblemSolving: answers.q7ProblemSolving || answers.q5ProblemSolving || 'SYSTEMATIC_LOGIC',
+        q8StructureTolerance: answers.q8StructureTolerance || answers.q7StructureTolerance || 'BALANCED_MILESTONES',
+        q9WorkContext: answers.q9WorkContext || 'DIGITAL_TECH_PRODUCTS',
+        q10AcademicFriction: answers.q10AcademicFriction || answers.q8AcademicFriction || 'ADVANCED_MATH',
+        q11HorizonPriority: answers.q11HorizonPriority || answers.q9HorizonPriority || 'FINANCIAL_STABILITY',
+        q12PostCollegeAmbition: (answers.q12PostCollegeAmbition || answers.q10PostCollegeAmbition || answers.q4Ambition || 'WORKFORCE_DIRECT') as any,
+
+        // Legacy mappings for backwards compatibility
+        q3AcademicHesitation: answers.q4AcademicHesitation || answers.q3AcademicHesitation || answers.q2Rationale || 'None shared',
+        q4Environment: (answers.q5Environment || answers.q4Environment || answers.q3Environment || 'REMOTE_DIGITAL') as any,
+        q5ProblemSolving: answers.q7ProblemSolving || answers.q5ProblemSolving || 'SYSTEMATIC_LOGIC',
+        q6SocialEnergy: (answers.q6CollaborationStyle || answers.q6SocialEnergy || 'BALANCED_TEAM') as any,
+        q7StructureTolerance: answers.q8StructureTolerance || answers.q7StructureTolerance || 'BALANCED_MILESTONES',
+        q8AcademicFriction: answers.q10AcademicFriction || answers.q8AcademicFriction || 'ADVANCED_MATH',
+        q9HorizonPriority: answers.q11HorizonPriority || answers.q9HorizonPriority || 'FINANCIAL_STABILITY',
+        q10PostCollegeAmbition: (answers.q12PostCollegeAmbition || answers.q10PostCollegeAmbition || answers.q4Ambition || 'WORKFORCE_DIRECT') as any,
       },
       metadata: {
         clientTimestamp: new Date().toISOString(),
@@ -141,8 +167,12 @@ export function IntakeWizardContainer() {
   // 2. Render calm recovery view if an upstream error occurs
   if (isCompleted && error && !guideResult) {
     return (
-      <div className="w-full max-w-4xl mx-auto py-12 px-4 text-center space-y-5">
-        <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+      <div
+        role="alert"
+        aria-live="polite"
+        className="w-full max-w-4xl mx-auto py-12 px-4 text-center space-y-5"
+      >
+        <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto shadow-sm">
           <Icons.frictionAlert className="w-6 h-6" />
         </div>
         <div className="space-y-1">
@@ -153,14 +183,14 @@ export function IntakeWizardContainer() {
           <button
             type="button"
             onClick={handleTriggerSynthesis}
-            className="min-h-[44px] px-5 py-2.5 rounded-xl bg-edu-interactive hover:bg-edu-interactive-hover text-white font-medium text-sm transition-colors"
+            className="min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-xl bg-edu-interactive hover:bg-edu-interactive-hover text-white font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-edu-interactive focus:ring-offset-2"
           >
             {RESULTS_COPY.error.retryButton}
           </button>
           <button
             type="button"
             onClick={previousStep}
-            className="min-h-[44px] px-5 py-2.5 rounded-xl border border-edu-border-subtle bg-white text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-50 transition-colors"
+            className="min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-xl border border-edu-border-subtle bg-white text-edu-slate-700 font-medium text-sm hover:bg-edu-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-edu-interactive focus:ring-offset-2"
           >
             {RESULTS_COPY.error.editAnswersButton}
           </button>
@@ -222,14 +252,14 @@ export function IntakeWizardContainer() {
         )}
       </header>
 
-      {/* Progress Bar (Visible on Steps 1 to 10) */}
+      {/* Progress Bar (Visible on Steps 1 to 12) */}
       {currentStep > 0 && (
         <nav
           className="mb-8 space-y-2"
           aria-label={GUIDE_COPY.a11y.progressNav}
         >
           <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-edu-slate-600">
-            <span>{GUIDE_COPY.shell.stepProgressLabel(currentStep, 10)}: <strong className="text-edu-slate-900">{stepTitle}</strong></span>
+            <span>{GUIDE_COPY.shell.stepProgressLabel(currentStep, 12)}: <strong className="text-edu-slate-900">{stepTitle}</strong></span>
             <span>{GUIDE_COPY.shell.stepPercentLabel(progressPercent)}</span>
           </div>
 
@@ -238,8 +268,8 @@ export function IntakeWizardContainer() {
             aria-label={GUIDE_COPY.a11y.progressNav}
             aria-valuenow={currentStep}
             aria-valuemin={0}
-            aria-valuemax={10}
-            aria-valuetext={`${currentStep} of 10 completed: ${stepTitle}`}
+            aria-valuemax={12}
+            aria-valuetext={`${currentStep} of 12 completed: ${stepTitle}`}
             className="w-full h-2 rounded-full bg-edu-slate-100 overflow-hidden"
           >
             <div
@@ -263,7 +293,7 @@ export function IntakeWizardContainer() {
             />
           )}
 
-          {currentStep >= 1 && currentStep <= 10 && !isCompleted && (
+          {currentStep >= 1 && currentStep <= 12 && !isCompleted && (
             <QuestionStepView
               step={currentStep}
               answers={answers}
@@ -274,19 +304,54 @@ export function IntakeWizardContainer() {
               onSelectSubject={(id) => {
                 setQ2Subject ? setQ2Subject(id) : setSubject(id);
               }}
+              onSelectTrack={(track) => setQ3Track?.(track)}
               onChangeHesitation={(text) => {
-                setQ3Hesitation ? setQ3Hesitation(text) : setRationale(text);
+                setQ4Hesitation
+                  ? setQ4Hesitation(text)
+                  : setQ3Hesitation
+                  ? setQ3Hesitation(text)
+                  : setRationale(text);
               }}
               onSelectEnvironment={(env) => {
-                setQ4Environment ? setQ4Environment(env) : setEnvironment(env as any);
+                setQ5Environment
+                  ? setQ5Environment(env)
+                  : setQ4Environment
+                  ? setQ4Environment(env)
+                  : setEnvironment(env as any);
               }}
-              onSelectProblemSolving={(style) => setQ5ProblemSolving?.(style)}
+              onSelectCollaboration={(collab) => {
+                setQ6Collaboration
+                  ? setQ6Collaboration(collab)
+                  : setQ6SocialEnergy?.(collab as any);
+              }}
               onSelectSocialEnergy={(social) => setQ6SocialEnergy?.(social)}
-              onSelectStructure={(structure) => setQ7Structure?.(structure)}
-              onSelectFriction={(friction) => setQ8AcademicFriction?.(friction)}
-              onSelectPriority={(priority) => setQ9HorizonPriority?.(priority)}
+              onSelectProblemSolving={(style) => {
+                setQ7ProblemSolving
+                  ? setQ7ProblemSolving(style)
+                  : setQ5ProblemSolving?.(style);
+              }}
+              onSelectStructure={(structure) => {
+                setQ8Structure
+                  ? setQ8Structure(structure)
+                  : setQ7Structure?.(structure);
+              }}
+              onSelectWorkContext={(context) => setQ9WorkContext?.(context)}
+              onSelectFriction={(friction) => {
+                setQ10AcademicFriction
+                  ? setQ10AcademicFriction(friction)
+                  : setQ8AcademicFriction?.(friction);
+              }}
+              onSelectPriority={(priority) => {
+                setQ11HorizonPriority
+                  ? setQ11HorizonPriority(priority)
+                  : setQ9HorizonPriority?.(priority);
+              }}
               onSelectAmbition={(ambition) => {
-                setQ10Ambition ? setQ10Ambition(ambition) : setAmbition(ambition as any);
+                setQ12Ambition
+                  ? setQ12Ambition(ambition)
+                  : setQ10Ambition
+                  ? setQ10Ambition(ambition)
+                  : setAmbition(ambition as any);
               }}
             />
           )}
@@ -324,8 +389,8 @@ export function IntakeWizardContainer() {
         </main>
       </ErrorBoundary>
 
-      {/* Navigation Controls Footer (Visible on Steps 1 to 10) */}
-      {currentStep >= 1 && currentStep <= 10 && !isCompleted && (
+      {/* Navigation Controls Footer (Visible on Steps 1 to 12) */}
+      {currentStep >= 1 && currentStep <= 12 && !isCompleted && (
         <footer className="mt-10 pt-6 border-t border-edu-border-subtle flex items-center justify-between gap-4">
           <button
             type="button"
@@ -343,13 +408,13 @@ export function IntakeWizardContainer() {
             disabled={!isCurrentStepValid}
             className="min-h-[44px] min-w-[44px] px-6 py-2.5 rounded-xl bg-edu-interactive hover:bg-edu-interactive-hover disabled:bg-edu-slate-200 disabled:text-edu-slate-400 disabled:cursor-not-allowed text-white text-sm sm:text-base font-semibold transition-all shadow-xs focus-visible:ring-2 focus-visible:ring-edu-interactive focus-visible:ring-offset-2 focus-visible:outline-none flex items-center gap-2"
             aria-label={
-              currentStep === 10
+              currentStep === 12
                 ? GUIDE_COPY.navigation.finishAriaLabel
                 : GUIDE_COPY.navigation.nextAriaLabel
             }
           >
             <span>
-              {currentStep === 10
+              {currentStep === 12
                 ? GUIDE_COPY.navigation.finish
                 : GUIDE_COPY.navigation.next}
             </span>
