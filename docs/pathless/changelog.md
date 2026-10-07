@@ -90,15 +90,27 @@
 
 ### Feature 14: Simpler Suggestions and Clean PDF (Follow-up: October 4, 2026)
 
-*Note: Follow-up to Feature 8; not part of the original running order.*
+_Note: Follow-up to Feature 8; not part of the original running order._
+
 - Refined results cards by removing percentage fit scores and startup jargon labels, replacing them with qualitative badges ("Top Match" for the 2 primary matches and "Explore Also" for the 2 adjacent matches) across exactly 4 cards (2 primary, 2 adjacent) with simple 3-stage career path milestones (what to study in college, common first job after graduation, later career role).
 - Restricted job titles and standard university majors strictly to a curated catalog across 8 familiar fields, with expanded summaries explaining the job and its relation to the student's answers.
 - Overhauled the browser print layout so all 4 cards print fully expanded with student name, grade level, date, persistent advisor note, and sample notice, while strictly omitting student ID for privacy.
 - Later features affected: Feature 9, Feature 10, and Feature 11.
 
-### Feature 15: Planned (No decisions yet)
+### Feature 15: Fixes, Questions Refinement, and Admissions Guidance (Completed: October 7, 2026)
 
-- Status: Planned, no decisions yet.
+- Resolved immediate advisor dashboard update lag via Next.js cache revalidation.
+- Hardened results error boundary fallback UI card with actionable recovery buttons.
+- Expanded intake questions from 10 to 12 items tailored for upper-secondary students (Grades 10–12).
+- Added "Explore More Paths" catalog suggestions below the 4 primary recommendation cards.
+- Added static high school track admission guidelines and official verification checklists for flagship Thai universities.
+- Features affected: Feature 7, Feature 8, Feature 9, Feature 10, Feature 14.
+
+### Hackathon Submission & Feature Freeze (October 7, 2026)
+
+- Formalized feature freeze for the Devpost Build With AI: Basics Hackathon.
+- Remediated audit findings: aligned Playwright E2E student flow to 12 questions, hardened advisor session secrets, corrected default Gemini model string.
+- Added root MIT LICENSE and finalized English documentation.
 
 ## Bug Fixes
 
@@ -114,4 +126,3 @@
 ## Future Changes
 
 - Reserved for upcoming features, planned enhancements, and subsequent version iterations.
-

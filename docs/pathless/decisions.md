@@ -115,7 +115,8 @@
 
 ## Feature 14: Simpler Suggestions and Clean PDF (Follow-up: October 4, 2026)
 
-*Notes: Follow-up to Feature 8; not part of the original running order.*
+_Notes: Follow-up to Feature 8; not part of the original running order._
+
 - Source: `docs/pathless/contracts/feature-14.md`, `docs/pathless/plans/feature-14.md`
 - Branch: `feature/14-simpler-suggestions-and-clean-pdf` (no separate branch in git; not recorded).
 - Job titles and majors: Titles and majors are selected strictly from a curated list of common, recognizable job titles and standard university majors across 8 fields (`src/data/careerCatalog.ts`). The AI is strictly prohibited from inventing job titles or majors.
@@ -124,11 +125,20 @@
 - Career path steps: Each card includes a simple 3-stage progression line: (1) what to study in college, (2) common first job after graduation, and (3) a later career role (superseding Feature 6). Nothing too complex. Titles used in the career path steps must be familiar in Thailand, simple and clear.
 - The PDF: Generated via a clean print-dedicated browser stylesheet (@media print), not a separate file generator (superseding Feature 8). All 4 cards automatically expand their full details in the print layout. Includes Student Name, Grade Level, Date, the persistent Advisor note, and the sample data notice if mock data is used. Student ID is omitted from the print layout for privacy. Zero technical terms appear in the PDF.
 
-## Feature 15: Planned (No decisions yet)
+## Feature 15: Fixes, Questions Refinement, and Admissions Guidance (Completed: October 7, 2026)
 
-- Source: Not recorded (planned, no decisions yet).
-- Branch: Not recorded (no branch in git).
-- Status: Planned, no decisions yet.
+- Source: `docs/pathless/contracts/feature-15.md`, `docs/pathless/plans/feature-15.md`
+- Branch: `feature/15-fixes-questions-and-admissions` (Commit `843d797`)
+- Bug Fixes: Implemented server-side cache revalidation (`revalidatePath('/advisor')`) for immediate advisor dashboard updates; hardened client-side synthesis error fallback card; mapped "Not sure" selections to exploratory interdisciplinary recommendations.
+- Intake Expansion: Expanded intake sequence to 12 targeted questions for Grades 10–12, capturing high school study tracks (Science-Math, Arts-Language, etc.), collaborative work preferences, and concrete tasks at an 8th-grade reading level.
+- Suggestions & Catalog: Preserved 4 locked primary cards for print fidelity while adding an "Explore More Paths" section listing 2–4 related roles from the curated catalog.
+- Admissions Guidance: Seeded static high school track eligibility and official faculty admissions verification checklists for 5–7 flagship Thai universities (`src/data/admissionRequirements.ts`); all entries marked "needs checking"; strictly excluded student GPA/test score collection and prohibited AI-hallucinated cutoffs.
+
+## Project Freeze & Submission Packaging (Completed: October 7, 2026)
+
+- Feature Freeze: Declared formal feature freeze following Feature 15 completion to focus exclusively on audit remediation (E2E test alignment, credential security hardening, model string corrections) and submission deliverables.
+- Licensing: Adopted standard MIT License (`LICENSE`) for open-source compliance on GitHub.
+- Pilot Testing: Field-tested intake experience with high school upperclassmen; collected anonymous feedback with zero student personal data.
 
 ## Bug Fixes
 
@@ -148,5 +158,3 @@
   - Source: `src/schemas/career.schema.ts`, `src/types/career.ts`, `src/types/api.ts`
   - Cause: Discrepancy between exact 4-card tuple constraints and API response schemas.
   - Resolution: Aligned strict 4-element tuple schema and response contracts for student submissions and health check.
-
-
