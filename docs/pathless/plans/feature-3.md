@@ -9,7 +9,7 @@ gate: PASS
 # Feature 3: Step-by-Step Implementation Plan
 ## Intake Wizard UI Presentation Components & Centralized Reassuring Copy
 
-This implementation plan defines the sequential phases required to execute **Feature 3: Intake Wizard UI** on branch `feature/3-intake-wizard-ui` in accordance with the approved technical contract ([docs/pathway/contracts/feature-3.md](file:///d:/Hackathon/Beta_Folder/docs/pathway/contracts/feature-3.md)).
+This implementation plan defines the sequential phases required to execute **Feature 3: Intake Wizard UI** on branch `feature/3-intake-wizard-ui` in accordance with the approved technical contract ([docs/pathless/contracts/feature-3.md](file:///d:/Hackathon/Beta_Folder/docs/pathless/contracts/feature-3.md)).
 
 ---
 

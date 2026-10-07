@@ -9,7 +9,7 @@ gate: PASS
 # Feature 6: Step-by-Step Implementation Plan
 ## Recommendation Dossier UI, Career Cards, Reality Check & Synthesis Loading View
 
-This implementation plan defines the sequential phases required to execute **Feature 6: Recommendation Dossier UI** on branch `feature/6-dossier-card-ui` in accordance with the approved technical contract ([docs/pathway/contracts/feature-6.md](file:///d:/Hackathon/Beta_Folder/docs/pathway/contracts/feature-6.md)).
+This implementation plan defines the sequential phases required to execute **Feature 6: Recommendation Dossier UI** on branch `feature/6-dossier-card-ui` in accordance with the approved technical contract ([docs/pathless/contracts/feature-6.md](file:///d:/Hackathon/Beta_Folder/docs/pathless/contracts/feature-6.md)).
 
 ---
 
