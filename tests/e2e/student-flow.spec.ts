@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('Student Intake to Results E2E Journey', () => {
-  test('completes Step 0 through 10, views 4 cards, expands milestones, checks universities and print styles', async ({ page }) => {
+  test('completes Step 0 through 12, views 4 cards, expands milestones, checks universities and print styles', async ({ page }) => {
     test.setTimeout(60000);
 
     // 1. Navigate to home
@@ -46,23 +46,30 @@ test.describe('Student Intake to Results E2E Journey', () => {
     await page.locator('button[role="radio"]').filter({ hasText: 'Technology & Computing' }).click();
     await page.click('button:has-text("Continue")');
 
-    // Step 3: Academic Hesitation (Free-text thoughts)
+    // Step 3: High School Study Track (Single-select)
+    await page.waitForSelector('text=Which study track or academic stream are you pursuing');
+    const trackRadio = page.locator('button[role="radio"]').first();
+    await trackRadio.waitFor({ state: 'visible' });
+    await trackRadio.click();
+    await page.click('button:has-text("Continue")');
+
+    // Step 4: Academic Hesitation (Free-text thoughts)
     await page.waitForSelector('text=What feels most challenging or stressful');
     await page.fill('textarea#academic-hesitation-input', 'I worry about very difficult advanced math prerequisites.');
     await page.click('button:has-text("Continue")');
 
-    // Steps 4 through 9: General profile choices
-    for (let step = 4; step <= 9; step++) {
+    // Steps 5 through 11: General profile choices
+    for (let step = 5; step <= 11; step++) {
       const radio = page.locator('button[role="radio"]').first();
       await radio.waitFor({ state: 'visible' });
       await radio.click();
       await page.click('button:has-text("Continue")');
     }
 
-    // Step 10: Ambition timeline + Finish CTA
-    const step10Radio = page.locator('button[role="radio"]').first();
-    await step10Radio.waitFor({ state: 'visible' });
-    await step10Radio.click();
+    // Step 12: Ambition timeline + Finish CTA
+    const step12Radio = page.locator('button[role="radio"]').first();
+    await step12Radio.waitFor({ state: 'visible' });
+    await step12Radio.click();
     await page.click('button:has-text("Finish & Explore Pathways")');
 
     // 5. Results Screen Verification
