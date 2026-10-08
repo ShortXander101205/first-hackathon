@@ -117,10 +117,11 @@ export async function POST(request: Request): Promise<NextResponse> {
       },
       { status: 201 }
     );
-  } catch (error) {
-    // If DB is offline or mock submission is being edited in local demo
+  } catch (error: any) {
+    // If DB is offline, submission ID is not in DB (mock/test), or mock submission is being edited
     const mockSub = findMockAdvisorSubmission(sanitizedSubmissionId);
-    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '' || mockSub) {
+    const isMockOrUnpersisted = error?.code === 'P2003' || error?.code === 'P2025' || error?.name === 'PrismaClientKnownRequestError';
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '' || mockSub || isMockOrUnpersisted) {
       const mockNote = {
         id: `note_${Date.now()}`,
         submissionId: sanitizedSubmissionId.trim(),

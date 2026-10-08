@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
+    "@neon/config": "^1.8.6",
     "@playwright/test": "^1.47.0",
     "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^20.16.5",
