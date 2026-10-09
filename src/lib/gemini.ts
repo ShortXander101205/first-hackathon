@@ -100,7 +100,7 @@ export async function generateTriageRecommendations(
   try {
     const userPrompt = buildTriageUserPrompt(answers, studentNickname);
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
     // Call generateContent with timeout race
     const callPromise = client.models.generateContent({
       model: modelName,
@@ -200,7 +200,7 @@ export async function generateGuideRecommendations(
 
   try {
     const userPrompt = buildGuideUserPrompt(payload);
-    const modelName = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+    const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
     const callPromise = client.models.generateContent({
       model: modelName,
       contents: userPrompt,
